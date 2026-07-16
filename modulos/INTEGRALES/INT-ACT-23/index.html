@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 23 — Acumulación de agua en un tanque · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --pos:#2e7d52; --neg:#c0603a; --posfill:#7fbf98; --negfill:#e0a583;
+  --water:#3d8fc4; --water-d:#2a6d9c; --water-l:#6bb4dd; --tank:#b8b0a2;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.btn-ghost.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:64px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── SIMULACIÓN: gráfico + tanque lado a lado ── */
+.sim-wrap{
+  display:grid; grid-template-columns:1fr; gap:16px; margin-top:6px;
+}
+@media (min-width:760px){ .sim-wrap{grid-template-columns:1.55fr 1fr;} }
+.chart-box{
+  position:relative; width:100%; height:400px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.tank-box{
+  position:relative; width:100%; height:400px;
+  background:linear-gradient(180deg,#f4f8fb,#eaf1f6);
+  border:1px solid var(--border); border-radius:3px; overflow:hidden;
+}
+.sim-cap{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); text-align:center; padding:6px 0 3px;
+}
+
+.sim-ctrl{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:16px 18px; margin-top:14px;
+}
+.sim-ctrl .rlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+}
+.sim-ctrl .rval{color:var(--water-d); font-weight:700;}
+input[type=range]{width:100%; accent-color:var(--water); cursor:pointer;}
+
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.8;}
+.acc-curve{fill:none; stroke:var(--water-d); stroke-width:2.2; stroke-dasharray:5,3;}
+.area-pos{fill:var(--water); opacity:.2;}
+.area-neg{fill:var(--neg); opacity:.16;}
+.fill-progress{fill:var(--water); opacity:.34;}
+.fill-progress-neg{fill:var(--neg); opacity:.28;}
+.rrect{stroke:#fff; stroke-width:.7;}
+.rrect-pos{fill:var(--water-l); opacity:.6;}
+.rrect-neg{fill:var(--negfill); opacity:.6;}
+.max-line{stroke:var(--crimson); stroke-width:1.6; stroke-dasharray:6,4;}
+.max-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.8;}
+.now-line{stroke:var(--water-d); stroke-width:1.6;}
+.now-dot{fill:var(--water-d); stroke:#fff; stroke-width:1.6;}
+.zero-cross{fill:var(--gold); stroke:var(--navy); stroke-width:1.8;}
+.axis0{stroke:var(--navy); stroke-width:1.6;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.water{border-top-color:var(--water);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell.succ{border-top-color:var(--success);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.56rem; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.water .v{color:var(--water-d);}
+.live-cell.crim .v{color:var(--crimson);}
+.live-cell.succ .v{color:var(--success);}
+.live-cell .sub{font-size:.64rem; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--success); background:#f2f8f4;
+}
+.verdict.water-v{border-left-color:var(--water); background:#eef5fa;}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--success); margin-bottom:8px;}
+.verdict.water-v .vt{color:var(--water-d);}
+.verdict .vb{font-size:.94rem;}
+
+.warn-box{
+  border-left:5px solid var(--crimson); background:#fdf3f6;
+  border-radius:0 3px 3px 0; padding:16px 20px; margin-top:16px; font-size:.93rem;
+}
+.warn-box .wk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:8px;
+}
+
+.units-flow{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:10px;
+  margin:14px 0; font-family:'JetBrains Mono',monospace; font-size:.9rem;
+}
+.units-flow .chip{
+  padding:8px 14px; border-radius:4px; background:#fff; border:1px solid var(--border);
+  font-weight:700; color:var(--navy);
+}
+.units-flow .op{color:var(--muted); font-size:1.1rem;}
+.units-flow .chip.res{background:var(--water); color:#fff; border-color:var(--water-d);}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+.legend{
+  display:flex; flex-wrap:wrap; gap:16px; margin-top:10px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+}
+.legend .lg{display:flex; align-items:center; gap:7px;}
+.legend .sw{width:20px; height:12px; border-radius:2px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box,.tank-box{height:320px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 23 — Acumulación de agua en un tanque</div>
+      <div class="header-sub">El flujo es la tasa; el área es el agua acumulada</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">23</div>
+      <h2>Acumulación de agua en un tanque</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Un problema que reúne toda la historia: hallar el <strong>flujo máximo</strong> (una derivada)
+        y el <strong>agua acumulada</strong> (una integral). El flujo $F(t)$ es la <em>tasa</em> a la que
+        entra agua; el <strong>área bajo $F$ es el volumen</strong> acumulado. Y al extender el intervalo,
+        veremos qué pasa cuando el flujo se vuelve <strong>negativo</strong>: el tanque se vacía.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Flujo de entrada (litros por minuto)</span>
+        <div id="func-katex">$$F(t) = 4t(6 - t) \qquad t \in [0,\,6]$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Flujo $F(t) = k\,t\,(R - t)$: una parábola que abre hacia abajo, vale cero en $t=0$ y $t=R$,
+          con pico en el medio. El motor calcula el flujo máximo y el agua acumulada por integración exacta.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-k">coef. k</label><input type="number" id="p-k" value="4" step="any"></div>
+          <div class="param-field"><label for="p-R">raíz R</label><input type="number" id="p-R" value="6" step="any"></div>
+          <div class="param-field"><label for="p-lo">desde t₀</label><input type="number" id="p-lo" value="0" step="any"></div>
+          <div class="param-field"><label for="p-hi">hasta t₁</label><input type="number" id="p-hi" value="6" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="4,6,0,6">Original · [0,6]</button>
+          <button class="btn-ghost" data-preset="4,6,0,8">extendido · [0,8] ⚠</button>
+          <button class="btn-ghost" data-preset="4,6,0,3">solo subida · [0,3]</button>
+          <button class="btn-ghost" data-preset="2,10,0,10">más lento · k=2,R=10</button>
+          <button class="btn-ghost" data-preset="6,6,0,6">más caudal · k=6</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── SIMULACIÓN ── -->
+      <div class="sec-title">Simulación · flujo y llenado del tanque</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">
+        A la izquierda, la curva de flujo $F(t)$; el área que se va pintando es el agua acumulada hasta el
+        instante actual. A la derecha, el tanque llenándose <strong>en tiempo real</strong>: su nivel es
+        justamente esa área. Arrastra el tiempo o pulsa reproducir.
+      </p>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-area" checked> área acumulada</label>
+        <label><input type="checkbox" id="opt-acc"> curva de volumen V(t)</label>
+        <label><input type="checkbox" id="opt-rect"> rectángulos</label>
+        <label><input type="checkbox" id="opt-max" checked> flujo máximo</label>
+      </div>
+
+      <div class="sim-wrap">
+        <div>
+          <div class="sim-cap">flujo F(t) · el área es el volumen</div>
+          <div class="chart-box" id="chart-main"><div class="tooltip" id="tip-main"></div></div>
+        </div>
+        <div>
+          <div class="sim-cap">tanque · nivel = agua acumulada</div>
+          <div class="tank-box" id="tank-box"></div>
+        </div>
+      </div>
+
+      <div class="sim-ctrl">
+        <span class="rlbl">tiempo t = <span class="rval" id="t-val">6</span> min · flujo actual F(t) = <span class="rval" id="f-now">0</span> L/min</span>
+        <input type="range" id="t-slider" min="0" max="6" step="0.05" value="6">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-play">▶ Reproducir llenado</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+        <button class="btn-ghost" id="btn-max">↦ Ir al flujo máximo</button>
+        <button class="btn-ghost" id="btn-end">↦ Ir al final</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell crim"><span class="k">flujo máximo</span><span class="v" id="lv-fmax">—</span><div class="sub" id="lv-fmax-t"></div></div>
+        <div class="live-cell water"><span class="k">agua ahora (hasta t)</span><span class="v" id="lv-vol-now">—</span><div class="sub">litros</div></div>
+        <div class="live-cell succ"><span class="k">agua total acumulada</span><span class="v" id="lv-vol-tot">—</span><div class="sub" id="lv-vol-unit">litros</div></div>
+        <div class="live-cell"><span class="k">área neta ∫F</span><span class="v" id="lv-net">—</span><div class="sub">con signo</div></div>
+      </div>
+
+      <!-- ── a) FORMA ── -->
+      <div class="sec-title">a) ¿Qué forma tiene la gráfica?</div>
+      <div class="solve-box" id="solve-a"></div>
+
+      <!-- ── b) FLUJO MÁXIMO ── -->
+      <div class="sec-title">b) ¿En qué instante el flujo es máximo?</div>
+      <div class="solve-box" id="solve-b"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-b">Verificar mi instante</button>
+        <button class="btn-primary" id="btn-fill-b">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-b">Pista</button>
+        <span class="score-badge" id="score-b"></span>
+      </div>
+      <div class="hint-box" id="hint-b"></div>
+
+      <!-- ── c) ÁREA / AGUA ── -->
+      <div class="sec-title">c) El área bajo la curva: ¿qué representa?</div>
+      <div class="solve-box" id="solve-c"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-c">Verificar mi volumen</button>
+        <button class="btn-primary" id="btn-fill-c">Mostrar solución</button>
+        <span class="score-badge" id="score-c"></span>
+      </div>
+
+      <div class="verdict water-v"><span class="vk">Interpretación física</span>
+        <div class="vt">El área = agua acumulada</div>
+        <div class="vb" id="interpret-body"></div>
+        <div class="units-flow">
+          <span class="chip">L/min</span><span class="op">×</span>
+          <span class="chip">min</span><span class="op">=</span>
+          <span class="chip res">litros</span>
+        </div>
+      </div>
+
+      <!-- ── d) EXTENDER ── -->
+      <div class="sec-title">d) ¿Y si extendemos a $[0,8]$?</div>
+      <div id="extend-panel"></div>
+
+      <!-- ── PREGUNTAS ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Derivada e integral, juntas: tasa máxima y cantidad total</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">Flujo, acumulación y el Teorema Fundamental</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 23 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   F(t) = k·t·(R - t) = kR·t - k·t²   (flujo, L/min).
+   F'(t) = kR - 2k·t   → máximo en t = R/2.
+   Volumen acumulado V(t) = ∫₀ᵗ F = kR·t²/2 - k·t³/3.
+   ═══════════════════════════════════════════════ */
+let K = 4, R = 6, Lo = 0, Hi = 6;
+let TNOW = 6;
+let ANIM = null;
+
+const TOL = 1e-9;
+
+function F(t){ return K*t*(R - t); }
+function Fp(t){ return K*R - 2*K*t; }
+/* Antiderivada con V(Lo)=0 de referencia global (acumulado desde el origen físico Lo) */
+function Vanti(t){ return K*R*t*t/2 - K*t*t*t/3; }
+/* Volumen acumulado desde Lo hasta t (agua que entró) */
+function volTo(t){ return Vanti(t) - Vanti(Lo); }
+function volNet(){ return volTo(Hi); }
+function tPeak(){ return R/2; }               // instante de flujo máximo
+function fPeak(){ return F(R/2); }            // = k R²/4
+
+/* Ceros de F dentro de (Lo,Hi): t=0 y t=R */
+function zerosInside(){
+  const out = [];
+  [0, R].forEach(z => { if (z > Lo + 1e-7 && z < Hi - 1e-7) out.push(z); });
+  return out.sort((a,b)=>a-b);
+}
+
+/* Volumen geométrico (agua que se movió en total, |F|) */
+function volGeo(){
+  const zc = zerosInside();
+  const edges = [Lo, ...zc, Hi];
+  let g = 0;
+  for (let k = 0; k < edges.length-1; k++) g += Math.abs(Vanti(edges[k+1]) - Vanti(edges[k]));
+  return g;
+}
+
+/* ¿Máximo del volumen? El tanque alcanza su nivel máximo donde F cambia de + a - */
+function volMaxInfo(){
+  /* En [Lo,Hi], el nivel V(t) crece mientras F>0 y decrece cuando F<0.
+     El máximo está en el cruce donde F pasa de + a -, o en Hi si nunca baja. */
+  const zc = zerosInside().filter(z => F(z - 1e-4) > 0 && F(z + 1e-4) < 0);
+  if (zc.length){ const t = zc[0]; return { t, v: volTo(t) }; }
+  /* Si no hay cruce +→-, el máximo del volumen está en el extremo con mayor V */
+  return { t: Hi, v: volTo(Hi) };
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 2 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+
+/* ── LaTeX ── */
+function fTex(){ return fmt(K) + 't(' + fmt(R) + ' - t)'; }
+function fExpandedTex(){ return fmt(K*R) + 't - ' + fmt(K) + 't^{2}'; }
+function fpTex(){ return fmt(K*R) + ' - ' + fmt(2*K) + 't'; }
+function vantiTex(){ return fmt(K*R/2) + 't^{2} - ' + fmt(K/3) + 't^{3}'; }
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const k = parseFloat(document.getElementById('p-k').value);
+  const r = parseFloat(document.getElementById('p-R').value);
+  const lo = parseFloat(document.getElementById('p-lo').value);
+  const hi = parseFloat(document.getElementById('p-hi').value);
+  K = isFinite(k) ? k : 4;
+  R = (isFinite(r) && r > 0) ? r : 6;
+  Lo = isFinite(lo) ? lo : 0;
+  Hi = isFinite(hi) ? hi : 6;
+  if (Hi <= Lo) Hi = Lo + 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  const sl = document.getElementById('t-slider');
+  sl.min = Lo; sl.max = Hi; sl.step = (Hi - Lo)/400;
+  TNOW = Hi;
+  sl.value = TNOW;
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolveA();
+  renderSolveB();
+  renderSolveC();
+  renderInterpret();
+  renderExtend();
+  drawMain();
+  drawTank();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  updateNowLabel();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$F(t) = ' + fTex() + ' \\qquad t \\in [' + fmt(Lo) + ',\\,' + fmt(Hi) + ']$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const tp = tPeak(), fp = fPeak();
+  const vol = volNet();
+  const zc = zerosInside();
+  let html = 'Caso actual: el flujo alcanza su máximo de $' + fmt(fp) + '$ L/min en $t = ' + fmt(tp) + '$ min. ';
+  const hasNeg = Hi > R + 1e-7;
+  if (hasNeg){
+    html += 'Como el intervalo pasa de $t = ' + fmt(R) + '$, el flujo se vuelve <strong>negativo</strong> ' +
+      '(el tanque empieza a vaciarse). El agua neta acumulada es $' + fmt(vol) + '$ L, ' +
+      'pero eso ya no es solo «lo que entró».';
+  } else {
+    html += 'El agua total acumulada (el área bajo $F$) es $' + fmt(vol) + '$ litros.';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — a) FORMA
+   ═══════════════════════════════════════════════ */
+function renderSolveA(){
+  const box = document.getElementById('solve-a');
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Forma</span><span class="b">' +
+    'Expandiendo, $F(t) = ' + fExpandedTex() + '$: es una <strong>parábola</strong> con el coeficiente ' +
+    'de $t^{2}$ negativo ($-' + fmt(K) + '$), así que <strong>abre hacia abajo</strong> (forma de joroba ∩).</span></div>' +
+    '<div class="solve-step"><span class="n">Ceros</span><span class="b">' +
+    'Se anula donde $' + fmt(K) + 't(' + fmt(R) + '-t) = 0$: en $t = 0$ y $t = ' + fmt(R) + '$. ' +
+    'El flujo empieza en cero (grifo recién abierto), sube hasta un pico y vuelve a cero en $t = ' + fmt(R) + '$.</span></div>' +
+    '<div class="solve-step"><span class="n">Simetría</span><span class="b">' +
+    'Por ser parábola, es simétrica respecto a la vertical del vértice, en el punto medio $t = ' + fmt(R/2) + '$. ' +
+    'Ahí está el flujo máximo (parte b).</span></div>';
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) FLUJO MÁXIMO
+   ═══════════════════════════════════════════════ */
+function renderSolveB(){
+  const box = document.getElementById('solve-b');
+  const tp = tPeak(), fp = fPeak();
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Derivar</span><span class="b">' +
+    'El flujo es máximo donde su <strong>derivada</strong> se anula (la tasa deja de crecer):' +
+    '$$F\'(t) = ' + fpTex() + '$$</span></div>' +
+    '<div class="solve-step"><span class="n">Resolver</span><span class="b">' +
+    '$$F\'(t) = 0 \\;\\Longrightarrow\\; ' + fmt(K*R) + ' - ' + fmt(2*K) + 't = 0 \\;\\Longrightarrow\\; t = ' + fmt(tp) + '$$' +
+    'Es el punto medio entre los dos ceros, como anticipaba la simetría.</span></div>' +
+    '<div class="solve-step"><span class="n">Máximo</span><span class="b">' +
+    'El flujo máximo es $F(' + fmt(tp) + ') = ' + fmt(fp) + '$ L/min. ' +
+    'Como $F\'\'(t) = -' + fmt(2*K) + ' &lt; 0$, confirma que es un máximo. ' +
+    'En la simulación, es el momento en que el tanque sube <em>más rápido</em>.</span></div>' +
+    '<div class="answer-check"><label for="ans-b">tu instante · t =</label>' +
+    '<input type="text" id="ans-b" inputmode="decimal" placeholder="? min"></div>';
+  document.getElementById('score-b').className = 'score-badge';
+  renderMath(box);
+}
+function verifyB(){
+  const inp = document.getElementById('ans-b'), badge = document.getElementById('score-b');
+  const raw = inp.value.trim().replace(',','.');
+  inp.style.borderColor='';
+  if (raw===''){ badge.textContent='Escribe un valor'; badge.className='score-badge show'; return; }
+  const val = parseFloat(raw), truth = tPeak();
+  if (isFinite(val) && Math.abs(val-truth) <= Math.max(Math.abs(truth)*5e-3, 5e-3)){
+    inp.style.borderColor='var(--success)';
+    badge.textContent='✓ Correcto'; badge.className='score-badge show perfect';
+  } else {
+    inp.style.borderColor='var(--crimson)';
+    badge.textContent='✗ Usa F\'(t)=0'; badge.className='score-badge show';
+  }
+}
+function fillB(){
+  const inp = document.getElementById('ans-b');
+  inp.value = fmt(tPeak()); inp.style.borderColor='var(--success)';
+  const badge = document.getElementById('score-b');
+  badge.textContent='Instante mostrado'; badge.className='score-badge show perfect';
+}
+function toggleHintB(){
+  const box = document.getElementById('hint-b');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  box.innerHTML = '<strong>Pista.</strong> El máximo de una función suave está donde su derivada vale cero. ' +
+    'Deriva $F(t) = ' + fExpandedTex() + '$, iguala a cero y despeja $t$. ' +
+    'También puedes usar la simetría de la parábola: el vértice está a mitad de camino entre los ceros $t=0$ y $t=' + fmt(R) + '$.';
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — c) ÁREA / AGUA
+   ═══════════════════════════════════════════════ */
+function renderSolveC(){
+  const box = document.getElementById('solve-c');
+  const vol = volNet();
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Integrar</span><span class="b">' +
+    'El área bajo $F$ es la integral. Una antiderivada de $F(t) = ' + fExpandedTex() + '$ es ' +
+    '$V(t) = ' + vantiTex() + '$:' +
+    '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} F(t)\\,dt = \\left[' + vantiTex() + '\\right]_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}$$</span></div>' +
+    '<div class="solve-step"><span class="n">Evaluar</span><span class="b">' +
+    '$$= V(' + fmt(Hi) + ') - V(' + fmt(Lo) + ') = ' + fmt(vol) + '\\text{ litros}$$' +
+    'Es el <strong>volumen de agua</strong> que entró al tanque en el intervalo.</span></div>' +
+    '<div class="answer-check"><label for="ans-c">tu volumen · V =</label>' +
+    '<input type="text" id="ans-c" inputmode="decimal" placeholder="? L"></div>';
+  document.getElementById('score-c').className = 'score-badge';
+  renderMath(box);
+}
+function verifyC(){
+  const inp = document.getElementById('ans-c'), badge = document.getElementById('score-c');
+  const raw = inp.value.trim().replace(',','.');
+  inp.style.borderColor='';
+  if (raw===''){ badge.textContent='Escribe un valor'; badge.className='score-badge show'; return; }
+  const val = parseFloat(raw), truth = volNet();
+  if (isFinite(val) && Math.abs(val-truth) <= Math.max(Math.abs(truth)*5e-3, 0.5)){
+    inp.style.borderColor='var(--success)';
+    badge.textContent='✓ Correcto'; badge.className='score-badge show perfect';
+  } else {
+    inp.style.borderColor='var(--crimson)';
+    badge.textContent='✗ Revisa la integral'; badge.className='score-badge show';
+  }
+}
+function fillC(){
+  const inp = document.getElementById('ans-c');
+  inp.value = fmt(volNet()); inp.style.borderColor='var(--success)';
+  const badge = document.getElementById('score-c');
+  badge.textContent='Volumen mostrado'; badge.className='score-badge show perfect';
+}
+
+function renderInterpret(){
+  const el = document.getElementById('interpret-body');
+  const vol = volNet();
+  el.innerHTML =
+    'El flujo $F(t)$ dice <em>cuántos litros por minuto</em> entran en cada instante — es una <strong>tasa</strong>. ' +
+    'El área bajo la curva acumula esa tasa a lo largo del tiempo, dando el <strong>volumen total</strong> ' +
+    'de agua: $' + fmt(vol) + '$ litros. Cada rectángulo de la suma es (L/min) × (min) = litros. ' +
+    'Integrar el flujo da el agua acumulada — igual que integrar velocidad da distancia.';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — d) EXTENDER A [0,8]
+   ═══════════════════════════════════════════════ */
+function renderExtend(){
+  const el = document.getElementById('extend-panel');
+  /* Calculamos el escenario [Lo, R+2] o el actual si ya lo pasa */
+  const hiExt = Math.max(Hi, R + 2);
+  const volInRange = Vanti(R) - Vanti(Lo);          // agua que entró (hasta el cero)
+  const volNegPart = Vanti(hiExt) - Vanti(R);       // parte negativa (sale)
+  const volNetExt = Vanti(hiExt) - Vanti(Lo);
+  const isExtended = Hi > R + 1e-7;
+
+  let html = '<div class="' + (isExtended ? 'warn-box' : 'verdict') + '">';
+  if (!isExtended){
+    html += '<span class="vk">Extiende el intervalo para verlo</span>' +
+      '<p style="font-size:.94rem;">Pulsa el preset <strong>«extendido · [0,8] ⚠»</strong> ' +
+      'o cambia «hasta» a $' + fmt(R+2) + '$ y observa: después de $t = ' + fmt(R) + '$, ' +
+      'la parábola cruza el eje y $F(t)$ se vuelve <strong>negativa</strong>.</p>';
+  } else {
+    html += '<span class="wk">El flujo negativo vacía el tanque</span>';
+  }
+
+  html += '<p style="font-size:.94rem;margin-top:8px;">' +
+    'En $[' + fmt(Lo) + ', ' + fmt(R) + ']$ el flujo es positivo: entra agua, en total $' + fmt(volInRange) + '$ L. ' +
+    'Pero para $t &gt; ' + fmt(R) + '$, $F(t) &lt; 0$. Un flujo negativo significa agua <strong>saliendo</strong> ' +
+    'del tanque (un desagüe). En $[' + fmt(R) + ', ' + fmt(hiExt) + ']$ salen $' + fmt(Math.abs(volNegPart)) + '$ L.</p>';
+
+  html += '<p style="font-size:.94rem;margin-top:8px;">' +
+    'Por eso, en $[' + fmt(Lo) + ', ' + fmt(hiExt) + ']$, el área <strong>neta</strong> es ' +
+    '$\\int F\\,dt = ' + fmt(volInRange) + ' - ' + fmt(Math.abs(volNegPart)) + ' = ' + fmt(volNetExt) + '$ L: ' +
+    'el agua que <em>queda</em> en el tanque. Ya <strong>no</strong> es «el agua que entró» ' +
+    '($' + fmt(volInRange) + '$ L), porque parte se fue. El área con signo mide el <em>balance</em>: ' +
+    'lo que entró menos lo que salió.</p>';
+
+  html += '<p style="font-size:.94rem;margin-top:8px;">' +
+    'Moraleja: el área sigue siendo agua acumulada <em>neta</em>, pero si el modelo permite flujo negativo, ' +
+    'hay que distinguir «agua que entró» (solo la parte positiva) de «agua que queda» (el neto). ' +
+    'Físicamente, el modelo $F(t)=' + fTex() + '$ solo tiene sentido como <em>entrada</em> mientras $F \\geq 0$, ' +
+    'es decir en $[0, ' + fmt(R) + ']$.</p>';
+
+  html += '</div>';
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO DE FLUJO
+   ═══════════════════════════════════════════════ */
+function drawMain(){
+  const box = document.getElementById('chart-main');
+  d3.select('#chart-main').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 600, H = box.clientHeight || 400;
+  const m = {top:22, right:20, bottom:40, left:52};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const padX = (Hi - Lo) * 0.06;
+  const xMin = Lo - padX, xMax = Hi + padX;
+
+  const samp = [];
+  const NS = 160;
+  for (let i = 0; i <= NS; i++) samp.push(F(xMin + (xMax-xMin)*i/NS));
+  let yMin = Math.min(0, ...samp), yMax = Math.max(0, ...samp, fPeak());
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const yp = (yMax - yMin)*0.1; yMin -= yp; yMax += yp;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-main').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-m-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid).append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  const gridOn = document.getElementById('opt-grid').checked;
+  const areaOn = document.getElementById('opt-area').checked;
+  const accOn  = document.getElementById('opt-acc').checked;
+  const rectOn = document.getElementById('opt-rect').checked;
+  const maxOn  = document.getElementById('opt-max').checked;
+
+  if (gridOn){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')').call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(6));
+  g.append('text').attr('class','axis-label').attr('x', iw).attr('y', ih + 33).attr('text-anchor','end').text('t (min)');
+  g.append('text').attr('class','axis-label').attr('x', -8).attr('y', -8).attr('text-anchor','end').text('F(t) L/min');
+
+  /* Área total (tenue) partida por signo */
+  if (areaOn){
+    const zc = zerosInside();
+    const edges = [Lo, ...zc, Hi];
+    for (let k = 0; k < edges.length-1; k++){
+      const a0 = edges[k], b0 = edges[k+1], mid = (a0+b0)/2;
+      const positive = F(mid) >= 0;
+      const steps = 50, dd = (b0-a0)/steps; const pts = [];
+      for (let i = 0; i <= steps; i++) pts.push(a0 + i*dd);
+      const area = d3.area().x(d => xs(d)).y0(ys(0)).y1(d => ys(F(d)));
+      plot.append('path').datum(pts).attr('class', positive ? 'area-pos' : 'area-neg').attr('opacity', .12).attr('d', area);
+    }
+  }
+
+  /* Área acumulada HASTA t (más intensa) — la parte "ya llenada" */
+  if (areaOn){
+    const steps = 80, dd = (TNOW - Lo)/steps; const pts = [];
+    for (let i = 0; i <= steps; i++) pts.push(Lo + i*dd);
+    /* Partir por signo también */
+    const area = d3.area().x(d => xs(d)).y0(ys(0)).y1(d => ys(F(d)));
+    /* dibujar en tramos por signo */
+    let seg = [], sign = null;
+    pts.forEach(p => {
+      const s = F(p) >= 0 ? 1 : -1;
+      if (sign === null) sign = s;
+      if (s !== sign && seg.length){
+        plot.append('path').datum(seg).attr('class', sign>0 ? 'fill-progress':'fill-progress-neg').attr('d', area);
+        seg = [seg[seg.length-1]];
+        sign = s;
+      }
+      seg.push(p);
+    });
+    if (seg.length > 1) plot.append('path').datum(seg).attr('class', sign>0 ? 'fill-progress':'fill-progress-neg').attr('d', area);
+  }
+
+  /* Rectángulos (opcional, n=6) */
+  if (rectOn){
+    const nR = 6, dt = (Hi - Lo)/nR;
+    for (let i = 0; i < nR; i++){
+      const xm = Lo + (i+0.5)*dt, h = F(xm), xL = Lo + i*dt;
+      const y0 = ys(0), yh = ys(h);
+      plot.append('rect').attr('class','rrect ' + (h>=0?'rrect-pos':'rrect-neg'))
+        .attr('x', xs(xL)).attr('y', Math.min(y0,yh))
+        .attr('width', Math.max(0, xs(xL+dt)-xs(xL))).attr('height', Math.abs(yh-y0));
+    }
+  }
+
+  /* Eje F=0 */
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('class','axis0').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0));
+
+  /* Curva de volumen acumulado V(t), escalada a este eje (secundaria) */
+  if (accOn){
+    const vMax = Math.max(Math.abs(volTo(Hi)), Math.abs(volMaxInfo().v), 1);
+    const vScale = (yMax*0.9) / vMax;
+    const line = d3.line().x(d => xs(d)).y(d => ys(volTo(d)*vScale));
+    const vpts = []; const VN = 160;
+    for (let i = 0; i <= VN; i++){ const t = Lo + (Hi-Lo)*i/VN; vpts.push(t); }
+    plot.append('path').datum(vpts).attr('class','acc-curve').attr('d', line);
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--water-d)')
+      .attr('x', xs(Hi)-4).attr('y', ys(volTo(Hi)*vScale)-6).attr('text-anchor','end').text('V(t) ×');
+  }
+
+  /* Curva de flujo */
+  const line = d3.line().x(d => xs(d)).y(d => ys(F(d))).curve(d3.curveCatmullRom.alpha(.5));
+  const cpts = []; const CN = 200;
+  for (let i = 0; i <= CN; i++) cpts.push(xMin + (xMax-xMin)*i/CN);
+  plot.append('path').datum(cpts).attr('class','curve').attr('d', line);
+
+  /* Flujo máximo */
+  if (maxOn){
+    const tp = tPeak(), fp = fPeak();
+    if (tp >= xMin && tp <= xMax){
+      plot.append('line').attr('class','max-line').attr('x1', xs(tp)).attr('x2', xs(tp)).attr('y1', ys(0)).attr('y2', ys(fp));
+      plot.append('circle').attr('class','max-dot').attr('cx', xs(tp)).attr('cy', ys(fp)).attr('r', 6);
+      plot.append('text').attr('class','curve-lbl').attr('fill','var(--crimson)')
+        .attr('x', xs(tp)).attr('y', ys(fp)-9).attr('text-anchor','middle').text('máx ' + fmt(fp) + ' L/min');
+    }
+  }
+
+  /* Cruces por cero */
+  zerosInside().forEach(z => {
+    plot.append('circle').attr('class','zero-cross').attr('cx', xs(z)).attr('cy', ys(0)).attr('r', 5);
+  });
+
+  /* Línea del tiempo actual */
+  const fn = F(TNOW);
+  if (TNOW >= xMin && TNOW <= xMax){
+    plot.append('line').attr('class','now-line').attr('x1', xs(TNOW)).attr('x2', xs(TNOW)).attr('y1', 0).attr('y2', ih);
+    if (fn >= yMin && fn <= yMax)
+      plot.append('circle').attr('class','now-dot').attr('cx', xs(TNOW)).attr('cy', ys(fn)).attr('r', 5.5);
+  }
+
+  const tip = document.getElementById('tip-main');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih).attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = F(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      tip.innerHTML = 't = ' + fmt(x,2) + ' min<br>F = ' + fmt(y,2) + ' L/min<br>' + (y>0?'entra agua':(y<0?'sale agua':'sin flujo'));
+      tip.style.left = (m.left + xs(x)) + 'px'; tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (x >= Lo && x <= Hi) setT(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TANQUE ANIMADO
+   ═══════════════════════════════════════════════ */
+function drawTank(){
+  const box = document.getElementById('tank-box');
+  d3.select('#tank-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 340, H = box.clientHeight || 400;
+  const svg = d3.select('#tank-box').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+
+  /* Geometría del tanque */
+  const tankW = Math.min(W*0.5, 150);
+  const tankH = H*0.62;
+  const tankX = (W - tankW)/2;
+  const tankY = H*0.24;
+  const wall = 5;
+
+  /* Capacidad de referencia: el máximo volumen que alcanza el tanque en el recorrido */
+  const capacity = Math.max(volMaxInfo().v, volTo(Hi), 1) * 1.12;
+  const volNowRaw = volTo(TNOW);
+  const volNow = Math.max(0, volNowRaw);           // nivel visible (no negativo)
+  const frac = Math.min(1, volNow / capacity);
+  const fn = F(TNOW);
+
+  /* Tubo de entrada (arriba) */
+  const pipeX = tankX + tankW*0.5;
+  const pipeW = 16;
+  svg.append('rect').attr('x', pipeX - pipeW/2).attr('y', 6).attr('width', pipeW).attr('height', tankY-6+4)
+    .attr('fill','#cfc7b8').attr('stroke','#a89e8c').attr('stroke-width',1.4);
+
+  /* Chorro de agua entrando/saliendo (animado por dash) */
+  const flowing = Math.abs(fn) > 1e-6;
+  const streamColor = fn >= 0 ? 'var(--water)' : 'var(--neg)';
+  if (flowing){
+    /* intensidad proporcional al |flujo| */
+    const fMax = Math.max(fPeak(), 1);
+    const sw = 3 + 7*Math.min(1, Math.abs(fn)/fMax);
+    if (fn >= 0){
+      /* Chorro cayendo dentro */
+      const jetTop = tankY - 2;
+      const jetBot = tankY + (tankH - (tankH*frac)) ;
+      svg.append('line').attr('class','water-jet')
+        .attr('x1', pipeX).attr('y1', jetTop).attr('x2', pipeX).attr('y2', Math.max(jetTop, tankY + tankH - tankH*frac - 4))
+        .attr('stroke', streamColor).attr('stroke-width', sw).attr('opacity', .8)
+        .attr('stroke-linecap','round').attr('stroke-dasharray','6,7');
+    }
+  }
+
+  /* Cuerpo del tanque (paredes) */
+  svg.append('rect').attr('x', tankX).attr('y', tankY).attr('width', tankW).attr('height', tankH)
+    .attr('fill','none').attr('stroke','var(--tank)').attr('stroke-width', wall)
+    .attr('rx', 5);
+
+  /* clip para el agua */
+  const clipId = 'tankclip-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', clipId)
+    .append('rect').attr('x', tankX+wall/2).attr('y', tankY+wall/2)
+    .attr('width', tankW-wall).attr('height', tankH-wall).attr('rx', 3);
+
+  const gWater = svg.append('g').attr('clip-path','url(#'+clipId+')');
+
+  /* Nivel de agua */
+  const waterTop = tankY + tankH - (tankH-wall)*frac - wall/2;
+  const waterH = (tankH-wall)*frac;
+  if (waterH > 0.5){
+    /* cuerpo de agua con degradado */
+    const gid = 'watergrad-' + Date.now();
+    const grad = svg.append('defs').append('linearGradient').attr('id', gid).attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',1);
+    grad.append('stop').attr('offset','0%').attr('stop-color','var(--water-l)');
+    grad.append('stop').attr('offset','100%').attr('stop-color','var(--water-d)');
+    gWater.append('rect').attr('x', tankX+wall/2).attr('y', waterTop)
+      .attr('width', tankW-wall).attr('height', waterH+wall).attr('fill','url(#'+gid+')');
+
+    /* superficie ondulada */
+    const wavePath = d3.path();
+    const amp = 4, len = tankW-wall;
+    wavePath.moveTo(tankX+wall/2, waterTop);
+    const segs = 24;
+    for (let i = 0; i <= segs; i++){
+      const xx = tankX+wall/2 + len*i/segs;
+      const yy = waterTop + amp*Math.sin(i/segs*Math.PI*3 + TNOW*1.5);
+      wavePath.lineTo(xx, yy);
+    }
+    wavePath.lineTo(tankX+tankW-wall/2, waterTop+10);
+    wavePath.lineTo(tankX+wall/2, waterTop+10);
+    wavePath.closePath();
+    gWater.append('path').attr('d', wavePath.toString()).attr('fill','var(--water-l)').attr('opacity',.55);
+
+    /* burbujas si está entrando agua */
+    if (fn > 1e-6){
+      for (let b = 0; b < 4; b++){
+        const bx = tankX+wall + Math.random()*(tankW-2*wall);
+        const by = waterTop + 8 + Math.random()*(waterH-10);
+        gWater.append('circle').attr('cx', bx).attr('cy', by).attr('r', 1.5+Math.random()*2)
+          .attr('fill','#fff').attr('opacity', .3+Math.random()*.3);
+      }
+    }
+  }
+
+  /* Marcas de nivel (litros) */
+  const nMarks = 4;
+  for (let i = 1; i <= nMarks; i++){
+    const lv = capacity*i/nMarks;
+    const yy = tankY + tankH - (tankH-wall)*(lv/capacity) - wall/2;
+    svg.append('line').attr('x1', tankX+tankW).attr('x2', tankX+tankW+6).attr('y1', yy).attr('y2', yy)
+      .attr('stroke','var(--muted)').attr('stroke-width',1);
+    svg.append('text').attr('x', tankX+tankW+9).attr('y', yy+3)
+      .attr('font-family','JetBrains Mono, monospace').attr('font-size','9px').attr('fill','var(--muted)')
+      .text(fmt(lv,0)+'L');
+  }
+
+  /* Etiqueta grande del volumen actual */
+  svg.append('text').attr('x', W/2).attr('y', tankY + tankH + 30).attr('text-anchor','middle')
+    .attr('font-family','JetBrains Mono, monospace').attr('font-size','19px').attr('font-weight','700')
+    .attr('fill','var(--water-d)').text(fmt(volNow,1) + ' L');
+  svg.append('text').attr('x', W/2).attr('y', tankY + tankH + 46).attr('text-anchor','middle')
+    .attr('font-family','JetBrains Mono, monospace').attr('font-size','9px')
+    .attr('fill','var(--muted)').text('acumulados en t = ' + fmt(TNOW,2) + ' min');
+
+  /* Indicador de flujo (entra/sale) */
+  const badge = fn > 1e-6 ? {txt:'▼ ENTRANDO ' + fmt(fn,1) + ' L/min', col:'var(--water-d)'} :
+                fn < -1e-6 ? {txt:'▲ SALIENDO ' + fmt(Math.abs(fn),1) + ' L/min', col:'var(--neg)'} :
+                {txt:'— sin flujo', col:'var(--muted)'};
+  svg.append('text').attr('x', W/2).attr('y', tankY - 8).attr('text-anchor','middle')
+    .attr('font-family','JetBrains Mono, monospace').attr('font-size','10px').attr('font-weight','700')
+    .attr('fill', badge.col).text(badge.txt);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const tp = tPeak(), fp = fPeak();
+  document.getElementById('lv-fmax').textContent = fmt(fp) + ' L/min';
+  document.getElementById('lv-fmax-t').textContent = 'en t = ' + fmt(tp) + ' min';
+  document.getElementById('lv-vol-now').textContent = fmt(Math.max(0,volTo(TNOW)), 1);
+  const vmax = volMaxInfo();
+  document.getElementById('lv-vol-tot').textContent = fmt(vmax.v, 1);
+  document.getElementById('lv-vol-unit').textContent = 'L (máx nivel)';
+  document.getElementById('lv-net').textContent = fmt(volNet(), 1) + ' L';
+}
+
+function updateNowLabel(){
+  document.getElementById('t-val').textContent = fmt(TNOW, 2);
+  document.getElementById('f-now').textContent = fmt(F(TNOW), 1);
+}
+
+function setT(t){
+  const sl = document.getElementById('t-slider');
+  TNOW = Math.max(Lo, Math.min(Hi, t));
+  sl.value = TNOW;
+  updateNowLabel(); updateLive(); drawMain(); drawTank();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN (llenado en tiempo real)
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-play');
+  if (b) b.textContent = '▶ Reproducir llenado';
+}
+function startAnim(){
+  stopAnim();
+  TNOW = Lo;
+  const steps = 200;
+  let i = 0;
+  document.getElementById('btn-play').textContent = '● Llenando…';
+  ANIM = setInterval(() => {
+    i++;
+    setT(Lo + (Hi - Lo)*(i/steps));
+    if (i >= steps) stopAnim();
+  }, 26);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const tp = tPeak(), fp = fPeak();
+  const vol = volNet();
+  const hasNeg = Hi > R + 1e-7;
+
+  const qs = [
+    {
+      q: 'a) ¿Qué forma tiene la gráfica de $F(t) = ' + fTex() + '$?',
+      opts: [
+        'Una recta creciente.',
+        'Una <strong>parábola que abre hacia abajo</strong> (joroba), cero en los extremos y máxima en el centro.',
+        'Una curva que crece sin límite.'
+      ],
+      ok: 1,
+      fb: 'Al expandir, $F(t) = ' + fExpandedTex() + '$: coeficiente de $t^{2}$ negativo ⟹ abre hacia abajo. ' +
+          'Vale cero en $t=0$ y $t=' + fmt(R) + '$, con el pico en medio. Es el perfil típico de un grifo que se ' +
+          'abre, alcanza su chorro máximo y se cierra.'
+    },
+    {
+      q: 'b) ¿En qué instante el flujo es máximo, y cómo se halla?',
+      opts: [
+        'En $t=0$, al principio.',
+        'En $t = ' + fmt(tp) + '$, resolviendo $F\'(t) = 0$ (o por simetría de la parábola).',
+        'En $t = ' + fmt(R) + '$, al final.'
+      ],
+      ok: 1,
+      fb: 'El máximo de una función suave está donde su derivada se anula: $F\'(t) = ' + fpTex() + ' = 0$ ' +
+          'da $t = ' + fmt(tp) + '$. Ahí el flujo vale $' + fmt(fp) + '$ L/min. ' +
+          'En la simulación es cuando el nivel del tanque sube más rápido — la derivada del volumen es máxima.'
+    },
+    {
+      q: 'c) El área bajo $F$ vale $' + fmt(vol) + '$. ¿Qué representa?',
+      opts: [
+        'El flujo promedio.',
+        'El <strong>volumen total de agua</strong> (litros) acumulado en el intervalo.',
+        'El tiempo que tardó en llenarse.'
+      ],
+      ok: 1,
+      fb: 'Unidades: (L/min) × (min) = litros. El área acumula el flujo a lo largo del tiempo, dando el ' +
+          '<strong>agua total</strong>: $' + fmt(vol) + '$ L. Es la integral $\\int F\\,dt$ — la contraparte ' +
+          'del flujo, que era la derivada del volumen. Flujo y volumen son derivada e integral uno del otro.'
+    },
+    {
+      q: 'd) Al extender a $[0,8]$, ¿el área sigue siendo «agua que entró»?',
+      opts: [
+        'Sí, exactamente igual.',
+        'No: como $F&lt;0$ tras $t=' + fmt(R) + '$, el área <strong>neta</strong> resta el agua que sale; es el balance, no lo que entró.',
+        'Sí, pero se duplica.'
+      ],
+      ok: 1,
+      fb: 'Después de $t=' + fmt(R) + '$ el flujo se vuelve negativo: agua <strong>saliendo</strong>. ' +
+          'El área neta $\\int_0^{8} F\\,dt$ ya no es «lo que entró» sino «lo que entró menos lo que salió» ' +
+          '(el agua que <em>queda</em>). Para el agua total que entró, solo cuenta la parte positiva $[0,' + fmt(R) + ']$. ' +
+          'Es la misma distinción neta vs. geométrica, ahora con sentido físico: llenar vs. vaciar.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÓDULO FORMAL
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\underbrace{F(t) = \\dfrac{dV}{dt}}_{\\text{flujo = tasa}} \\qquad\\Longleftrightarrow\\qquad ' +
+    '\\underbrace{V(t) = \\int_{0}^{t} F(s)\\,ds}_{\\text{volumen = acumulación}}$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const tp = tPeak(), fp = fPeak(), vol = volNet();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Derivada · el flujo máximo</span>' +
+    'El flujo es la <strong>tasa</strong> de llenado. Su máximo se halla con la derivada: ' +
+    '$F\'(t) = ' + fpTex() + ' = 0 \\Rightarrow t = ' + fmt(tp) + '$, con $F = ' + fmt(fp) + '$ L/min. ' +
+    'Es el instante en que el tanque sube más rápido.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Integral · el agua acumulada</span>' +
+    'El volumen es la <strong>acumulación</strong> del flujo: $V(t) = \\int_0^{t} F\\,ds = ' + vantiTex() + '$. ' +
+    'El agua total en $[' + fmt(Lo) + ',' + fmt(Hi) + ']$ es $V(' + fmt(Hi) + ') - V(' + fmt(Lo) + ') = ' + fmt(vol) + '$ L.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">El Teorema Fundamental, hecho física</span>' +
+    'Flujo y volumen son <strong>derivada e integral uno del otro</strong>: $F = V\'$ y $V = \\int F$. ' +
+    'El TFC dice que estas dos operaciones se deshacen mutuamente. Aquí se ve literalmente: la pendiente de ' +
+    'la curva de volumen $V(t)$ en cada punto <em>es</em> el flujo $F(t)$ de ese instante. Donde $F$ es máximo, ' +
+    '$V$ tiene su mayor pendiente; donde $F=0$, $V$ tiene una tangente horizontal (deja de cambiar).</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Flujo con signo · llenar y vaciar</span>' +
+    'Mientras $F&gt;0$, $V$ crece (entra agua). Si $F&lt;0$ (más allá de $t=' + fmt(R) + '$), $V$ decrece ' +
+    '(sale agua): el tanque se vacía. El área <strong>neta</strong> es el balance neto; el agua que ' +
+    '<em>entró</em> es solo la parte positiva. La integral con signo distingue naturalmente ambos sentidos.</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'Una sola parábola encierra las dos mitades del cálculo: derivar $F$ da el instante de máximo caudal; ' +
+    'integrar $F$ da el agua acumulada. Tasa y cantidad, atadas por el Teorema Fundamental.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const tp = tPeak(), fp = fPeak(), vol = volNet();
+  const hasNeg = Hi > R + 1e-7;
+  const volPos = Vanti(Math.min(Hi,R)) - Vanti(Lo);
+  let html = '';
+
+  html += '<p><strong>a)</strong> $F(t) = ' + fTex() + ' = ' + fExpandedTex() + '$ es una <strong>parábola ' +
+    'hacia abajo</strong> (joroba): vale $0$ en $t=0$ y $t=' + fmt(R) + '$, y sube hasta un pico en el centro. ' +
+    'Es el perfil de un grifo que se abre y se cierra.</p>';
+
+  html += '<p><strong>b)</strong> El flujo es máximo donde $F\'(t) = ' + fpTex() + ' = 0$, es decir en ' +
+    '$t = ' + fmt(tp) + '$ min, con un caudal de $' + fmt(fp) + '$ L/min. (Coincide con el eje de simetría de la parábola.)</p>';
+
+  html += '<p><strong>c)</strong> El área bajo $F$ es el <strong>volumen de agua acumulada</strong>: ' +
+    '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}' + fTex() + '\\,dt = ' + fmt(vol) + '\\text{ litros.}$$ ' +
+    'Unidades: (L/min)×(min) = litros. El flujo es la tasa; su integral, la cantidad.</p>';
+
+  html += '<p><strong>d)</strong> Al extender a $[0,8]$, el flujo se vuelve <strong>negativo</strong> tras $t=' + fmt(R) + '$ ' +
+    '(agua saliendo). El área <strong>neta</strong> ya no es «el agua que entró» ($' + fmt(volPos) + '$ L, solo la parte ' +
+    'positiva) sino el <strong>balance</strong>: lo que entró menos lo que salió. El área sigue midiendo agua ' +
+    'acumulada, pero con signo: positiva llena, negativa vacía. El modelo solo describe entrada real mientras $F\\geq 0$, ' +
+    'o sea en $[0,' + fmt(R) + ']$.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-k','p-R','p-lo','p-hi'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') refreshAll(); });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-k').value = 4;
+    document.getElementById('p-R').value = 6;
+    document.getElementById('p-lo').value = 0;
+    document.getElementById('p-hi').value = 6;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-k').value = p[0].trim();
+      document.getElementById('p-R').value = p[1].trim();
+      document.getElementById('p-lo').value = p[2].trim();
+      document.getElementById('p-hi').value = p[3].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-b').addEventListener('click', verifyB);
+  document.getElementById('btn-fill-b').addEventListener('click', fillB);
+  document.getElementById('btn-hint-b').addEventListener('click', toggleHintB);
+  document.getElementById('btn-verify-c').addEventListener('click', verifyC);
+  document.getElementById('btn-fill-c').addEventListener('click', fillC);
+
+  ['opt-grid','opt-area','opt-acc','opt-rect','opt-max'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawMain);
+  });
+
+  document.getElementById('t-slider').addEventListener('input', ev => {
+    stopAnim(); setT(parseFloat(ev.target.value));
+  });
+  document.getElementById('btn-play').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+  document.getElementById('btn-max').addEventListener('click', () => { stopAnim(); setT(tPeak()); });
+  document.getElementById('btn-end').addEventListener('click', () => { stopAnim(); setT(Hi); });
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { drawMain(); drawTank(); }, 140); });
+
+  refreshAll();
+}
+
+(function boot(){
+  function ready(){ return document.readyState !== 'loading' && window.d3 && window.renderMathInElement; }
+  function attempt(tries){
+    if (ready()){ initPage(); return; }
+    if (tries <= 0){ initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else attempt(40);
+})();
+</script>
+
+</body>
+</html>

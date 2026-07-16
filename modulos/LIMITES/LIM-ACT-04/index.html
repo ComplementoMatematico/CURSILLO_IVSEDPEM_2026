@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 4 — Límite en funciones definidas por tramos · Cursillo de Actualización Docente</title>
+
+<!-- ── FUENTES ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- ── KaTeX ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ── VARIABLES ── */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  color:var(--text);
+  background:var(--light);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 6px 24px rgba(200,169,81,.18);
+  padding:20px 30px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:28px;
+}
+.header-logos{display:flex;align-items:center;gap:16px;}
+.header-logos img{
+  height:52px;object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));
+}
+.header-center{text-align:center;}
+.header-center .seminar{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--gold);
+  font-size:.72rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.header-center .title{
+  font-family:'Playfair Display',serif;
+  color:var(--white);
+  font-size:1.5rem;
+  font-weight:700;
+  line-height:1.2;
+}
+.header-center .subtitle{
+  color:rgba(255,255,255,.72);
+  font-size:.9rem;
+  margin-top:4px;
+  font-style:italic;
+}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace;
+  color:rgba(200,169,81,.75);
+  font-size:.62rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.header-author .name{
+  font-family:'Playfair Display',serif;
+  color:var(--white);
+  font-size:1.05rem;
+  font-weight:600;
+}
+
+/* ── MAIN ── */
+main{max-width:880px;margin:0 auto;padding:50px 22px 80px;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* ── TARJETA ── */
+.activity-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09);
+  overflow:hidden;
+  animation:fadeUp .6s ease both;
+}
+.card-head{
+  background:var(--navy);
+  color:var(--white);
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.card-head .num{
+  width:38px;height:38px;flex:none;
+  background:var(--crimson);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+  font-weight:600;
+  font-size:1.05rem;
+}
+.card-head h1{
+  font-family:'Playfair Display',serif;
+  font-size:1.35rem;
+  font-weight:600;
+  line-height:1.25;
+}
+.card-body{padding:34px 30px;}
+
+/* ── OBJETIVO ── */
+.objetivo-box{
+  border-left:4px solid var(--crimson);
+  background:var(--accent-bg);
+  padding:16px 22px;
+  border-radius:0 3px 3px 0;
+  margin-bottom:30px;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--crimson);
+  font-size:.68rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+/* ── FUNCIÓN DISPLAY ── */
+.function-display{
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:22px;
+  text-align:center;
+  margin-bottom:30px;
+}
+.function-display .lbl{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--muted);
+  font-size:.66rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+/* ── SECCIONES ── */
+.section{margin-bottom:38px;}
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.15rem;
+  font-weight:600;
+  color:var(--navy);
+  margin-bottom:14px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.section-title .step{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.8rem;
+  background:var(--navy);
+  color:#fff;
+  width:26px;height:26px;flex:none;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── PANEL PARÁMETROS ── */
+.a-selector-wrap{
+  background:linear-gradient(180deg,#fbfaf6,#f4f1ea);
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:22px 24px;
+  margin-bottom:34px;
+}
+.a-selector-wrap .lbl{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--crimson);
+  font-size:.66rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:14px;
+}
+.param-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:16px 22px;
+  margin-bottom:16px;
+}
+.param-field label{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  color:var(--muted);
+  margin-bottom:5px;
+}
+.param-field .katex{font-size:.9em;}
+.param-field input{
+  width:100%;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.95rem;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:3px;
+  background:#fff;
+  color:var(--text);
+}
+.param-field input:focus{outline:2px solid var(--navy);outline-offset:1px;}
+.preset-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.preview-case{
+  margin-top:14px;
+  padding:12px 16px;
+  background:#fff;
+  border:1px dashed var(--border);
+  border-radius:3px;
+  font-size:.95rem;
+}
+
+/* ── BOTONES ── */
+button{cursor:pointer;font-family:'JetBrains Mono',monospace;transition:.16s;}
+.btn-verify,.btn-primary,.btn-ghost{
+  padding:8px 16px;
+  border-radius:3px;
+  font-size:.82rem;
+  letter-spacing:.03em;
+  border:1px solid transparent;
+}
+.btn-verify{background:var(--crimson);color:#fff;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--navy);}
+.btn-verify:hover,.btn-primary:hover,.btn-ghost:hover{transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.14);}
+.btn-preset{
+  padding:6px 12px;font-size:.76rem;
+  background:#fff;color:var(--navy);
+  border:1px solid var(--border);border-radius:20px;
+}
+.btn-preset:hover{border-color:var(--navy);background:var(--accent-bg);}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;align-items:center;}
+
+/* ── TABLA ── */
+.table-scroll{overflow-x:auto;border-radius:3px;border:1px solid var(--border);}
+table.vals{
+  border-collapse:collapse;
+  width:100%;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.86rem;
+  min-width:560px;
+}
+table.vals th,table.vals td{
+  border:1px solid var(--border);
+  padding:9px 6px;
+  text-align:center;
+}
+table.vals thead th{background:var(--navy);color:#fff;font-weight:500;}
+table.vals tbody tr:nth-child(even){background:#faf9f6;}
+table.vals tbody tr:hover{background:#f0eee9;}
+table.vals .rowlbl{background:var(--accent-bg);font-weight:600;color:var(--navy);}
+table.vals td.target{background:#fdeef2;color:var(--crimson);font-weight:600;}
+table.vals input{
+  width:82px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  text-align:center;
+  padding:5px 3px;
+  border:1px solid var(--border);
+  border-radius:3px;
+}
+table.vals input.correct{background:#e6f4ec;border-color:var(--success);color:var(--success);}
+table.vals input.wrong{background:#fbe9ec;border-color:var(--crimson);color:var(--crimson);}
+.side-hint{font-size:.72rem;color:var(--muted);font-style:italic;}
+
+.score-badge{
+  display:none;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  padding:6px 14px;
+  border-radius:20px;
+  background:var(--accent-bg);
+  color:var(--navy);
+  border:1px solid var(--border);
+}
+.score-badge.show{display:inline-block;animation:fadeUp .3s ease both;}
+
+.hint-box{
+  display:none;
+  margin-top:14px;
+  padding:12px 16px;
+  background:#fffdf3;
+  border:1px solid var(--gold);
+  border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0;
+  font-size:.9rem;
+}
+.hint-box.show{display:block;}
+
+/* ── GRÁFICO ── */
+.chart-wrap{margin-top:8px;}
+.chart-box{
+  border:1px solid var(--border);
+  border-radius:3px;
+  background:#fff;
+  cursor:crosshair;
+  overflow:hidden;
+}
+.chart-opts{
+  display:flex;flex-wrap:wrap;gap:16px;
+  margin:14px 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;
+  color:var(--muted);
+  align-items:center;
+}
+.chart-opts label{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.range-ctrl{display:flex;align-items:center;gap:8px;}
+.range-ctrl input[type=range]{accent-color:var(--navy);}
+
+svg text{font-family:'JetBrains Mono',monospace;}
+.axis line,.axis path{stroke:#c9c3b7;}
+.grid line{stroke:#e8e4da;stroke-dasharray:2 3;}
+.axis-label{fill:var(--muted);font-size:11px;}
+.tick text{fill:var(--muted);font-size:10px;}
+.curve-path{fill:none;stroke:var(--navy);stroke-width:2.4;}
+.open-dot{fill:#fff;stroke:var(--navy);stroke-width:2.2;}
+.closed-dot{fill:var(--crimson);stroke:#fff;stroke-width:1.4;}
+.tbl-pt{fill:var(--gold);stroke:#fff;stroke-width:1.4;cursor:pointer;}
+.vline{stroke:var(--crimson);stroke-width:1.4;stroke-dasharray:5 4;}
+
+.tooltip{
+  position:absolute;
+  pointer-events:none;
+  background:var(--navy);
+  color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;
+  padding:6px 9px;
+  border-radius:4px;
+  opacity:0;
+  transition:opacity .12s;
+  white-space:nowrap;
+  z-index:10;
+}
+.tooltip::after{
+  content:'';position:absolute;top:100%;left:50%;
+  transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--navy);
+}
+
+/* ── PANEL LATERALES ── */
+.laterals{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:20px;
+}
+.lat-card{
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:16px 18px;
+  background:#fafaf7;
+}
+.lat-card.left{border-top:3px solid var(--navy);}
+.lat-card.right{border-top:3px solid var(--crimson);}
+.lat-card .lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:8px;
+}
+.lat-card .big{font-size:1.15rem;}
+.verdict{
+  margin-top:18px;
+  padding:16px 20px;
+  border-radius:4px;
+  background:var(--accent-bg);
+  border:1px solid var(--border);
+}
+.verdict .tag{
+  display:inline-block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:3px 10px;border-radius:20px;margin-bottom:8px;
+}
+.tag.exists{background:#e6f4ec;color:var(--success);border:1px solid var(--success);}
+.tag.noexists{background:#fbe9ec;color:var(--crimson);border:1px solid var(--crimson);}
+
+/* ── ANIMACIÓN ── */
+.anim-panel{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+}
+.anim-readout{
+  padding:12px 16px;border-radius:4px;background:#fafaf7;border:1px solid var(--border);
+}
+.anim-readout .k{color:var(--muted);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;}
+.anim-readout .v{font-size:1.05rem;color:var(--navy);margin-top:4px;}
+
+/* ── ε–δ ── */
+.ed-section{margin-top:16px;}
+.ed-toggle{
+  width:100%;text-align:left;
+  padding:14px 20px;
+  background:var(--navy);color:#fff;
+  border:none;border-radius:4px;
+  font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ed-toggle .caret{font-family:'JetBrains Mono',monospace;transition:transform .2s;}
+.ed-toggle.open .caret{transform:rotate(90deg);}
+.ed-body{display:none;padding:22px 4px 4px;}
+.ed-body.open{display:block;animation:fadeUp .4s ease both;}
+.ed-note{
+  font-size:.86rem;color:var(--muted);font-style:italic;
+  background:#fffdf3;border-left:3px solid var(--gold);padding:10px 14px;border-radius:0 3px 3px 0;
+  margin-bottom:16px;
+}
+.def-box{
+  background:var(--navy);color:#fff;
+  border-radius:4px;padding:20px 24px;margin-bottom:20px;
+  border-left:4px solid var(--gold);
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace;color:var(--gold);
+  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  display:flex;gap:14px;margin-bottom:14px;padding:12px 0;
+  border-bottom:1px dashed var(--border);
+}
+.proof-step .n{
+  flex:none;width:26px;height:26px;border-radius:50%;
+  background:var(--crimson);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+}
+.qed-box{
+  background:#e6f4ec;border:1px solid var(--success);
+  border-radius:4px;padding:14px 20px;text-align:right;
+  font-family:'JetBrains Mono',monospace;color:var(--success);
+}
+
+/* ── CONCLUSIÓN ── */
+.conclusion{
+  background:linear-gradient(180deg,#fbfaf6,#f2efe8);
+  border:1px solid var(--border);
+  border-left:4px solid var(--navy);
+  border-radius:0 4px 4px 0;
+  padding:22px 26px;
+}
+.conclusion .lbl{
+  font-family:'JetBrains Mono',monospace;color:var(--navy);
+  font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin-bottom:12px;
+}
+.conclusion p{margin-bottom:10px;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:26px 22px;
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;
+  letter-spacing:.1em;
+  color:var(--muted);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  header{grid-template-columns:1fr;gap:16px;text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .laterals{grid-template-columns:1fr;}
+  .anim-panel{grid-template-columns:1fr;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:24px 18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="header-logos">
+    <img src="logo_ubb.png" alt="UBB">
+    <img src="logo_seminario.png" alt="Seminario">
+    <img src="logo_cmm.png" alt="CMM">
+  </div>
+  <div class="header-center">
+    <div class="seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+    <div class="title">Límite en Funciones Definidas por Tramos</div>
+    <div class="subtitle">Límites laterales, existencia del límite total y análisis de continuidad</div>
+  </div>
+  <div class="header-author">
+    <div class="lbl">Material de</div>
+    <div class="name">Dr. Eligio Colmenares</div>
+  </div>
+</header>
+
+<!-- ══════════ MAIN ══════════ -->
+<main>
+<div class="activity-card">
+  <div class="card-head">
+    <div class="num">4</div>
+    <h1>Actividad 4: Límite en funciones definidas por tramos</h1>
+  </div>
+  <div class="card-body">
+
+    <!-- OBJETIVO -->
+    <div class="objetivo-box">
+      <div class="lbl">Objetivo</div>
+      Aplicar el concepto de límite lateral y total en una función definida por partes.
+      Analizar la continuidad o discontinuidad en el punto de empalme.
+    </div>
+
+    <!-- FUNCIÓN -->
+    <div class="function-display">
+      <div class="lbl">Función</div>
+      <div id="fn-display">$$f(x)=\begin{cases} x^2-1 & \text{si } x<1 \\ 2x-1 & \text{si } x\ge 1 \end{cases}$$</div>
+    </div>
+
+    <!-- ══ PANEL DE PARÁMETROS ══ -->
+    <div class="a-selector-wrap">
+      <div class="lbl">Generalización paramétrica del caso</div>
+      <p style="font-size:.9rem;color:var(--muted);margin-bottom:16px;">
+        La función tiene la forma
+        $f(x)=\begin{cases} x^2+p & x<c \\ mx+n & x\ge c \end{cases}$
+        con punto de empalme $x=c$. Modifica los parámetros y todo el documento —tabla, gráfico, fórmulas y conclusión— se recalcula.
+      </p>
+      <div class="param-grid">
+        <div class="param-field">
+          <label>Empalme <span>$c$</span></label>
+          <input type="number" id="p-c" value="1" step="0.5">
+        </div>
+        <div class="param-field">
+          <label>Rama izquierda: $x^2+p$ &nbsp;→&nbsp; $p$</label>
+          <input type="number" id="p-p" value="-1" step="0.5">
+        </div>
+        <div class="param-field">
+          <label>Rama derecha: $mx+n$ &nbsp;→&nbsp; $m$</label>
+          <input type="number" id="p-m" value="2" step="0.5">
+        </div>
+        <div class="param-field">
+          <label>Rama derecha: $mx+n$ &nbsp;→&nbsp; $n$</label>
+          <input type="number" id="p-n" value="-1" step="0.5">
+        </div>
+      </div>
+      <div class="preset-row">
+        <button class="btn-preset" data-preset="salto">Discontinuidad de salto</button>
+        <button class="btn-preset" data-preset="continua">Continua en c</button>
+        <button class="btn-preset" data-preset="removible">Continuable (empalme suave)</button>
+        <button class="btn-preset" data-preset="original">Caso original</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="apply-btn">Aplicar parámetros</button>
+      </div>
+      <div class="preview-case" id="preview-case"></div>
+    </div>
+
+    <!-- ══ TABLA ══ -->
+    <div class="section">
+      <div class="section-title"><span class="step">1</span> Tabla de valores para $x$ cercanos a $c$</div>
+      <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px;">
+        Completa cada celda con el valor de $f(x)$. Los primeros valores se aproximan a $c$ por la
+        <strong>izquierda</strong> (rama $x^2+p$); los últimos, por la <strong>derecha</strong> (rama $mx+n$).
+      </p>
+      <div class="table-scroll">
+        <table class="vals">
+          <thead><tr id="thead-x"></tr></thead>
+          <tbody>
+            <tr id="row-fx"><td class="rowlbl">$f(x)$</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button class="btn-verify" id="verify-btn">Verificar</button>
+        <button class="btn-primary" id="fill-btn">Rellenar solución</button>
+        <button class="btn-ghost" id="clear-btn">Limpiar</button>
+        <button class="btn-ghost" id="hint-btn">Pista</button>
+        <span class="score-badge" id="score-badge"></span>
+      </div>
+      <div class="hint-box" id="hint-box">
+        Para $x<c$ usa la parábola $x^2+p$. Para $x\ge c$ usa la recta $mx+n$.
+        Fíjate en que el valor exactamente en $x=c$ (columna destacada) pertenece a la rama derecha.
+      </div>
+    </div>
+
+    <!-- ══ REFLEXIÓN ══ -->
+    <div class="section">
+      <div class="section-title"><span class="step">2</span> Reflexión sobre límites laterales</div>
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> Mostrar grilla</label>
+        <label><input type="checkbox" id="opt-pts" checked> Puntos de la tabla</label>
+        <label><input type="checkbox" id="opt-vline" checked> Marca en $x=c$</label>
+        <div class="range-ctrl">
+          <span>Rango&nbsp;±</span>
+          <input type="range" id="opt-range" min="1.5" max="6" step="0.5" value="3">
+          <span id="range-val">3</span>
+        </div>
+      </div>
+      <div class="chart-wrap" style="position:relative;">
+        <div class="chart-box" id="chart-box"></div>
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="laterals">
+        <div class="lat-card left">
+          <div class="lbl">Límite por la izquierda</div>
+          <div class="big" id="lat-left"></div>
+        </div>
+        <div class="lat-card right">
+          <div class="lbl">Límite por la derecha</div>
+          <div class="big" id="lat-right"></div>
+        </div>
+      </div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+
+    <!-- ══ ANIMACIÓN ══ -->
+    <div class="section">
+      <div class="section-title"><span class="step">3</span> Acercamiento bilateral animado</div>
+      <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px;">
+        Observa cómo se comportan los valores de $f(x)$ cuando $x$ se aproxima a $c$ desde ambos lados.
+      </p>
+      <div class="btn-row">
+        <button class="btn-primary" id="anim-btn">▶ Iniciar acercamiento</button>
+        <button class="btn-ghost" id="anim-reset">Reiniciar</button>
+      </div>
+      <div class="anim-panel">
+        <div class="anim-readout">
+          <div class="k">Desde la izquierda</div>
+          <div class="v" id="anim-left">—</div>
+        </div>
+        <div class="anim-readout">
+          <div class="k">Desde la derecha</div>
+          <div class="v" id="anim-right">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CÁLCULO SIMBÓLICO ══ -->
+    <div class="section">
+      <div class="section-title"><span class="step">4</span> Cálculo simbólico</div>
+      <div id="symbolic" style="font-size:1rem;line-height:2.1;"></div>
+    </div>
+
+    <!-- ══ ε–δ ══ -->
+    <div class="section">
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle">
+          <span>Módulo avanzado: definición formal ε–δ del límite lateral</span>
+          <span class="caret">▶</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="ed-note" id="ed-note"></div>
+          <div class="def-box">
+            <div class="lbl">Definición formal (límite lateral por la derecha)</div>
+            <div id="ed-def"></div>
+          </div>
+          <div class="chart-opts">
+            <div class="range-ctrl">
+              <span>$\varepsilon$ =</span>
+              <input type="range" id="eps-slider" min="0.1" max="2" step="0.05" value="0.8">
+              <span id="eps-val" style="color:var(--navy);">0.80</span>
+            </div>
+            <span id="delta-readout" style="color:var(--crimson);"></span>
+          </div>
+          <div class="chart-wrap" style="position:relative;">
+            <div class="chart-box" id="ed-chart"></div>
+          </div>
+          <div id="ed-proof" style="margin-top:20px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CONCLUSIÓN ══ -->
+    <div class="section" style="margin-bottom:0;">
+      <div class="conclusion">
+        <div class="lbl">Conclusión dinámica</div>
+        <div id="conclusion-body"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</main>
+
+<footer>
+  Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 4 · Dr. Eligio Colmenares
+</footer>
+
+<!-- ── CDN JS ── -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ══════════════════ ESTADO GLOBAL (única fuente de verdad) ══════════════════ */
+let PC=1, PP=-1, PM=2, PN=-1;      // c, p, m, n
+let RANGE=3;                        // rango ± del gráfico
+let OPT_GRID=true, OPT_PTS=true, OPT_VLINE=true;
+let CHART=null;                     // internos del gráfico expuestos por drawChart() (para la animación)
+let DRAW_FROM_ANIM=false;           // marca el redibujo iniciado por la propia animación
+
+/* ── utilidades numéricas ── */
+const r6 = v => Math.round(v*1e6)/1e6;
+function fmt(v){
+  if(!isFinite(v)) return '∞';
+  const r = r6(v);
+  if(Math.abs(r-Math.round(r))<1e-9) return String(Math.round(r));
+  return String(parseFloat(r.toFixed(4)));
+}
+
+/* ── función definida por tramos (único lugar) ── */
+function f(x){
+  return x < PC ? (x*x + PP) : (PM*x + PN);
+}
+const fLeft  = x => x*x + PP;   // rama izquierda (parábola)
+const fRight = x => PM*x + PN;  // rama derecha (recta)
+
+/* límites laterales en c */
+const Lminus = () => fLeft(PC);    // lím por izquierda: x²+p evaluado en c
+const Lplus  = () => fRight(PC);   // lím por derecha:  mx+n evaluado en c
+const equalLimits = () => Math.abs(Lminus()-Lplus()) < 1e-9;
+
+/* ══════════════════ KaTeX ══════════════════ */
+function renderMath(root){
+  if(window.renderMathInElement){
+    renderMathInElement(root||document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false}
+      ],
+      throwOnError:false
+    });
+  }
+}
+
+/* ══════════════════ LECTURA DE PARÁMETROS ══════════════════ */
+function readParams(){
+  const c=parseFloat(document.getElementById('p-c').value);
+  const p=parseFloat(document.getElementById('p-p').value);
+  const m=parseFloat(document.getElementById('p-m').value);
+  const n=parseFloat(document.getElementById('p-n').value);
+  PC=isFinite(c)?c:1;
+  PP=isFinite(p)?p:-1;
+  PM=isFinite(m)?m:2;
+  PN=isFinite(n)?n:-1;
+}
+
+/* ══════════════════ TABLA ══════════════════ */
+let tableXs=[];
+function buildTable(){
+  // valores de x cercanos a c: 3 por izquierda, c, 3 por derecha
+  tableXs=[
+    r6(PC-0.1), r6(PC-0.01), r6(PC-0.001),
+    r6(PC),
+    r6(PC+0.001), r6(PC+0.01), r6(PC+0.1)
+  ];
+  const thead=document.getElementById('thead-x');
+  const rowfx=document.getElementById('row-fx');
+  thead.innerHTML='<th>$x$</th>';
+  rowfx.innerHTML='<td class="rowlbl">$f(x)$</td>';
+  tableXs.forEach((xv,i)=>{
+    const isTarget = (i===3);
+    const th=document.createElement('th');
+    th.innerHTML=fmt(xv);
+    if(isTarget){ th.style.color='var(--gold)'; th.style.background='#012a54'; }
+    thead.appendChild(th);
+
+    const td=document.createElement('td');
+    if(isTarget) td.className='target';
+    td.innerHTML=`<input type="text" data-i="${i}" aria-label="f de ${fmt(xv)}">`;
+    rowfx.appendChild(td);
+  });
+  document.getElementById('score-badge').classList.remove('show');
+}
+
+function tableSolution(i){ return r6(f(tableXs[i])); }
+
+function verifyTable(){
+  let ok=0,total=0;
+  document.querySelectorAll('#row-fx input').forEach(inp=>{
+    total++;
+    const i=+inp.dataset.i;
+    const sol=tableSolution(i);
+    const val=parseFloat(inp.value);
+    inp.classList.remove('correct','wrong');
+    if(inp.value.trim()===''){ return; }
+    if(isFinite(val) && Math.abs(val-sol)<0.005){ inp.classList.add('correct'); ok++; }
+    else inp.classList.add('wrong');
+  });
+  const badge=document.getElementById('score-badge');
+  badge.textContent=`Puntaje: ${ok} / ${total} correctas`;
+  badge.classList.add('show');
+}
+function fillTable(){
+  document.querySelectorAll('#row-fx input').forEach(inp=>{
+    const i=+inp.dataset.i;
+    inp.value=fmt(tableSolution(i));
+    inp.classList.remove('wrong');
+    inp.classList.add('correct');
+  });
+  const badge=document.getElementById('score-badge');
+  badge.textContent='Solución completa';
+  badge.classList.add('show');
+}
+function clearTable(){
+  document.querySelectorAll('#row-fx input').forEach(inp=>{
+    inp.value=''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('score-badge').classList.remove('show');
+}
+
+/* ══════════════════ GRÁFICO PRINCIPAL (D3) ══════════════════ */
+function drawChart(){
+  // si había una animación en curso disparada por otro redibujo (resize/parámetros), detenerla
+  if(typeof animState!=='undefined' && animState.running && !DRAW_FROM_ANIM){
+    animState.running=false;
+    if(animState.raf) clearTimeout(animState.raf);
+  }
+  d3.select('#chart-box').selectAll('svg').remove();
+  const box=document.getElementById('chart-box');
+  const W=box.clientWidth||800;
+  const H=Math.max(320, Math.min(430, W*0.55));
+  const M={t:20,r:20,b:40,l:46};
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+
+  const xMin=PC-RANGE, xMax=PC+RANGE;
+
+  // muestreo por rama, evitando el salto
+  const stepN=240;
+  const leftXs=[], rightXs=[];
+  for(let k=0;k<=stepN;k++){
+    const xv=xMin+(xMax-xMin)*k/stepN;
+    if(xv<PC) leftXs.push(xv); else rightXs.push(xv);
+  }
+  // asegurar puntos de borde
+  if(leftXs.length) leftXs.push(PC-1e-9);
+  rightXs.unshift(PC);
+
+  const leftPts  = leftXs.map(x=>({x,y:fLeft(x)}));
+  const rightPts = rightXs.map(x=>({x,y:fRight(x)}));
+
+  // dominio y con todos los elementos visibles
+  const allY=[...leftPts.map(d=>d.y), ...rightPts.map(d=>d.y)]
+             .filter(v=>isFinite(v));
+  const yLo = allY.length?Math.min(...allY):-10;
+  const yHi = allY.length?Math.max(...allY): 10;
+  const pad = (yHi-yLo)*0.14 || 1;
+  const yMin=yLo-pad, yMax=yHi+pad;
+
+  const xs=d3.scaleLinear().domain([xMin,xMax]).range([0,iw]);
+  const ys=d3.scaleLinear().domain([yMin,yMax]).range([ih,0]);
+
+  const svg=d3.select('#chart-box').append('svg')
+    .attr('width',W).attr('height',H)
+    .attr('viewBox',`0 0 ${W} ${H}`);
+  const g=svg.append('g').attr('transform',`translate(${M.l},${M.t})`);
+
+  // clip
+  svg.append('defs').append('clipPath').attr('id','clip')
+    .append('rect').attr('width',iw).attr('height',ih);
+
+  // grilla
+  if(OPT_GRID){
+    g.append('g').attr('class','grid')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(ih).tickFormat(''))
+      .attr('transform',`translate(0,0)`);
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+
+  // ejes en el origen (o borde)
+  const x0=ys(0)>=0&&ys(0)<=ih?ys(0):(yMin>0?ih:0);
+  const y0=xs(0)>=0&&xs(0)<=iw?xs(0):(xMin>0?0:iw);
+  g.append('g').attr('class','axis')
+    .attr('transform',`translate(0,${x0})`)
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .attr('transform',`translate(${y0},0)`)
+    .call(d3.axisLeft(ys).ticks(6));
+
+  // etiquetas ejes
+  g.append('text').attr('class','axis-label')
+    .attr('x',iw).attr('y',x0-8).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x',y0+8).attr('y',12).text('f(x)');
+
+  const line=d3.line().x(d=>xs(d.x)).y(d=>ys(d.y)).curve(d3.curveCatmullRom);
+  const gc=g.append('g').attr('clip-path','url(#clip)');
+
+  // capa dedicada para la animación de acercamiento (encima de la curva)
+  const animLayer=g.append('g').attr('class','anim-layer').attr('clip-path','url(#clip)');
+  // exponer internos del gráfico para que la animación pueda dibujar sobre él
+  CHART={ xs, ys, animLayer, iw, ih, box, W, H };
+
+  // rama izquierda
+  gc.append('path').datum(leftPts).attr('class','curve-path').attr('d',line);
+  // rama derecha
+  gc.append('path').datum(rightPts).attr('class','curve-path').attr('d',line);
+
+  // marca vertical
+  if(OPT_VLINE && xs(PC)>=0 && xs(PC)<=iw){
+    gc.append('line').attr('class','vline')
+      .attr('x1',xs(PC)).attr('x2',xs(PC)).attr('y1',0).attr('y2',ih);
+  }
+
+  // punto abierto (límite izq) y cerrado (valor real = rama derecha)
+  const Lm=Lminus(), Lp=Lplus();
+  if(!equalLimits()){
+    gc.append('circle').attr('class','open-dot').attr('r',5)
+      .attr('cx',xs(PC)).attr('cy',ys(Lm));
+  }
+  gc.append('circle').attr('class','closed-dot').attr('r',5)
+    .attr('cx',xs(PC)).attr('cy',ys(Lp));
+
+  // puntos de la tabla
+  const tip=d3.select('#tooltip');
+  if(OPT_PTS){
+    gc.selectAll('.tbl-pt').data(tableXs).enter().append('circle')
+      .attr('class','tbl-pt').attr('r',4.5)
+      .attr('cx',d=>xs(d)).attr('cy',d=>ys(f(d)))
+      .on('mouseenter',function(e,d){
+        tip.style('opacity',1)
+           .html(`(${fmt(d)}, ${fmt(f(d))})`);
+      })
+      .on('mousemove',function(e){
+        const r=box.getBoundingClientRect();
+        tip.style('left',(e.clientX - r.left)+'px')
+           .style('top',(e.clientY - r.top - 44)+'px');
+      })
+      .on('mouseleave',()=>tip.style('opacity',0));
+  }
+
+  // crosshair tooltip sobre curva
+  svg.on('mousemove',function(e){
+    const [mx,my]=d3.pointer(e,g.node());
+    if(mx<0||mx>iw||my<0||my>ih){tip.style('opacity',0);return;}
+    const xv=xs.invert(mx);
+    const yv=f(xv);
+    const r=box.getBoundingClientRect();
+    tip.style('opacity',1)
+       .html(`(${fmt(xv)}, ${fmt(yv)})`)
+       .style('left',(e.clientX-r.left)+'px')
+       .style('top',(e.clientY-r.top-44)+'px');
+  }).on('mouseleave',()=>tip.style('opacity',0));
+}
+
+/* ══════════════════ PANEL LATERALES + VEREDICTO ══════════════════ */
+function updateLaterals(){
+  const Lm=Lminus(), Lp=Lplus();
+  document.getElementById('lat-left').innerHTML =
+    `$\\displaystyle\\lim_{x\\to ${fmt(PC)}^-} f(x)= ${fmt(Lm)}$`;
+  document.getElementById('lat-right').innerHTML =
+    `$\\displaystyle\\lim_{x\\to ${fmt(PC)}^+} f(x)= ${fmt(Lp)}$`;
+
+  const v=document.getElementById('verdict');
+  if(equalLimits()){
+    v.innerHTML=`<span class="tag exists">El límite existe</span>
+      <div>Ambos límites laterales coinciden en $${fmt(Lm)}$, por lo que
+      $\\displaystyle\\lim_{x\\to ${fmt(PC)}} f(x)= ${fmt(Lm)}$.
+      Como además $f(${fmt(PC)})=${fmt(fRight(PC))}$ coincide con ese valor,
+      la función es <strong>continua</strong> en $x=${fmt(PC)}$.</div>`;
+  } else {
+    v.innerHTML=`<span class="tag noexists">El límite no existe</span>
+      <div>Los límites laterales difieren
+      ($${fmt(Lm)}\\neq ${fmt(Lp)}$), por lo que
+      $\\displaystyle\\lim_{x\\to ${fmt(PC)}} f(x)$ <strong>no existe</strong>.
+      Hay una <strong>discontinuidad de salto</strong> de tamaño
+      $${fmt(Math.abs(Lp-Lm))}$ en $x=${fmt(PC)}$.</div>`;
+  }
+  renderMath(v);
+  renderMath(document.getElementById('lat-left'));
+  renderMath(document.getElementById('lat-right'));
+}
+
+/* ══════════════════ CÁLCULO SIMBÓLICO ══════════════════ */
+function updateSymbolic(){
+  const Lm=Lminus(), Lp=Lplus();
+  const c=fmt(PC), p=fmt(PP), m=fmt(PM), n=fmt(PN);
+  const s=document.getElementById('symbolic');
+  const exist = equalLimits();
+  s.innerHTML=`
+  $$\\lim_{x\\to ${c}^-} f(x)=\\lim_{x\\to ${c}^-}(x^2 ${PP>=0?'+':'-'} ${fmt(Math.abs(PP))})
+    = (${c})^2 ${PP>=0?'+':'-'} ${fmt(Math.abs(PP))} = ${fmt(Lm)}$$
+  $$\\lim_{x\\to ${c}^+} f(x)=\\lim_{x\\to ${c}^+}(${m}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))})
+    = ${m}(${c}) ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))} = ${fmt(Lp)}$$
+  $$\\Rightarrow\\ \\lim_{x\\to ${c}} f(x)\\ ${exist?`= ${fmt(Lm)}`:'\\text{ no existe (límites laterales distintos).}'}$$
+  $$f(${c})= ${m}(${c}) ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))} = ${fmt(fRight(PC))}$$`;
+  renderMath(s);
+}
+
+/* ══════════════════ CONCLUSIÓN ══════════════════ */
+function updateConclusion(){
+  const Lm=Lminus(), Lp=Lplus(), c=fmt(PC);
+  const el=document.getElementById('conclusion-body');
+  if(equalLimits()){
+    el.innerHTML=`<p>Para el caso actual, los límites laterales coinciden:
+      $\\lim_{x\\to ${c}^-}f(x)=\\lim_{x\\to ${c}^+}f(x)=${fmt(Lm)}$.</p>
+      <p>Por lo tanto el límite total existe y vale $${fmt(Lm)}$. Puesto que
+      $f(${c})=${fmt(fRight(PC))}$ es igual a ese límite, <strong>la función es continua
+      en $x=${c}$</strong>: no hay discontinuidad.</p>`;
+  } else {
+    el.innerHTML=`<p>Para el caso actual existe una <strong>discontinuidad de salto</strong> en
+      $x=${c}$, ya que los límites laterales no coinciden:
+      $\\lim_{x\\to ${c}^-}f(x)=${fmt(Lm)}$ mientras que
+      $\\lim_{x\\to ${c}^+}f(x)=${fmt(Lp)}$.</p>
+      <p>La función <em>sí</em> está definida en el punto, con $f(${c})=${fmt(fRight(PC))}$,
+      y es <strong>continua desde la derecha</strong> (el valor coincide con el límite
+      por la derecha), pero no es continua en $x=${c}$ porque el límite total no existe.</p>`;
+  }
+  renderMath(el);
+}
+
+/* ══════════════════ PREVIEW DEL CASO ══════════════════ */
+function updatePreview(){
+  const el=document.getElementById('preview-case');
+  el.innerHTML=`Caso actual:
+    $f(x)=\\begin{cases} x^2 ${PP>=0?'+':'-'} ${fmt(Math.abs(PP))} & x<${fmt(PC)} \\\\
+    ${fmt(PM)}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))} & x\\ge ${fmt(PC)} \\end{cases}$
+    &nbsp;con empalme en $x=${fmt(PC)}$.`;
+  // display principal
+  const disp=document.getElementById('fn-display');
+  disp.innerHTML=`$$f(x)=\\begin{cases} x^2 ${PP>=0?'+':'-'} ${fmt(Math.abs(PP))} & \\text{si } x<${fmt(PC)} \\\\
+    ${fmt(PM)}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))} & \\text{si } x\\ge ${fmt(PC)} \\end{cases}$$`;
+  renderMath(el); renderMath(disp);
+}
+
+/* ══════════════════ ANIMACIÓN ══════════════════ */
+let animState={running:false, raf:null};
+
+/* limpia todo lo dibujado por la animación sobre la gráfica */
+function clearAnimGraph(){
+  if(CHART && CHART.animLayer) CHART.animLayer.selectAll('*').remove();
+}
+
+function runAnim(){
+  if(animState.running) return;
+  // asegurar gráfico fresco y con la capa de animación disponible
+  DRAW_FROM_ANIM=true;
+  drawChart();
+  DRAW_FROM_ANIM=false;
+  if(!CHART || !CHART.animLayer) return;
+  clearAnimGraph();
+  animState.running=true;
+
+  const steps=[0.5,0.2,0.1,0.05,0.02,0.01,0.005,0.002,0.001];
+  let i=0;
+  const left=document.getElementById('anim-left');
+  const right=document.getElementById('anim-right');
+  const {xs,ys,animLayer}=CHART;
+
+  // marcas de destino (dónde tiende cada lado)
+  const Lm=Lminus(), Lp=Lplus();
+
+  function tick(){
+    if(i>=steps.length){ finishAnim(); return; }
+    const d=steps[i];
+    const xl=r6(PC-d), xr=r6(PC+d);
+    const yl=fLeft(xl), yr=fRight(xr);
+
+    // paneles numéricos
+    left.textContent =`x=${fmt(xl)} → f=${fmt(yl)}`;
+    right.textContent=`x=${fmt(xr)} → f=${fmt(yr)}`;
+
+    // ── ESTELA: deja un punto tenue en la posición previa para ver la tendencia ──
+    animLayer.selectAll('.trail-L, .trail-R').attr('opacity',function(){
+      const o=+d3.select(this).attr('opacity');
+      return Math.max(0, o-0.16);
+    });
+    if(isFinite(yl)) animLayer.append('circle')
+      .attr('class','trail-L').attr('r',3.4)
+      .attr('cx',xs(xl)).attr('cy',ys(yl))
+      .attr('fill','var(--navy)').attr('opacity',0.55);
+    if(isFinite(yr)) animLayer.append('circle')
+      .attr('class','trail-R').attr('r',3.4)
+      .attr('cx',xs(xr)).attr('cy',ys(yr))
+      .attr('fill','var(--crimson)').attr('opacity',0.55);
+
+    // ── PUNTOS MÓVILES (uno por lado) con transición suave ──
+    let ptL=animLayer.select('.mover-L');
+    if(ptL.empty()) ptL=animLayer.append('circle').attr('class','mover-L')
+      .attr('r',6.5).attr('fill','var(--navy)').attr('stroke','#fff').attr('stroke-width',1.6)
+      .attr('cx',xs(xl)).attr('cy',isFinite(yl)?ys(yl):ys(Lm));
+    let ptR=animLayer.select('.mover-R');
+    if(ptR.empty()) ptR=animLayer.append('circle').attr('class','mover-R')
+      .attr('r',6.5).attr('fill','var(--crimson)').attr('stroke','#fff').attr('stroke-width',1.6)
+      .attr('cx',xs(xr)).attr('cy',isFinite(yr)?ys(yr):ys(Lp));
+
+    if(isFinite(yl)) ptL.transition().duration(430).ease(d3.easeCubicInOut)
+      .attr('cx',xs(xl)).attr('cy',ys(yl));
+    if(isFinite(yr)) ptR.transition().duration(430).ease(d3.easeCubicInOut)
+      .attr('cx',xs(xr)).attr('cy',ys(yr));
+
+    // ── líneas guía verticales hacia el eje x (proyección de la aproximación) ──
+    const ax = (CHART.ys.domain()[0] <= 0 && CHART.ys.domain()[1] >= 0) ? ys(0) : CHART.ih;
+    animLayer.select('.guide-L').remove();
+    animLayer.select('.guide-R').remove();
+    if(isFinite(yl)) animLayer.append('line').attr('class','guide-L')
+      .attr('x1',xs(xl)).attr('x2',xs(xl)).attr('y1',ys(yl)).attr('y2',ax)
+      .attr('stroke','var(--navy)').attr('stroke-width',1).attr('stroke-dasharray','2 3').attr('opacity',0.6);
+    if(isFinite(yr)) animLayer.append('line').attr('class','guide-R')
+      .attr('x1',xs(xr)).attr('x2',xs(xr)).attr('y1',ys(yr)).attr('y2',ax)
+      .attr('stroke','var(--crimson)').attr('stroke-width',1).attr('stroke-dasharray','2 3').attr('opacity',0.6);
+
+    i++;
+    animState.raf=setTimeout(tick,650);
+  }
+
+  // al terminar el acercamiento: si un límite lateral NO es el valor que la función
+  // toma en c (f(c)), su punto debe quedar como círculo ABIERTO (relleno blanco),
+  // igual que el punto abierto original antes de animar.
+  function finishAnim(){
+    animState.running=false;
+    const fc = f(PC);                 // valor real de la función en el empalme
+    const attainedL = Math.abs(Lm - fc) < 1e-9;   // ¿la función toma el valor del límite izq. en c?
+    const attainedR = Math.abs(Lp - fc) < 1e-9;   // ídem por la derecha
+
+    const openStyle = sel => sel
+      .transition().duration(300)
+      .attr('cx', xs(PC)).attr('cy', ys(Lm))
+      .attr('fill', '#fff').attr('stroke', 'var(--navy)').attr('stroke-width', 2.2);
+
+    const ptL = animLayer.select('.mover-L');
+    const ptR = animLayer.select('.mover-R');
+
+    if(!ptL.empty()){
+      if(attainedL){
+        // el valor sí se alcanza → punto sólido en (c, Lm)
+        ptL.transition().duration(300)
+           .attr('cx', xs(PC)).attr('cy', ys(Lm))
+           .attr('fill','var(--navy)').attr('stroke','#fff').attr('stroke-width',1.6);
+      } else {
+        // el valor NO se alcanza → círculo abierto (blanco)
+        openStyle(ptL);
+      }
+    }
+    if(!ptR.empty()){
+      if(attainedR){
+        ptR.transition().duration(300)
+           .attr('cx', xs(PC)).attr('cy', ys(Lp))
+           .attr('fill','var(--crimson)').attr('stroke','#fff').attr('stroke-width',1.6);
+      } else {
+        ptR.transition().duration(300)
+           .attr('cx', xs(PC)).attr('cy', ys(Lp))
+           .attr('fill','#fff').attr('stroke','var(--crimson)').attr('stroke-width',2.2);
+      }
+    }
+  }
+
+  tick();
+}
+
+function resetAnim(){
+  animState.running=false;
+  if(animState.raf) clearTimeout(animState.raf);
+  document.getElementById('anim-left').textContent='—';
+  document.getElementById('anim-right').textContent='—';
+  clearAnimGraph();
+}
+
+/* ══════════════════ MÓDULO ε–δ ══════════════════ */
+function updateEDText(){
+  const c=fmt(PC), Lp=fmt(Lplus());
+  document.getElementById('ed-note').innerHTML=
+    `Trabajamos el límite <strong>por la derecha</strong> de la rama lineal $${fmt(PM)}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))}$,
+     que sí tiene límite bien definido en $x=${c}^+$ igual a $${Lp}$. La demostración se generaliza al parámetro $c$.`;
+  document.getElementById('ed-def').innerHTML=
+    `$$\\lim_{x\\to ${c}^+}(${fmt(PM)}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))})=${Lp}
+      \\iff \\forall\\varepsilon>0\\ \\exists\\delta>0:\\ ${c}<x<${c}+\\delta \\Rightarrow |f(x)-${Lp}|<\\varepsilon$$`;
+  renderMath(document.getElementById('ed-note'));
+  renderMath(document.getElementById('ed-def'));
+  buildProof();
+}
+function buildProof(){
+  const c=fmt(PC), Lp=fmt(Lplus()), m=fmt(PM), am=fmt(Math.abs(PM));
+  const el=document.getElementById('ed-proof');
+  el.innerHTML=`
+   <div class="proof-step"><div class="n">1</div><div>
+     Sea $\\varepsilon>0$ arbitrario. Queremos $|(${m}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))})-${Lp}|<\\varepsilon$.</div></div>
+   <div class="proof-step"><div class="n">2</div><div>
+     Simplificamos: $|(${m}x ${PN>=0?'+':'-'} ${fmt(Math.abs(PN))})-${Lp}|=|${m}x-${m}\\cdot${c}|=${am}\\,|x-${c}|$.</div></div>
+   <div class="proof-step"><div class="n">3</div><div>
+     Elegimos $\\displaystyle\\delta=\\frac{\\varepsilon}{${am}}$ ${PM==0?'(caso constante: cualquier $\\delta$ sirve)':''}.</div></div>
+   <div class="proof-step"><div class="n">4</div><div>
+     Si $0<x-${c}<\\delta$, entonces
+     $${am}\\,|x-${c}|<${am}\\cdot\\dfrac{\\varepsilon}{${am}}=\\varepsilon.$</div></div>
+   <div class="qed-box">Por lo tanto $|f(x)-${Lp}|<\\varepsilon$. $\\quad\\square$</div>`;
+  renderMath(el);
+}
+
+let EPS=0.8;
+function drawEDChart(){
+  d3.select('#ed-chart').selectAll('svg').remove();
+  const box=document.getElementById('ed-chart');
+  const W=box.clientWidth||800;
+  const H=Math.max(300,Math.min(400,W*0.5));
+  const M={t:20,r:20,b:40,l:46};
+  const iw=W-M.l-M.r, ih=H-M.t-M.b;
+
+  const Lp=Lplus();
+  const am=Math.abs(PM);
+  const safeAm = am<1e-9?1e-9:am;
+  const delta = EPS/safeAm;
+
+  document.getElementById('eps-val').textContent=EPS.toFixed(2);
+  document.getElementById('delta-readout').innerHTML=
+    `$\\delta=\\varepsilon/${fmt(am)}=${fmt(delta)}$`;
+  renderMath(document.getElementById('delta-readout'));
+
+  const xMin=PC-0.2, xMax=PC+Math.max(delta*1.8,0.6);
+  const rightXs=[];
+  const N=120;
+  for(let k=0;k<=N;k++){ const xv=PC+(xMax-PC)*k/N; rightXs.push(xv); }
+  const pts=rightXs.map(x=>({x,y:fRight(x)}));
+
+  const allY=[...pts.map(d=>d.y), Lp-EPS, Lp+EPS].filter(v=>isFinite(v));
+  const yLo=allY.length?Math.min(...allY):-10;
+  const yHi=allY.length?Math.max(...allY):10;
+  const pad=(yHi-yLo)*0.15||1;
+
+  const xs=d3.scaleLinear().domain([xMin,xMax]).range([0,iw]);
+  const ys=d3.scaleLinear().domain([yLo-pad,yHi+pad]).range([ih,0]);
+
+  const svg=d3.select('#ed-chart').append('svg')
+    .attr('width',W).attr('height',H).attr('viewBox',`0 0 ${W} ${H}`);
+  const g=svg.append('g').attr('transform',`translate(${M.l},${M.t})`);
+
+  // banda horizontal L±ε (dorada)
+  g.append('rect')
+    .attr('x',0).attr('y',ys(Lp+EPS))
+    .attr('width',iw).attr('height',Math.max(0,ys(Lp-EPS)-ys(Lp+EPS)))
+    .attr('fill','rgba(200,169,81,.22)');
+  // banda vertical c a c+δ (azul)
+  g.append('rect')
+    .attr('x',xs(PC)).attr('y',0)
+    .attr('width',Math.max(0,xs(PC+delta)-xs(PC))).attr('height',ih)
+    .attr('fill','rgba(0,59,117,.12)');
+
+  // ejes
+  g.append('g').attr('class','axis').attr('transform',`translate(0,${ih})`)
+    .call(d3.axisBottom(xs).ticks(6));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(6));
+
+  // líneas guía L, L±ε
+  [ [Lp,'var(--crimson)',2], [Lp+EPS,'var(--gold)',1], [Lp-EPS,'var(--gold)',1] ]
+    .forEach(([yv,col,wd])=>{
+      g.append('line').attr('x1',0).attr('x2',iw)
+        .attr('y1',ys(yv)).attr('y2',ys(yv))
+        .attr('stroke',col).attr('stroke-width',wd).attr('stroke-dasharray','4 3');
+    });
+  // líneas verticales c, c+δ
+  [ [PC,'var(--navy)'], [PC+delta,'var(--navy)'] ].forEach(([xv,col])=>{
+    g.append('line').attr('y1',0).attr('y2',ih)
+      .attr('x1',xs(xv)).attr('x2',xs(xv))
+      .attr('stroke',col).attr('stroke-width',1).attr('stroke-dasharray','5 4');
+  });
+
+  // recta
+  const line=d3.line().x(d=>xs(d.x)).y(d=>ys(d.y));
+  g.append('path').datum(pts).attr('class','curve-path').attr('d',line);
+
+  // punto límite
+  g.append('circle').attr('class','closed-dot').attr('r',5)
+    .attr('cx',xs(PC)).attr('cy',ys(Lp));
+
+  // etiquetas
+  g.append('text').attr('class','axis-label').attr('x',4).attr('y',ys(Lp)-6)
+    .text('L').attr('fill','var(--crimson)');
+}
+
+/* ══════════════════ ORQUESTADOR ══════════════════ */
+function refreshAll(){
+  buildTable();
+  drawChart();
+  updateLaterals();
+  updateSymbolic();
+  updateConclusion();
+  updatePreview();
+  updateEDText();
+  if(document.getElementById('ed-body').classList.contains('open')) drawEDChart();
+  renderMath();
+}
+
+/* ══════════════════ PRESETS ══════════════════ */
+function applyPreset(name){
+  const set=(c,p,m,n)=>{
+    document.getElementById('p-c').value=c;
+    document.getElementById('p-p').value=p;
+    document.getElementById('p-m').value=m;
+    document.getElementById('p-n').value=n;
+  };
+  if(name==='original') set(1,-1,2,-1);
+  if(name==='salto')    set(1,-1,2,3);
+  if(name==='continua') set(2,1,2,1);   // izq: 4+1=5 ; der: 2·2+1=5 → continua
+  if(name==='removible')set(1,0,2,-1);  // izq: 1 ; der: 2-1=1 → continua (empalme suave)
+  readParams();
+  refreshAll();
+}
+
+/* ══════════════════ INIT ══════════════════ */
+function initPage(){
+  readParams();
+  refreshAll();
+
+  // parámetros
+  document.getElementById('apply-btn').onclick=()=>{ readParams(); refreshAll(); };
+  ['p-c','p-p','p-m','p-n'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown',e=>{
+      if(e.key==='Enter'){ readParams(); refreshAll(); }
+    });
+  });
+  document.querySelectorAll('.btn-preset').forEach(b=>{
+    b.onclick=()=>applyPreset(b.dataset.preset);
+  });
+
+  // tabla
+  document.getElementById('verify-btn').onclick=verifyTable;
+  document.getElementById('fill-btn').onclick=fillTable;
+  document.getElementById('clear-btn').onclick=clearTable;
+  document.getElementById('hint-btn').onclick=()=>
+    document.getElementById('hint-box').classList.toggle('show');
+
+  // opciones gráfico
+  document.getElementById('opt-grid').onchange=e=>{OPT_GRID=e.target.checked;drawChart();};
+  document.getElementById('opt-pts').onchange =e=>{OPT_PTS =e.target.checked;drawChart();};
+  document.getElementById('opt-vline').onchange=e=>{OPT_VLINE=e.target.checked;drawChart();};
+  const rng=document.getElementById('opt-range');
+  rng.oninput=e=>{
+    RANGE=parseFloat(e.target.value);
+    document.getElementById('range-val').textContent=RANGE;
+    drawChart();
+  };
+
+  // animación
+  document.getElementById('anim-btn').onclick=runAnim;
+  document.getElementById('anim-reset').onclick=resetAnim;
+
+  // ε–δ toggle
+  const edToggle=document.getElementById('ed-toggle');
+  const edBody=document.getElementById('ed-body');
+  edToggle.onclick=()=>{
+    edToggle.classList.toggle('open');
+    edBody.classList.toggle('open');
+    if(edBody.classList.contains('open')){ drawEDChart(); renderMath(edBody); }
+  };
+  const eps=document.getElementById('eps-slider');
+  eps.oninput=e=>{ EPS=parseFloat(e.target.value); drawEDChart(); };
+
+  // resize
+  let rt=null;
+  window.addEventListener('resize',()=>{
+    clearTimeout(rt);
+    rt=setTimeout(()=>{
+      drawChart();
+      if(edBody.classList.contains('open')) drawEDChart();
+    },160);
+  });
+}
+
+/* ══════════════════ ARRANQUE ══════════════════ */
+/* Espera a que el DOM y las librerías (D3 + KaTeX) estén listos antes de initPage(). */
+(function boot(){
+  function ready(){
+    return document.readyState!=='loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if(ready()){ initPage(); return; }
+    if(tries<=0){ initPage(); return; } // arranca igual; KaTeX/D3 degradan sin romper
+    setTimeout(()=>attempt(tries-1),60);
+  }
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>attempt(40));
+  } else {
+    attempt(40);
+  }
+})();
+</script>
+</body>
+</html>

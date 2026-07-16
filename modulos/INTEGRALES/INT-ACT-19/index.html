@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 19 — Estimación del área neta · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --pos:#2e7d52; --neg:#c0603a; --posfill:#7fbf98; --negfill:#e0a583;
+  --area:#5b8fc9;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.btn-ghost.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:64px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── TABLA ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:560px;}
+th, td{
+  border:1px solid var(--border); padding:8px 7px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.82rem;
+}
+thead th{background:var(--navy); color:#fff; font-weight:500; letter-spacing:.04em; font-size:.75rem;}
+tbody td.rowlbl{
+  background:#f4f2ec; font-weight:700; color:var(--navy);
+  text-align:left; padding-left:11px; white-space:nowrap;
+}
+tbody td.pos{background:#eef7f1;}
+tbody td.neg{background:#fbeee7;}
+input.cell{
+  width:100%; min-width:72px; border:1px solid var(--border);
+  background:#fff; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.8rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+.sign-chip{
+  display:inline-block; padding:2px 7px; border-radius:10px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700;
+}
+.sign-chip.p{background:#e5f3ec; color:#1d5c3b;}
+.sign-chip.n{background:#fbeee7; color:#8a3a1a;}
+
+/* ── GRÁFICO ── */
+.chart-box{
+  position:relative; width:100%; height:470px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+
+.method-ctrl{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:16px 18px; margin-top:14px;
+}
+.method-ctrl .rlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+.method-ctrl .rval{color:var(--crimson); font-weight:700;}
+.rule-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+input[type=range]{width:100%; accent-color:var(--navy); cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.8;}
+.area-pos{fill:var(--pos); opacity:.16;}
+.area-neg{fill:var(--neg); opacity:.16;}
+.rrect{stroke:#fff; stroke-width:.7;}
+.rrect-pos{fill:var(--posfill); opacity:.62;}
+.rrect-neg{fill:var(--negfill); opacity:.62;}
+.trap-poly-pos{fill:var(--pos); opacity:.24; stroke:var(--pos); stroke-width:1;}
+.trap-poly-neg{fill:var(--neg); opacity:.24; stroke:var(--neg); stroke-width:1;}
+.zero-cross{fill:var(--gold); stroke:var(--navy); stroke-width:1.8;}
+.axis0{stroke:var(--navy); stroke-width:1.8;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.pos{border-top-color:var(--pos);}
+.live-cell.neg{border-top-color:var(--neg);}
+.live-cell.succ{border-top-color:var(--success);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.56rem; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.pos .v{color:var(--pos);}
+.live-cell.neg .v{color:var(--neg);}
+.live-cell.succ .v{color:var(--success);}
+.live-cell .sub{font-size:.66rem; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace;}
+
+/* ── BALANZA POSITIVO/NEGATIVO ── */
+.balance-box{
+  border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:16px; background:#fff;
+}
+.balance-bar{
+  display:flex; height:44px; border-radius:4px; overflow:hidden; margin-top:12px;
+  border:1px solid var(--border);
+}
+.balance-seg{
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace; font-size:.82rem; font-weight:700; color:#fff;
+  transition:width .3s ease; min-width:2px;
+}
+.balance-seg.p{background:var(--pos);}
+.balance-seg.n{background:var(--neg);}
+.balance-net{
+  margin-top:12px; text-align:center; font-family:'JetBrains Mono',monospace;
+  font-size:.95rem;
+}
+.balance-net .big{font-size:1.3rem; font-weight:700;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--neg); background:#fbf1ec;
+}
+.verdict.posnet{border-left-color:var(--pos); background:#f2f8f4;}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--neg); margin-bottom:8px;}
+.verdict.posnet .vt{color:var(--pos);}
+.verdict .vb{font-size:.94rem;}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+.legend{
+  display:flex; flex-wrap:wrap; gap:16px; margin-top:10px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+}
+.legend .lg{display:flex; align-items:center; gap:7px;}
+.legend .sw{width:20px; height:12px; border-radius:2px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:360px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 19 — Estimación del área neta</div>
+      <div class="header-sub">Cuando la curva baja del eje: el área que resta</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">19</div>
+      <h2>Estimación del área neta</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Entender la integral definida como <strong>área neta</strong> entre una curva y el eje: las
+        regiones <strong>sobre</strong> el eje cuentan positivo y las que están <strong>debajo</strong>
+        cuentan negativo. Estimar con la regla del extremo izquierdo y ver que la suma puede ser
+        <strong>negativa</strong> cuando la curva pasa la mayor parte del tiempo bajo el eje.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Integral a estimar</span>
+        <div id="func-katex">$$\int_{0}^{3}\left(t^{2}-4\right)dt$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Función $f(t) = at^{2} + bt + c$ sobre $[t_0, t_1]$, con la <strong>regla del extremo
+          izquierdo</strong>. El motor separa el área positiva de la negativa y calcula el área neta.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-a2">a (t²)</label><input type="number" id="p-a2" value="1" step="any"></div>
+          <div class="param-field"><label for="p-b1">b (t)</label><input type="number" id="p-b1" value="0" step="any"></div>
+          <div class="param-field"><label for="p-c0">c</label><input type="number" id="p-c0" value="-4" step="any"></div>
+          <div class="param-field"><label for="p-lo">desde</label><input type="number" id="p-lo" value="0" step="any"></div>
+          <div class="param-field"><label for="p-hi">hasta</label><input type="number" id="p-hi" value="3" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="1,0,-4,0,3">Original · t²−4</button>
+          <button class="btn-ghost" data-preset="1,0,-4,0,4">t²−4 en [0,4] · neta &gt; 0</button>
+          <button class="btn-ghost" data-preset="1,0,-1,-2,2">t²−1 · simétrica</button>
+          <button class="btn-ghost" data-preset="-1,0,4,0,3">−(t²−4) · reflejada</button>
+          <button class="btn-ghost" data-preset="1,-3,2,0,3">t²−3t+2 · dos cruces</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── PASO 1: Δt ── -->
+      <div class="sec-title">Paso 1 — Dividir el intervalo</div>
+      <div class="solve-box" id="solve-dt"></div>
+
+      <!-- ── PASO 2: evaluar ── -->
+      <div class="sec-title">Paso 2 — Evaluar en los extremos izquierdos</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">
+        Completa la tabla. Fíjate en el <strong>signo</strong> de cada valor: dice si ese rectángulo
+        sumará (verde, sobre el eje) o restará (naranja, bajo el eje).
+      </p>
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-t"></tr>
+            <tr id="row-ft"></tr>
+            <tr id="row-sign"></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-t">Verificar tabla</button>
+        <button class="btn-primary" id="btn-fill-t">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-clear-t">Limpiar</button>
+        <span class="score-badge" id="score-t"></span>
+      </div>
+
+      <!-- ── PASO 3: suma ── -->
+      <div class="sec-title">Paso 3 — Sumar las áreas (con signo)</div>
+      <div class="solve-box" id="solve-sum"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-a">Verificar mi resultado</button>
+        <button class="btn-primary" id="btn-fill-a">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-a">Pista</button>
+        <span class="score-badge" id="score-a"></span>
+      </div>
+      <div class="hint-box" id="hint-a"></div>
+
+      <!-- ── INTERPRETACIÓN ── -->
+      <div class="sec-title">Interpretación</div>
+      <div id="interpret-panel"></div>
+
+      <!-- ── VISUALIZACIÓN ── -->
+      <div class="sec-title">Visualización</div>
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-area" checked> área con signo</label>
+        <label><input type="checkbox" id="opt-rect" checked> rectángulos</label>
+        <label><input type="checkbox" id="opt-trap"> trapecios</label>
+      </div>
+
+      <div class="chart-box" id="chart-main"><div class="tooltip" id="tip-main"></div></div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw" style="background:var(--posfill)"></span> rectángulo positivo · suma (sobre el eje)</div>
+        <div class="lg"><span class="sw" style="background:var(--negfill)"></span> rectángulo negativo · resta (bajo el eje)</div>
+        <div class="lg"><span class="sw" style="background:var(--gold)"></span> cruce por el eje</div>
+      </div>
+
+      <div class="method-ctrl">
+        <span class="rlbl">regla del punto muestral</span>
+        <div class="rule-row">
+          <button class="btn-ghost active" data-rule="left">extremo izquierdo</button>
+          <button class="btn-ghost" data-rule="mid">punto medio</button>
+          <button class="btn-ghost" data-rule="right">extremo derecho</button>
+        </div>
+        <span class="rlbl">número de subintervalos n = <span class="rval" id="n-val">6</span></span>
+        <input type="range" id="n-slider" min="1" max="500" step="1" value="6">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Aumentar n y converger al área neta</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell pos"><span class="k">área positiva (arriba)</span><span class="v" id="lv-pos">—</span></div>
+        <div class="live-cell neg"><span class="k">área negativa (abajo)</span><span class="v" id="lv-neg">—</span></div>
+        <div class="live-cell"><span class="k">suma (área neta) Sₙ</span><span class="v" id="lv-net">—</span></div>
+        <div class="live-cell succ"><span class="k">valor exacto ∫</span><span class="v" id="lv-exact">—</span></div>
+      </div>
+
+      <!-- ── BALANZA ── -->
+      <div class="sec-title">La balanza: positivo contra negativo</div>
+      <div class="balance-box" id="balance-box"></div>
+
+      <!-- ── PREGUNTAS ── -->
+      <div class="sec-title">Preguntas de análisis</div>
+      <div id="reflect"></div>
+
+      <!-- ── OBSERVACIÓN ── -->
+      <div class="sec-title">Observación — área neta vs. área total</div>
+      <div id="net-vs-total"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Área con signo, área geométrica y el eje como frontera</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">Integral definida como área neta</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 19 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   f(t) = A2 t² + B1 t + C0  sobre  [Lo, Hi].
+   Regla del extremo izquierdo (por defecto); también medio/derecho.
+   ═══════════════════════════════════════════════ */
+let A2 = 1, B1 = 0, C0 = -4, Lo = 0, Hi = 3;
+let NN = 6;
+let RULE = 'left';
+let ANIM = null;
+
+const TOL = 1e-9;
+
+function f(t){ return A2*t*t + B1*t + C0; }
+function Fanti(t){ return A2*t*t*t/3 + B1*t*t/2 + C0*t; }
+function exactArea(){ return Fanti(Hi) - Fanti(Lo); }
+
+function samplePt(i, dx){
+  if (RULE === 'left')  return Lo + i*dx;
+  if (RULE === 'right') return Lo + (i+1)*dx;
+  return Lo + (i+0.5)*dx;
+}
+
+/* Suma con signo + desglose positivo/negativo */
+function riemannBreakdown(n){
+  const dx = (Hi - Lo)/n;
+  let net = 0, pos = 0, neg = 0;
+  for (let i = 0; i < n; i++){
+    const h = f(samplePt(i, dx));
+    net += h;
+    if (h > 0) pos += h; else neg += h;
+  }
+  return { net: net*dx, pos: pos*dx, neg: neg*dx, dx };
+}
+
+function evalPoints(n){
+  const dx = (Hi - Lo)/n; const out = [];
+  for (let i = 0; i < n; i++) out.push(samplePt(i, dx));
+  return out;
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 3 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function fmt2(v){ return fmt(v, 2); }
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+
+/* Ceros reales de f dentro de (Lo,Hi) — los cruces por el eje */
+function zerosInside(){
+  const out = [];
+  if (Math.abs(A2) < TOL){
+    if (Math.abs(B1) > TOL){ const x = -C0/B1; if (x>Lo+1e-9 && x<Hi-1e-9) out.push(x); }
+  } else {
+    const disc = B1*B1 - 4*A2*C0;
+    if (disc >= 0){
+      const s = Math.sqrt(disc);
+      [(-B1-s)/(2*A2), (-B1+s)/(2*A2)].forEach(x => { if (x>Lo+1e-9 && x<Hi-1e-9) out.push(x); });
+    }
+  }
+  return out.sort((a,b)=>a-b);
+}
+
+/* ── LaTeX ── */
+function fTex(){
+  let s = '';
+  if (Math.abs(A2) > TOL) s += (Math.abs(A2-1)<TOL ? '' : (Math.abs(A2+1)<TOL ? '-' : fmt(A2))) + 't^{2}';
+  if (Math.abs(B1) > TOL) s += (s ? ' ' + signTerm(B1) : fmt(B1)) + 't';
+  if (Math.abs(C0) > TOL) s += (s ? ' ' + signTerm(C0) : fmt(C0));
+  return s || '0';
+}
+function FantiTex(){
+  let s = '';
+  if (Math.abs(A2) > TOL) s += fmt(A2/3) + 't^{3}';
+  if (Math.abs(B1) > TOL) s += (s ? ' ' + signTerm(B1/2) : fmt(B1/2)) + 't^{2}';
+  if (Math.abs(C0) > TOL) s += (s ? ' ' + signTerm(C0) : fmt(C0)) + 't';
+  return s || '0';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const a = parseFloat(document.getElementById('p-a2').value);
+  const b = parseFloat(document.getElementById('p-b1').value);
+  const c = parseFloat(document.getElementById('p-c0').value);
+  const lo = parseFloat(document.getElementById('p-lo').value);
+  const hi = parseFloat(document.getElementById('p-hi').value);
+  A2 = isFinite(a) ? a : 1;
+  B1 = isFinite(b) ? b : 0;
+  C0 = isFinite(c) ? c : -4;
+  Lo = isFinite(lo) ? lo : 0;
+  Hi = isFinite(hi) ? hi : 3;
+  if (Hi <= Lo) Hi = Lo + 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+  NN = parseInt(document.getElementById('n-slider').value, 10) || 6;
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolveDt();
+  buildTable();
+  renderSolveSum();
+  renderInterpret();
+  drawMain();
+  renderBalance();
+  renderReflect();
+  renderNetVsTotal();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}\\left(' + fTex() + '\\right)dt$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const ex = exactArea();
+  const zc = zerosInside();
+  let html = 'Caso actual: el valor exacto es $\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} f\\,dt = ' + fmt(ex) + '$. ';
+  if (zc.length){
+    html += 'La curva <strong>cruza el eje</strong> en $t = ' + zc.map(x=>fmt(x)).join(',\\; ') + '$: ' +
+      'hay una parte sobre el eje (positiva) y otra debajo (negativa), que se restan.';
+  } else if (ex < 0){
+    html += 'La curva está <strong>enteramente bajo el eje</strong>: el área neta es negativa.';
+  } else {
+    html += 'La curva está <strong>sobre el eje</strong> en todo el intervalo: el área neta es positiva.';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 1: Δt
+   ═══════════════════════════════════════════════ */
+function renderSolveDt(){
+  const box = document.getElementById('solve-dt');
+  const dt = (Hi - Lo)/NN;
+  const pts = evalPoints(NN);
+  const showN = Math.min(NN, 12);
+  let ptsStr = pts.slice(0, showN).map(x=>fmt(x)).join(',\\; ');
+  if (NN > showN) ptsStr += ',\\; \\ldots';
+
+  const ruleName = RULE==='left' ? 'extremos izquierdos' : (RULE==='right' ? 'extremos derechos' : 'puntos medios');
+
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Ancho</span><span class="b">' +
+    'Dividimos $[' + fmt(Lo) + ',' + fmt(Hi) + ']$ en $n = ' + NN + '$ partes:' +
+    '$$\\Delta t = \\dfrac{' + fmt(Hi) + ' - ' + fmt(Lo) + '}{' + NN + '} = ' + fmt(dt) + '$$</span></div>' +
+    '<div class="solve-step"><span class="n">Puntos</span><span class="b">' +
+    'Puntos de evaluación (' + ruleName + '): $$t = ' + ptsStr + '$$</span></div>';
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 2: TABLA CON SIGNO
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-t');
+  const r2 = document.getElementById('row-ft');
+  const r3 = document.getElementById('row-sign');
+  const pts = evalPoints(NN);
+  const showN = Math.min(NN, 8);
+
+  let head = '<th style="background:var(--navy)">i</th>';
+  let rowT = '<td class="rowlbl">tᵢ</td>';
+  let rowF = '<td class="rowlbl">f(tᵢ)</td>';
+  let rowS = '<td class="rowlbl">signo</td>';
+
+  for (let i = 0; i < showN; i++){
+    const h = f(pts[i]);
+    const cls = h > 0 ? 'pos' : (h < 0 ? 'neg' : '');
+    head += '<th>' + (i+1) + '</th>';
+    rowT += '<td>' + fmt(pts[i]) + '</td>';
+    rowF += '<td class="' + cls + '"><input class="cell" data-i="' + i + '" inputmode="decimal" placeholder="?"></td>';
+    rowS += '<td class="' + cls + '">' + (h > 0 ? '<span class="sign-chip p">+</span>' : (h < 0 ? '<span class="sign-chip n">−</span>' : '0')) + '</td>';
+  }
+  if (NN > showN){ head+='<th>…</th>'; rowT+='<td>…</td>'; rowF+='<td>…</td>'; rowS+='<td>…</td>'; }
+
+  th.innerHTML = head; r1.innerHTML = rowT; r2.innerHTML = rowF; r3.innerHTML = rowS;
+  document.getElementById('score-t').className = 'score-badge';
+  if (NN > showN){
+    document.getElementById('score-t').textContent = 'Tabla editable hasta n=8; con n=' + NN + ' usa el gráfico';
+    document.getElementById('score-t').className = 'score-badge show';
+  }
+}
+
+function verifyTable(){
+  const cells = document.querySelectorAll('#row-ft input.cell');
+  const badge = document.getElementById('score-t');
+  const pts = evalPoints(NN);
+  let ok = 0, tried = 0, total = cells.length;
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.classList.remove('correct','wrong');
+    const raw = cell.value.trim().replace(',', '.');
+    if (raw === '') return;
+    tried++;
+    const val = parseFloat(raw), truth = f(pts[i]);
+    if (isFinite(val) && Math.abs(val - truth) <= Math.max(Math.abs(truth)*3e-3, 3e-3)){ cell.classList.add('correct'); ok++; }
+    else cell.classList.add('wrong');
+  });
+  badge.textContent = tried === 0 ? 'Completa la fila f(tᵢ)' : ok + ' / ' + total + ' correctas';
+  badge.className = 'score-badge show' + (ok === total ? ' perfect' : '');
+}
+function fillTable(){
+  const pts = evalPoints(NN);
+  document.querySelectorAll('#row-ft input.cell').forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.value = fmt2(f(pts[i]));
+    cell.classList.remove('wrong'); cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score-t');
+  badge.textContent = 'Solución mostrada'; badge.className = 'score-badge show perfect';
+}
+function clearTable(){
+  document.querySelectorAll('#row-ft input.cell').forEach(cell => { cell.value=''; cell.classList.remove('correct','wrong'); });
+  document.getElementById('score-t').className = 'score-badge';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 3: SUMA CON SIGNO
+   ═══════════════════════════════════════════════ */
+function renderSolveSum(){
+  const box = document.getElementById('solve-sum');
+  const bd = riemannBreakdown(NN);
+  const pts = evalPoints(NN);
+  const showN = Math.min(NN, 8);
+
+  /* Suma con signos explícitos: los negativos entre paréntesis */
+  let terms = pts.slice(0, showN).map(x => {
+    const h = f(x);
+    return h < 0 ? '(' + fmt2(h) + ')' : fmt2(h);
+  }).join(' + ');
+  if (NN > showN) terms += ' + \\ldots';
+
+  const sumInside = pts.reduce((s,x)=>s+f(x), 0);
+
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Fórmula</span><span class="b">' +
+    'Área $\\approx \\Delta t \\cdot \\displaystyle\\sum_{i=1}^{' + NN + '} f(t_i)$. ' +
+    'Los valores <strong>negativos entran restando</strong> — ese es el punto.</span></div>' +
+    '<div class="solve-step"><span class="n">Sumar</span><span class="b">' +
+    '$$\\text{Área} \\approx ' + fmt(bd.dx) + '\\cdot\\left(' + terms + '\\right)$$' +
+    '$$= ' + fmt(bd.dx) + '\\cdot(' + fmt(sumInside) + ') = ' + fmt(bd.net) + '$$</span></div>' +
+    '<div class="answer-check"><label for="ans-a">tu área neta ≈</label>' +
+    '<input type="text" id="ans-a" inputmode="decimal" placeholder="?"></div>';
+  document.getElementById('score-a').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyA(){
+  const inp = document.getElementById('ans-a');
+  const badge = document.getElementById('score-a');
+  const raw = inp.value.trim().replace(',', '.');
+  inp.style.borderColor = '';
+  if (raw === ''){ badge.textContent='Escribe un valor'; badge.className='score-badge show'; return; }
+  const val = parseFloat(raw), truth = riemannBreakdown(NN).net;
+  if (isFinite(val) && Math.abs(val - truth) <= Math.max(Math.abs(truth)*3e-3, 3e-3)){
+    inp.style.borderColor = 'var(--success)';
+    badge.textContent = '✓ Correcto'; badge.className='score-badge show perfect';
+  } else {
+    inp.style.borderColor = 'var(--crimson)';
+    badge.textContent = '✗ ¿Restaste los negativos?'; badge.className='score-badge show';
+  }
+}
+function fillA(){
+  const inp = document.getElementById('ans-a');
+  inp.value = fmt(riemannBreakdown(NN).net);
+  inp.style.borderColor = 'var(--success)';
+  const badge = document.getElementById('score-a');
+  badge.textContent = 'Área neta mostrada'; badge.className='score-badge show perfect';
+}
+function toggleHintA(){
+  const box = document.getElementById('hint-a');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  box.innerHTML = '<strong>Pista.</strong> No tomes el valor absoluto. Un $f(t_i)$ negativo significa que ' +
+    'ese rectángulo está <em>bajo</em> el eje, y su área <strong>se resta</strong>. ' +
+    'Suma todos los $f(t_i)$ respetando su signo (los negativos bajan el total), y multiplica por $\\Delta t$.';
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INTERPRETACIÓN
+   ═══════════════════════════════════════════════ */
+function renderInterpret(){
+  const el = document.getElementById('interpret-panel');
+  const bd = riemannBreakdown(NN);
+  const neta = bd.net;
+  const negativa = neta < -1e-9;
+  const cls = negativa ? '' : 'posnet';
+  const titulo = negativa ? 'El área neta es NEGATIVA' :
+                 (neta > 1e-9 ? 'El área neta es POSITIVA' : 'El área neta es CASI CERO');
+
+  let cuerpo;
+  if (negativa){
+    cuerpo = 'La estimación es $' + fmt(neta) + ' &lt; 0$: la mayor parte de la gráfica está ' +
+      '<strong>por debajo del eje</strong> en este intervalo. El área bajo el eje ' +
+      '($' + fmt(bd.neg) + '$) supera a la de arriba ($' + fmt(bd.pos) + '$), y la resta da negativo.';
+  } else if (neta > 1e-9){
+    cuerpo = 'La estimación es $' + fmt(neta) + ' &gt; 0$: predomina la parte <strong>sobre el eje</strong>. ' +
+      'El área positiva ($' + fmt(bd.pos) + '$) supera a la negativa ($' + fmt(bd.neg) + '$).';
+  } else {
+    cuerpo = 'La estimación es $\\approx 0$: las áreas de arriba ($' + fmt(bd.pos) + '$) y de abajo ' +
+      '($' + fmt(bd.neg) + '$) casi se <strong>cancelan</strong>. El área neta puede ser cero aunque ' +
+      'la curva encierre bastante región — porque lo de arriba y lo de abajo se anulan.';
+  }
+
+  el.innerHTML = '<div class="verdict ' + cls + '"><span class="vk">Interpretación</span>' +
+    '<div class="vt">' + titulo + '</div><div class="vb">' + cuerpo + '</div></div>';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO
+   ═══════════════════════════════════════════════ */
+function drawMain(){
+  const box = document.getElementById('chart-main');
+  d3.select('#chart-main').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 470;
+  const m = {top:24, right:26, bottom:42, left:56};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const padX = (Hi - Lo) * 0.1;
+  const xMin = Lo - padX, xMax = Hi + padX;
+
+  const samp = [];
+  const NS = 120;
+  for (let i = 0; i <= NS; i++) samp.push(f(xMin + (xMax-xMin)*i/NS));
+  let yMin = Math.min(0, ...samp), yMax = Math.max(0, ...samp);
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const yp = (yMax - yMin)*0.12; yMin -= yp; yMax += yp;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-main').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-m-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid).append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  const gridOn = document.getElementById('opt-grid').checked;
+  const areaOn = document.getElementById('opt-area').checked;
+  const rectOn = document.getElementById('opt-rect').checked;
+  const trapOn = document.getElementById('opt-trap').checked;
+
+  if (gridOn){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')').call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(6));
+  g.append('text').attr('class','axis-label').attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('t');
+  g.append('text').attr('class','axis-label').attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(t)');
+
+  const dt = (Hi - Lo)/NN;
+
+  /* Área con signo: verde arriba, naranja abajo. Se parte en los ceros. */
+  if (areaOn){
+    const zc = zerosInside();
+    const edges = [Lo, ...zc, Hi];
+    for (let k = 0; k < edges.length-1; k++){
+      const a0 = edges[k], b0 = edges[k+1];
+      const mid = (a0+b0)/2;
+      const positive = f(mid) > 0;
+      const steps = 40, dd = (b0-a0)/steps; const pts = [];
+      for (let i = 0; i <= steps; i++) pts.push(a0 + i*dd);
+      const area = d3.area().x(d => xs(d)).y0(ys(0)).y1(d => ys(f(d)));
+      plot.append('path').datum(pts).attr('class', positive ? 'area-pos' : 'area-neg').attr('d', area);
+    }
+  }
+
+  /* Rectángulos coloreados por signo de su altura */
+  if (rectOn){
+    for (let i = 0; i < NN; i++){
+      const ts = samplePt(i, dt);
+      const h = f(ts);
+      const xL = Lo + i*dt;
+      const y0 = ys(0), yh = ys(h);
+      plot.append('rect').attr('class', 'rrect ' + (h >= 0 ? 'rrect-pos' : 'rrect-neg'))
+        .attr('x', xs(xL)).attr('y', Math.min(y0, yh))
+        .attr('width', Math.max(0, xs(xL+dt)-xs(xL))).attr('height', Math.abs(yh-y0))
+        .attr('stroke-width', NN > 120 ? 0 : (NN > 40 ? 0.3 : 0.7));
+    }
+  }
+
+  /* Trapecios */
+  if (trapOn){
+    for (let i = 0; i < NN; i++){
+      const xa = Lo + i*dt, xb = Lo + (i+1)*dt;
+      const positive = (f(xa)+f(xb))/2 >= 0;
+      const pts = [[xs(xa),ys(0)],[xs(xa),ys(f(xa))],[xs(xb),ys(f(xb))],[xs(xb),ys(0)]];
+      plot.append('polygon').attr('class', positive ? 'trap-poly-pos' : 'trap-poly-neg')
+        .attr('points', pts.map(p=>p.join(',')).join(' '))
+        .attr('stroke-width', NN > 60 ? 0.4 : 1);
+    }
+  }
+
+  /* Eje t = 0: destacado, porque es la frontera del signo */
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('class','axis0').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0));
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih).attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  /* La curva */
+  const line = d3.line().x(d => xs(d)).y(d => ys(f(d))).curve(d3.curveCatmullRom.alpha(.5));
+  const cpts = []; const CN = 200;
+  for (let i = 0; i <= CN; i++) cpts.push(xMin + (xMax-xMin)*i/CN);
+  plot.append('path').datum(cpts).attr('class','curve').attr('d', line);
+
+  /* Cruces por el eje */
+  zerosInside().forEach(z => {
+    plot.append('circle').attr('class','zero-cross').attr('cx', xs(z)).attr('cy', ys(0)).attr('r', 5.5);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', xs(z)).attr('y', ys(0) - 9).attr('text-anchor','middle').text('t=' + fmt(z));
+  });
+
+  /* Bordes del intervalo */
+  [Lo, Hi].forEach(xb => {
+    plot.append('line').attr('stroke','var(--navy)').attr('stroke-width',1).attr('stroke-dasharray','3,2').attr('opacity',.4)
+      .attr('x1', xs(xb)).attr('x2', xs(xb)).attr('y1', 0).attr('y2', ih);
+  });
+
+  const tip = document.getElementById('tip-main');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih).attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      tip.innerHTML = 't = ' + fmt(x,2) + '<br>f(t) = ' + fmt(y,2) + '<br>' + (y>0 ? '▲ suma' : (y<0 ? '▼ resta' : 'eje'));
+      tip.style.left = (m.left + xs(x)) + 'px'; tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'));
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO + BALANZA
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const bd = riemannBreakdown(NN);
+  const ex = exactArea();
+  document.getElementById('lv-pos').textContent = fmt(bd.pos);
+  document.getElementById('lv-neg').textContent = fmt(bd.neg);
+  document.getElementById('lv-net').textContent = fmt(bd.net);
+  document.getElementById('lv-exact').textContent = fmt(ex);
+}
+
+function renderBalance(){
+  const el = document.getElementById('balance-box');
+  const bd = riemannBreakdown(NN);
+  const P = bd.pos, Nn = Math.abs(bd.neg);
+  const tot = P + Nn;
+  const pPct = tot > 1e-9 ? (P/tot*100) : 50;
+  const nPct = tot > 1e-9 ? (Nn/tot*100) : 50;
+  const net = bd.net;
+
+  el.innerHTML =
+    '<p style="font-size:.93rem;">El área total encerrada se reparte entre lo que está sobre el eje ' +
+    '(suma) y lo que está debajo (resta). La <strong>diferencia</strong> es el área neta:</p>' +
+    '<div class="balance-bar">' +
+    '<div class="balance-seg p" style="width:' + pPct + '%">' + (pPct > 12 ? '+' + fmt2(P) : '') + '</div>' +
+    '<div class="balance-seg n" style="width:' + nPct + '%">' + (nPct > 12 ? '−' + fmt2(Nn) : '') + '</div>' +
+    '</div>' +
+    '<div class="balance-net">' +
+    '<span style="color:var(--pos)">+' + fmt2(P) + '</span> &minus; ' +
+    '<span style="color:var(--neg)">' + fmt2(Nn) + '</span> = ' +
+    '<span class="big" style="color:' + (net<0?'var(--neg)':'var(--pos)') + '">' + fmt(net) + '</span>' +
+    '<div style="font-size:.78rem;color:var(--muted);margin-top:4px;">área neta (con signo)</div></div>';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Aumentar n y converger al área neta';
+}
+function startAnim(){
+  stopAnim();
+  const seq = [1,2,3,4,6,8,12,16,24,36,52,80,120,180,260,360,500];
+  let i = 0;
+  document.getElementById('btn-anim').textContent = '● Convergiendo…';
+  ANIM = setInterval(() => {
+    NN = seq[i];
+    document.getElementById('n-slider').value = NN;
+    document.getElementById('n-val').textContent = NN;
+    renderSolveDt(); renderSolveSum();
+    drawMain(); renderBalance(); updateLive(); renderPreview(); renderInterpret();
+    setTimeout(() => renderMath(document.getElementById('solve-sum')), 0);
+    i++;
+    if (i >= seq.length) stopAnim();
+  }, 440);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PREGUNTAS
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const bd = riemannBreakdown(NN);
+  const ex = exactArea();
+  const zc = zerosInside();
+  const qs = [
+    {
+      q: '1. ¿Por qué la estimación puede dar un número negativo?',
+      opts: [
+        'Por un error de cálculo.',
+        'Porque los rectángulos <strong>bajo el eje</strong> tienen altura negativa y <strong>restan</strong>.',
+        'Porque el intervalo empieza en cero.'
+      ],
+      ok: 1,
+      fb: 'La integral definida mide área <strong>con signo</strong>. Donde $f(t)&lt;0$, la altura del ' +
+          'rectángulo es negativa, así que su «área» se resta. Si esas partes dominan, el total es negativo. ' +
+          'Aquí: área positiva $' + fmt(bd.pos) + '$ menos área negativa $' + fmt(Math.abs(bd.neg)) + '$ da $' + fmt(bd.net) + '$.'
+    },
+    {
+      q: '2. Si quisieras el área <em>geométrica</em> total (sin signo), ¿qué harías distinto?',
+      opts: [
+        'Nada, es el mismo número.',
+        'Tomar el <strong>valor absoluto</strong> de cada trozo y sumarlos: $|{+}| + |{-}|$.',
+        'Multiplicar por dos.'
+      ],
+      ok: 1,
+      fb: 'El área neta y el área geométrica son cosas <strong>distintas</strong>. La neta resta; ' +
+          'la geométrica (la superficie que pintarías) suma los valores absolutos: ' +
+          '$' + fmt(bd.pos) + ' + ' + fmt(Math.abs(bd.neg)) + ' = ' + fmt(bd.pos + Math.abs(bd.neg)) + '$. ' +
+          'La integral $\\int f\\,dt$ da la neta; para la geométrica se integra $|f|$.'
+    },
+    {
+      q: '3. ' + (zc.length ? '¿Qué papel juega el punto $t = ' + fmt(zc[0]) + '$ donde la curva cruza el eje?'
+                            : '¿Dónde cambia una región de "sumar" a "restar"?'),
+      opts: [
+        'No tiene importancia.',
+        'Es la <strong>frontera del signo</strong>: antes la curva está de un lado del eje, después del otro.',
+        'Es donde la función alcanza su máximo.'
+      ],
+      ok: 1,
+      fb: 'Los ceros de $f$ (donde cruza el eje) separan las zonas positivas de las negativas. ' +
+          (zc.length ? 'Aquí en $t=' + fmt(zc[0]) + '$: antes $f&lt;0$ (resta), después $f&gt;0$ (suma). '
+                     : '') +
+          'Para calcular área geométrica hay que partir la integral justo en esos ceros.'
+    },
+    {
+      q: '4. ¿Qué ocurre con la estimación al aumentar $n$?',
+      opts: [
+        'Se aleja del valor exacto.',
+        'Converge al <strong>área neta exacta</strong> $\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} f\\,dt = ' + fmt(ex) + '$.',
+        'Siempre da cero.'
+      ],
+      ok: 1,
+      fb: 'Igual que en las actividades anteriores, más subintervalos ⟹ menos error. La suma de Riemann ' +
+          'con signo converge a la integral definida, que aquí vale $' + fmt(ex) + '$. Súbelo a $n=500$ y compara.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ÁREA NETA VS TOTAL
+   ═══════════════════════════════════════════════ */
+function renderNetVsTotal(){
+  const el = document.getElementById('net-vs-total');
+  const bd = riemannBreakdown(NN);
+  const geo = bd.pos + Math.abs(bd.neg);
+  el.innerHTML =
+    '<div class="verdict"><span class="vk">Dos áreas distintas</span>' +
+    '<div class="vt" style="color:var(--navy)">Neta ≠ Geométrica</div>' +
+    '<div class="vb">' +
+    '<p style="margin-bottom:8px;"><strong>Área neta</strong> (lo que da la integral): resta lo de abajo. ' +
+    '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} f\\,dt \\approx ' + fmt(bd.net) + '$$</p>' +
+    '<p><strong>Área geométrica</strong> (la superficie real, siempre positiva): suma los valores absolutos. ' +
+    '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} |f|\\,dt \\approx ' + fmt(bd.pos) + ' + ' + fmt(Math.abs(bd.neg)) + ' = ' + fmt(geo) + '$$</p>' +
+    '<p style="margin-top:8px;">Si la curva estuviera <em>toda</em> sobre el eje, ambas coincidirían. ' +
+    'Como cruza el eje, difieren: la neta puede ser pequeña o negativa aunque la geométrica sea grande.</p>' +
+    '</div></div>';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÓDULO FORMAL
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\int_{a}^{b} f(t)\\,dt = \\underbrace{(\\text{área sobre el eje})}_{+} - \\underbrace{(\\text{área bajo el eje})}_{-}$$' +
+    '$$\\text{Área geométrica} = \\int_{a}^{b} |f(t)|\\,dt \\;\\geq\\; \\left|\\int_{a}^{b} f(t)\\,dt\\right|$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const ex = exactArea();
+  const zc = zerosInside();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · El signo de la altura</span>' +
+    'En una suma de Riemann $\\sum f(t_i)\\,\\Delta t$, cada término es «altura × ancho». El ancho $\\Delta t$ ' +
+    'es siempre positivo, pero la <strong>altura $f(t_i)$ lleva su signo</strong>. Donde la curva está bajo ' +
+    'el eje, $f(t_i)&lt;0$ y el término resta. Por eso la integral mide área <strong>con signo</strong>.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 2 · Partir en los ceros</span>' +
+    (zc.length
+      ? 'La curva cruza el eje en $t = ' + zc.map(x=>fmt(x)).join(', ') + '$. Estos ceros dividen $[' + fmt(Lo) + ',' + fmt(Hi) + ']$ ' +
+        'en tramos de signo constante. En cada tramo, $f$ no cambia de signo, así que la integral de ese ' +
+        'tramo es puramente positiva o puramente negativa.'
+      : 'Aquí la curva no cambia de signo dentro del intervalo, así que toda la región cuenta con el mismo signo.') +
+    '</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 3 · Neta vs geométrica</span>' +
+    'El <strong>área neta</strong> es $\\int_a^b f\\,dt$: suma los tramos con su signo. ' +
+    'El <strong>área geométrica</strong> (la superficie que pintarías) es $\\int_a^b |f|\\,dt$: ' +
+    'suma los valores absolutos. Solo coinciden si $f$ no cambia de signo. En general ' +
+    '$\\left|\\int f\\right| \\leq \\int |f|$: la cancelación solo puede <em>reducir</em> el total.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Caso actual</span>' +
+    'Con $f(t) = ' + fTex() + '$, una antiderivada es $F(t) = ' + FantiTex() + '$. Por el Teorema Fundamental:' +
+    '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} f\\,dt = F(' + fmt(Hi) + ') - F(' + fmt(Lo) + ') = ' + fmt(ex) + '.$$' +
+    (ex < 0 ? 'El resultado <strong>negativo</strong> confirma que domina el área bajo el eje.' :
+     ex > 0 ? 'El resultado positivo confirma que domina el área sobre el eje.' :
+     'El resultado <strong>cero</strong> significa que arriba y abajo se cancelan exactamente.') +
+    '</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'La integral definida no cuenta «cuánta superficie hay», sino «cuánto queda tras cancelar arriba con abajo». ' +
+    'Neta y geométrica son preguntas distintas, con respuestas distintas.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const bd6 = (function(){ const save=NN; NN=6; const b=riemannBreakdown(6); NN=save; return b; })();
+  const ex = exactArea();
+  const dt6 = (Hi - Lo)/6;
+  const pts6 = (function(){ const save=NN; NN=6; const p=evalPoints(6); NN=save; return p; })();
+  const zc = zerosInside();
+
+  let html = '';
+  html += '<p><strong>Paso 1.</strong> $\\Delta t = \\dfrac{' + fmt(Hi) + '-' + fmt(Lo) + '}{6} = ' + fmt(dt6) + '$; ' +
+    'puntos $t = ' + pts6.map(x=>fmt(x)).join(',\\; ') + '$.</p>';
+  html += '<p><strong>Paso 2.</strong> Alturas: $' + pts6.map(x=>fmt2(f(x))).join(',\\; ') + '$ ' +
+    '(las negativas son los tramos bajo el eje).</p>';
+  html += '<p><strong>Paso 3.</strong> Área neta $\\approx ' + fmt(dt6) + '\\cdot(' +
+    pts6.map(x=>{const h=f(x); return h<0?'('+fmt2(h)+')':fmt2(h);}).join(' + ') + ') = ' + fmt(bd6.net) + '$.</p>';
+
+  html += '<p><strong>Interpretación.</strong> ' +
+    (bd6.net < 0
+      ? 'El área neta es <strong>negativa</strong> ($' + fmt(bd6.net) + '$): la mayor parte de la curva está bajo el eje. '
+      : 'El área neta es $' + fmt(bd6.net) + '$. ') +
+    'El valor exacto de la integral es $\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}\\left(' + fTex() + '\\right)dt = ' + fmt(ex) + '$, ' +
+    'al que la estimación se acerca cuando $n$ crece.</p>';
+
+  html += '<p><strong>Observación.</strong> Usando trapecios en vez de rectángulos se mejora la estimación. ' +
+    'Y si se quiere el <strong>área geométrica total</strong> (no la neta), hay que integrar $|f|$: ' +
+    'partir la integral en los ceros' + (zc.length ? ' ($t=' + zc.map(x=>fmt(x)).join(', ') + '$)' : '') +
+    ' y sumar los valores absolutos de cada tramo.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-a2','p-b1','p-c0','p-lo','p-hi'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') refreshAll(); });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-a2').value = 1;
+    document.getElementById('p-b1').value = 0;
+    document.getElementById('p-c0').value = -4;
+    document.getElementById('p-lo').value = 0;
+    document.getElementById('p-hi').value = 3;
+    document.getElementById('n-slider').value = 6;
+    document.getElementById('n-val').textContent = 6;
+    RULE = 'left';
+    document.querySelectorAll('[data-rule]').forEach(b => b.classList.remove('active'));
+    document.querySelector('[data-rule="left"]').classList.add('active');
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-a2').value = p[0].trim();
+      document.getElementById('p-b1').value = p[1].trim();
+      document.getElementById('p-c0').value = p[2].trim();
+      document.getElementById('p-lo').value = p[3].trim();
+      document.getElementById('p-hi').value = p[4].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-t').addEventListener('click', verifyTable);
+  document.getElementById('btn-fill-t').addEventListener('click', fillTable);
+  document.getElementById('btn-clear-t').addEventListener('click', clearTable);
+  document.getElementById('btn-verify-a').addEventListener('click', verifyA);
+  document.getElementById('btn-fill-a').addEventListener('click', fillA);
+  document.getElementById('btn-hint-a').addEventListener('click', toggleHintA);
+
+  ['opt-grid','opt-area','opt-rect','opt-trap'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawMain);
+  });
+
+  document.querySelectorAll('[data-rule]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-rule]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      RULE = btn.dataset.rule;
+      renderSolveDt(); buildTable(); renderSolveSum(); renderInterpret();
+      drawMain(); renderBalance(); updateLive();
+      setTimeout(() => renderMath(document.body), 0);
+    });
+  });
+
+  document.getElementById('n-slider').addEventListener('input', ev => {
+    stopAnim();
+    NN = parseInt(ev.target.value, 10);
+    document.getElementById('n-val').textContent = NN;
+    renderSolveDt(); buildTable(); renderSolveSum(); renderInterpret();
+    drawMain(); renderBalance(); updateLive(); renderPreview();
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawMain, 140); });
+
+  refreshAll();
+}
+
+(function boot(){
+  function ready(){ return document.readyState !== 'loading' && window.d3 && window.renderMathInElement; }
+  function attempt(tries){
+    if (ready()){ initPage(); return; }
+    if (tries <= 0){ initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else attempt(40);
+})();
+</script>
+
+</body>
+</html>

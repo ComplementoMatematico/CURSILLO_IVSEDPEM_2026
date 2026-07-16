@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Actividad 10 — Derivadas · Seminario de Cálculo</title>
+
+<!-- ── CDN DEPENDENCIES ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="initPage()"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ── VARIABLES ── */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Source Serif 4',Georgia,serif;background:var(--light);color:var(--text);line-height:1.7}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 2px 0 0 rgba(200,169,81,.35);
+  padding:14px 24px 12px;
+}
+.header-grid{
+  max-width:960px;margin:0 auto;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:16px;
+}
+/* izquierda: tres logos */
+.header-logos{display:flex;align-items:center;gap:10px;}
+.header-logos img{
+  height:52px;width:auto;
+  object-fit:contain;filter:brightness(1) drop-shadow(0 1px 3px rgba(0,0,0,.4));
+}
+/* centro */
+.header-center{text-align:center;}
+.header-seminary{
+  font-family:'Playfair Display',serif;
+  font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:3px;
+}
+.header-title{
+  font-family:'Playfair Display',serif;font-weight:700;
+  font-size:1.15rem;color:var(--white);line-height:1.25;
+}
+.header-subtitle{
+  font-family:'Source Serif 4',serif;font-size:.76rem;
+  color:rgba(255,255,255,.62);margin-top:3px;letter-spacing:.03em;
+}
+/* derecha: autor */
+.header-author{
+  text-align:right;display:flex;flex-direction:column;
+  align-items:flex-end;gap:3px;
+}
+.header-author-label{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--gold);opacity:.85;
+}
+.header-author-name{
+  font-family:'Playfair Display',serif;font-size:.9rem;
+  font-weight:600;color:var(--white);white-space:nowrap;
+}
+@media(max-width:640px){
+  .header-grid{grid-template-columns:1fr;gap:8px;text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-logos img{height:38px;}
+  .header-author{align-items:center;text-align:center;}
+}
+
+/* ── MAIN ── */
+main{max-width:880px;margin:0 auto;padding:50px 22px 80px;}
+
+/* ── CARD ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.activity-card{
+  background:var(--white);border:1px solid var(--border);border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09);
+  animation:fadeUp .55s ease both;overflow:hidden;
+}
+
+/* card header */
+.card-header{
+  background:var(--navy);padding:16px 24px;
+  display:flex;align-items:center;gap:14px;
+}
+.card-num{
+  width:36px;height:36px;border-radius:50%;background:var(--crimson);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.85rem;color:var(--white);
+  flex-shrink:0;
+}
+.card-title{
+  font-family:'Playfair Display',serif;font-weight:600;font-size:1.1rem;color:var(--white);
+}
+
+/* card body */
+.card-body{padding:28px 30px 32px;}
+@media(max-width:640px){.card-body{padding:18px 16px 22px;}}
+
+/* objetivo */
+.objetivo-box{
+  border-left:4px solid var(--crimson);background:var(--accent-bg);
+  border-radius:0 3px 3px 0;padding:14px 18px;margin-bottom:26px;
+}
+.objetivo-label{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--crimson);margin-bottom:5px;font-weight:500;
+}
+.objetivo-text{font-size:.92rem;color:var(--text);}
+
+/* function display */
+.function-display{
+  background:#fafaf7;border:1px solid var(--border);border-radius:3px;
+  padding:18px 24px;margin-bottom:28px;text-align:center;
+}
+.fn-label{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+}
+.fn-formula{font-size:1.35rem;}
+
+/* ── PARAMETER PANEL ── */
+.param-panel{
+  background:var(--light);border:1px solid var(--border);border-radius:3px;
+  padding:18px 20px;margin-bottom:30px;
+}
+.param-panel h3{
+  font-family:'Playfair Display',serif;font-size:.93rem;font-weight:600;
+  color:var(--navy);margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px;
+}
+.param-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.param-group{display:flex;flex-direction:column;gap:5px;}
+.param-group label{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+}
+.param-group input[type=number]{
+  font-family:'JetBrains Mono',monospace;font-size:.88rem;
+  border:1px solid var(--border);border-radius:3px;padding:7px 10px;
+  background:var(--white);color:var(--text);
+  outline:none;transition:border .2s;
+}
+.param-group input[type=number]:focus{border-color:var(--navy);}
+.param-group input[type=range]{accent-color:var(--navy);width:100%;}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.preset-label{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);width:100%;
+}
+
+/* ── BUTTONS ── */
+button{cursor:pointer;font-family:'Source Serif 4',serif;border:none;border-radius:3px;transition:all .18s;}
+.btn-verify{
+  background:var(--crimson);color:var(--white);
+  padding:9px 20px;font-size:.85rem;letter-spacing:.04em;
+}
+.btn-verify:hover{background:#7a1236;transform:translateY(-1px);box-shadow:0 3px 10px rgba(155,24,69,.3);}
+.btn-primary{
+  background:var(--navy);color:var(--white);
+  padding:9px 20px;font-size:.85rem;letter-spacing:.04em;
+}
+.btn-primary:hover{background:#002a56;transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,59,117,.3);}
+.btn-ghost{
+  background:transparent;color:var(--navy);border:1.5px solid var(--navy);
+  padding:8px 18px;font-size:.85rem;letter-spacing:.04em;
+}
+.btn-ghost:hover{background:var(--accent-bg);transform:translateY(-1px);}
+.btn-preset{
+  background:var(--white);color:var(--navy);border:1px solid var(--border);
+  padding:5px 13px;font-size:.78rem;font-family:'JetBrains Mono',monospace;
+  border-radius:2px;
+}
+.btn-preset:hover{background:var(--accent-bg);border-color:var(--navy);}
+.btn-anim{
+  background:var(--gold);color:var(--navy);
+  padding:9px 20px;font-size:.85rem;font-weight:600;letter-spacing:.04em;
+}
+.btn-anim:hover{background:#b8972e;transform:translateY(-1px);}
+
+/* ── SECTION HEADINGS ── */
+.section-heading{
+  font-family:'Playfair Display',serif;font-weight:600;font-size:1.05rem;
+  color:var(--navy);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-heading::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── TABLE SECTION ── */
+.table-section{margin-bottom:36px;}
+.table-controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;align-items:center;}
+.score-badge{
+  display:none;font-family:'JetBrains Mono',monospace;font-size:.82rem;
+  background:var(--navy);color:var(--white);padding:5px 14px;border-radius:20px;
+  margin-left:auto;
+}
+.score-badge.show{display:inline-block;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.88rem;}
+thead tr{background:var(--navy);color:var(--white);}
+thead th{
+  font-family:'JetBrains Mono',monospace;font-weight:500;font-size:.78rem;
+  letter-spacing:.06em;padding:11px 14px;text-align:center;
+}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+tbody td{
+  padding:9px 14px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  border-bottom:1px solid #eeecE7;
+}
+td.x-cell{font-weight:500;color:var(--navy);}
+td.result-cell{color:var(--success);font-weight:500;}
+
+/* verifiable input cells */
+.verif-input{
+  font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  border:1px solid var(--border);border-radius:2px;padding:4px 8px;
+  width:90px;text-align:center;background:var(--white);color:var(--text);outline:none;
+  transition:border .2s,background .2s;
+}
+.verif-input.correct{border-color:var(--success);background:#edf7f1;color:var(--success);}
+.verif-input.wrong{border-color:var(--crimson);background:#fdf0f3;color:var(--crimson);}
+.verif-input:focus{border-color:var(--navy);}
+
+/* hint */
+.hint-box{
+  display:none;border-left:3px solid var(--gold);background:#fdf9ee;
+  padding:10px 14px;border-radius:0 3px 3px 0;font-size:.84rem;margin-top:12px;color:var(--muted);
+}
+.hint-box.show{display:block;}
+.hint-toggle{
+  background:none;border:none;color:var(--gold);font-size:.78rem;
+  text-decoration:underline;cursor:pointer;font-family:'Source Serif 4',serif;padding:0;
+}
+
+/* ── CHART ── */
+.chart-section{margin-bottom:36px;}
+.chart-options{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:12px;align-items:center;}
+.chart-options label{
+  font-family:'JetBrains Mono',monospace;font-size:.76rem;
+  display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--muted);
+}
+.chart-options input[type=checkbox]{accent-color:var(--navy);}
+.chart-outer{display:flex;gap:18px;flex-wrap:wrap;}
+.chart-box{
+  flex:1;min-width:260px;border:1px solid var(--border);border-radius:3px;
+  background:var(--white);position:relative;overflow:hidden;cursor:crosshair;
+}
+.chart-box svg{display:block;}
+/* D3 tooltip */
+.d3-tooltip{
+  position:absolute;pointer-events:none;
+  background:var(--navy);color:var(--white);
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  padding:5px 10px;border-radius:3px;white-space:nowrap;
+  box-shadow:0 3px 10px rgba(0,0,0,.25);
+  transform:translate(-50%,-110%);
+  display:none;
+}
+.d3-tooltip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--navy);
+}
+.chart-side{
+  width:200px;display:flex;flex-direction:column;gap:12px;
+  @media(max-width:640px){width:100%}
+}
+.reading-panel{
+  background:var(--accent-bg);border:1px solid var(--border);border-radius:3px;
+  padding:13px 14px;
+}
+.reading-panel .rp-label{
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:6px;
+}
+.reading-panel .rp-val{
+  font-family:'JetBrains Mono',monospace;font-size:.95rem;color:var(--navy);font-weight:500;
+}
+.anim-controls{display:flex;flex-direction:column;gap:8px;}
+.anim-status{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);
+  text-align:center;min-height:1.2em;
+}
+
+/* ── TANGENT MODULE ── */
+.tangent-section{margin-bottom:36px;}
+.tangent-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:14px;}
+.tangent-card{
+  background:var(--white);border:1px solid var(--border);border-radius:3px;
+  padding:16px 18px;text-align:center;
+  box-shadow:0 2px 8px rgba(0,59,117,.06);
+  transition:box-shadow .2s;
+}
+.tangent-card:hover{box-shadow:0 4px 18px rgba(0,59,117,.12);}
+.tc-point{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+}
+.tc-fx{font-size:.95rem;margin-bottom:6px;}
+.tc-dpx{font-size:.95rem;color:var(--crimson);margin-bottom:6px;}
+.tc-tangent{font-size:.85rem;color:var(--muted);}
+.tc-slope-bar{
+  height:4px;border-radius:2px;background:var(--border);margin-top:10px;overflow:hidden;
+}
+.tc-slope-fill{height:100%;border-radius:2px;background:var(--crimson);transition:width .4s;}
+
+/* h slider */
+.h-section{margin-bottom:36px;}
+.h-controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:14px;}
+.h-label{font-family:'JetBrains Mono',monospace;font-size:.83rem;color:var(--navy);}
+.h-val-display{
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  background:var(--accent-bg);border:1px solid var(--border);border-radius:3px;
+  padding:4px 12px;color:var(--navy);min-width:80px;text-align:center;
+}
+.h-formula-box{
+  background:#fafaf7;border:1px solid var(--border);border-radius:3px;
+  padding:16px 20px;text-align:center;margin-bottom:14px;font-size:1.05rem;
+}
+
+/* ── CONCLUSION ── */
+.conclusion-section{margin-bottom:10px;}
+.conclusion-box{
+  border:1px solid var(--border);border-radius:3px;background:var(--white);
+  padding:20px 24px;
+}
+.conclusion-box .cb-header{
+  font-family:'Playfair Display',serif;font-weight:600;font-size:.92rem;
+  color:var(--navy);border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:12px;
+}
+.conclusion-box .cb-text{font-size:.9rem;color:var(--text);line-height:1.8;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:18px 24px;text-align:center;margin-top:20px;
+}
+.footer-text{
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ── RESPONSIVE (general) ── */
+@media(max-width:640px){
+  .header-title{font-size:1rem;}
+  .chart-outer{flex-direction:column;}
+  .chart-side{width:100%;}
+  .tangent-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-grid">
+    <!-- logos institucionales (misma carpeta que index.html) -->
+    <div class="header-logos">
+      <img src="logo_ubb.png"       alt="Universidad del Bio-Bio"/>
+      <img src="logo_seminario.png" alt="SEDPEM"/>
+      <img src="logo_cmm.png"       alt="CMM - Centro de Modelamiento Matematico"/>
+    </div>
+    <div class="header-center">
+      <div class="header-seminary">Cursillo de Actualizacion Docente &middot; IV SEDPEM &middot; UBB</div>
+      <div class="header-title">Derivadas: Definicion y Recta Tangente</div>
+      <div class="header-subtitle">Actividad interactiva con simuladores graficos</div>
+    </div>
+    <div class="header-author">
+      <span class="header-author-label">Material de</span>
+      <span class="header-author-name">Dr. Eligio Colmenares</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main>
+<div class="activity-card">
+
+  <!-- card header -->
+  <div class="card-header">
+    <div class="card-num">10</div>
+    <div class="card-title">Derivada de una función polinómica cúbica</div>
+  </div>
+
+  <div class="card-body">
+
+    <!-- objetivo -->
+    <div class="objetivo-box">
+      <div class="objetivo-label">Objetivo</div>
+      <div class="objetivo-text" id="obj-text">
+        Calcular $f'(a)$ para puntos de interés usando la regla de derivación $f'(x) = 6x^2 - 6x + 5$,
+        interpretar geométricamente cada valor como la pendiente de la recta tangente,
+        y visualizar la curva junto a dichas rectas.
+      </div>
+    </div>
+
+    <!-- function display -->
+    <div class="function-display">
+      <div class="fn-label">Función generalizada</div>
+      <div class="fn-formula" id="fn-display"></div>
+    </div>
+
+    <!-- ── PARAMETER PANEL ── -->
+    <div class="param-panel">
+      <h3>Parámetros de la función &amp; puntos de evaluación</h3>
+      <div class="param-grid">
+        <div class="param-group">
+          <label for="p-a">Coef. a (x³)</label>
+          <input type="number" id="p-a" value="2" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-b">Coef. b (x²)</label>
+          <input type="number" id="p-b" value="-3" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-c">Coef. c (x)</label>
+          <input type="number" id="p-c" value="5" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-d">Coef. d (cte)</label>
+          <input type="number" id="p-d" value="-3" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-x1">Punto x₁</label>
+          <input type="number" id="p-x1" value="1" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-x2">Punto x₂</label>
+          <input type="number" id="p-x2" value="2" step="0.5"/>
+        </div>
+        <div class="param-group">
+          <label for="p-x3">Punto x₃</label>
+          <input type="number" id="p-x3" value="3" step="0.5"/>
+        </div>
+      </div>
+      <div class="presets">
+        <span class="preset-label">Presets pedagógicos:</span>
+        <button class="btn-preset" onclick="applyPreset(2,-3,5,-3,1,2,3)">Original (Actividad 10)</button>
+        <button class="btn-preset" onclick="applyPreset(1,-2,1,0,0,1,2)">$x^3-2x^2+x$</button>
+        <button class="btn-preset" onclick="applyPreset(1,0,-3,0,-1,0,1)">$x^3-3x$</button>
+        <button class="btn-preset" onclick="applyPreset(0.5,1,-2,-1,-2,0,2)">$\frac{1}{2}x^3+x^2-2x$</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="applyAll()">Aplicar parámetros</button>
+        <div id="param-preview" style="font-size:.82rem;color:var(--muted);align-self:center;font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+    </div>
+
+    <!-- ══ SECCIÓN A: TABLA DE VALORES ══ -->
+    <div class="table-section">
+      <div class="section-heading">a) Tabla de valores: $f(x_i)$ y $f'(x_i)$</div>
+      <div class="table-controls">
+        <button class="btn-verify" onclick="verifyTable()">Verificar respuestas</button>
+        <button class="btn-primary" onclick="fillTable()">Rellenar solución</button>
+        <button class="btn-ghost" onclick="clearTable()">Limpiar</button>
+        <span id="score-badge" class="score-badge"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="main-table">
+          <thead>
+            <tr>
+              <th>Punto $x_i$</th>
+              <th>$f(x_i)$</th>
+              <th>$f'(x_i)$ (tu respuesta)</th>
+              <th>Pendiente exacta</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <button class="hint-toggle" onclick="toggleHint()" style="margin-top:10px;">
+        ¿Necesitas una pista?
+      </button>
+      <div class="hint-box" id="hint-box">
+        Recuerda: la derivada de $f(x)=ax^3+bx^2+cx+d$ es $f'(x)=3ax^2+2bx+c$.
+        Sustituye cada $x_i$ en $f'(x)$ para obtener la pendiente de la tangente en ese punto.
+      </div>
+    </div>
+
+    <!-- ══ SECCIÓN B: GRÁFICO INTERACTIVO ══ -->
+    <div class="chart-section">
+      <div class="section-heading">b) ¿Qué representan geométricamente $f'(x_i)$?</div>
+      <div class="chart-options">
+        <label><input type="checkbox" id="opt-grid" checked onchange="drawChart()"> Grilla</label>
+        <label><input type="checkbox" id="opt-points" checked onchange="drawChart()"> Puntos $x_i$</label>
+        <label><input type="checkbox" id="opt-tangents" checked onchange="drawChart()"> Rectas tangentes</label>
+        <label><input type="checkbox" id="opt-deriv" onchange="drawChart()"> Curva $f'(x)$</label>
+      </div>
+      <div class="chart-outer">
+        <div class="chart-box" id="chart-box">
+          <div class="d3-tooltip" id="tooltip"></div>
+        </div>
+        <div class="chart-side">
+          <div class="reading-panel">
+            <div class="rp-label">Cursor</div>
+            <div class="rp-val" id="cursor-x">x = —</div>
+            <div class="rp-val" id="cursor-fx">f(x) = —</div>
+            <div class="rp-val" id="cursor-fpx">f′(x) = —</div>
+          </div>
+          <div class="reading-panel">
+            <div class="rp-label">Punto activo</div>
+            <div class="rp-val" id="active-pt">Clic en $x_i$</div>
+          </div>
+          <div class="anim-controls">
+            <button class="btn-anim" id="btn-anim" onclick="toggleAnim()">▶ Animar secante → tangente</button>
+            <div class="anim-status" id="anim-status"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECCIÓN C: RECTAS TANGENTES ══ -->
+    <div class="tangent-section">
+      <div class="section-heading">c) Rectas tangentes en los puntos de interés</div>
+      <div class="tangent-grid" id="tangent-grid"></div>
+    </div>
+
+    <!-- ══ MÓDULO AVANZADO: SECANTE → TANGENTE (h slider) ══ -->
+    <div class="h-section">
+      <div class="section-heading">Módulo avanzado: Definición por límite de la derivada</div>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:16px;">
+        Explora cómo el cociente incremental se aproxima a $f'(a)$ cuando $h \to 0$.
+      </p>
+      <div class="h-controls">
+        <span class="h-label">Punto $a$:</span>
+        <select id="h-point-select" onchange="updateHSection()" style="font-family:'JetBrains Mono',monospace;font-size:.85rem;padding:5px 10px;border:1px solid var(--border);border-radius:3px;background:var(--white);color:var(--text);">
+        </select>
+        <span class="h-label">$h =$</span>
+        <input type="range" id="h-slider" min="-2" max="2" step="0.01" value="1"
+          oninput="updateHSection()" style="width:160px;accent-color:var(--navy)"/>
+        <span class="h-val-display" id="h-val">1.00</span>
+      </div>
+      <div class="h-formula-box" id="h-formula"></div>
+      <div id="h-chart-box" style="border:1px solid var(--border);border-radius:3px;background:var(--white);overflow:hidden;">
+      </div>
+    </div>
+
+    <!-- ══ CONCLUSIÓN DINÁMICA ══ -->
+    <div class="conclusion-section">
+      <div class="section-heading">Conclusión</div>
+      <div class="conclusion-box">
+        <div class="cb-header">Interpretación geométrica y analítica</div>
+        <div class="cb-text" id="conclusion-text"></div>
+      </div>
+    </div>
+
+  </div><!-- /card-body -->
+</div><!-- /activity-card -->
+</main>
+
+<footer>
+  <p class="footer-text">Cursillo de Actualización Docente &nbsp;·&nbsp; IV SEDPEM · UBB &nbsp;·&nbsp; Actividad 10 &nbsp;·&nbsp; Dr. Eligio Colmenares</p>
+</footer>
+
+<!-- ── JAVASCRIPT ── -->
+<script>
+/* ══════════════════════════════════════════════════════
+   ESTADO GLOBAL
+══════════════════════════════════════════════════════ */
+let PA = 2, PB = -3, PC = 5, PD = -3;
+let PX = [1, 2, 3];
+let animRunning = false, animFrame = null, animPoint = 0, animH = 1.5;
+let hChartSvg = null;
+
+/* ── Función y derivada (un solo lugar) ── */
+function f(x){ return PA*x**3 + PB*x**2 + PC*x + PD; }
+function fp(x){ return 3*PA*x**2 + 2*PB*x + PC; }
+
+/* ── Formateo seguro ── */
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v){
+  const s = r6(v);
+  if(Number.isInteger(s)) return s.toString();
+  return parseFloat(s.toPrecision(6)).toString();
+}
+function fmtLatex(v){
+  const s = r6(v);
+  if(s < 0) return `(${fmt(s)})`;
+  return fmt(s);
+}
+
+/* ── Ecuación de recta tangente en x=a ── */
+function tangentLine(a){ return x => fp(a)*(x - a) + f(a); }
+
+/* ──────────────────────────────────────────────
+   LECTURA DE PARÁMETROS
+────────────────────────────────────────────── */
+function readParams(){
+  PA = parseFloat(document.getElementById('p-a').value)||0;
+  PB = parseFloat(document.getElementById('p-b').value)||0;
+  PC = parseFloat(document.getElementById('p-c').value)||0;
+  PD = parseFloat(document.getElementById('p-d').value)||0;
+  PX = [
+    parseFloat(document.getElementById('p-x1').value)||0,
+    parseFloat(document.getElementById('p-x2').value)||0,
+    parseFloat(document.getElementById('p-x3').value)||0,
+  ];
+}
+
+function applyPreset(a,b,c,d,x1,x2,x3){
+  document.getElementById('p-a').value=a;
+  document.getElementById('p-b').value=b;
+  document.getElementById('p-c').value=c;
+  document.getElementById('p-d').value=d;
+  document.getElementById('p-x1').value=x1;
+  document.getElementById('p-x2').value=x2;
+  document.getElementById('p-x3').value=x3;
+  applyAll();
+}
+
+function applyAll(){
+  readParams();
+  updateFnDisplay();
+  updateParamPreview();
+  buildTable();
+  buildTangentCards();
+  drawChart();
+  buildHSelect();
+  updateHSection();
+  updateConclusion();
+  renderMath();
+}
+
+/* ──────────────────────────────────────────────
+   FUNCIÓN DISPLAY y PREVIEW
+────────────────────────────────────────────── */
+function coefStr(c, xPow, first=false){
+  if(c===0) return '';
+  const sign = c>0 ? (first?'':'+') : '-';
+  const abs = Math.abs(c);
+  const absStr = abs===1 && xPow>0 ? '' : fmt(abs);
+  const xStr = xPow===3?'x^3' : xPow===2?'x^2' : xPow===1?'x' : '';
+  if(xPow===0) return `${sign}${abs===1?fmt(abs):fmt(abs)}`;
+  return `${sign}${absStr}${xStr}`;
+}
+
+function buildFnLatex(){
+  let terms = [];
+  if(PA!==0) terms.push({c:PA,p:3});
+  if(PB!==0) terms.push({c:PB,p:2});
+  if(PC!==0) terms.push({c:PC,p:1});
+  if(PD!==0) terms.push({c:PD,p:0});
+  if(terms.length===0) return '0';
+  let s='';
+  terms.forEach((t,i)=>{s+=coefStr(t.c,t.p,i===0);});
+  return s;
+}
+
+function buildDpLatex(){
+  let terms=[];
+  if(PA!==0) terms.push({c:3*PA,p:2});
+  if(PB!==0) terms.push({c:2*PB,p:1});
+  if(PC!==0) terms.push({c:PC,p:0});
+  if(terms.length===0) return '0';
+  let s='';
+  terms.forEach((t,i)=>{s+=coefStr(t.c,t.p,i===0);});
+  return s;
+}
+
+function updateFnDisplay(){
+  const fn = buildFnLatex();
+  const dp = buildDpLatex();
+  document.getElementById('fn-display').innerHTML =
+    `$$f(x) = ${fn} \\qquad\\Longrightarrow\\qquad f'(x) = ${dp}$$`;
+  document.getElementById('obj-text').innerHTML =
+    `Calcular $f'(x_i)$ para los puntos de interés usando $f'(x)=${dp}$,
+     interpretar geométricamente cada valor como la pendiente de la recta tangente,
+     y visualizar la curva junto a dichas rectas.`;
+}
+
+function updateParamPreview(){
+  const fn = buildFnLatex();
+  document.getElementById('param-preview').textContent =
+    `f(x) = ${buildFnLatex().replace(/\^(\d)/g,'^$1')}   ·   x₁=${fmt(PX[0])}, x₂=${fmt(PX[1])}, x₃=${fmt(PX[2])}`;
+}
+
+/* ──────────────────────────────────────────────
+   TABLA INTERACTIVA
+────────────────────────────────────────────── */
+function buildTable(){
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML='';
+  const dp = buildDpLatex();
+  PX.forEach((xi,i)=>{
+    const fxi = r6(f(xi));
+    const fpxi = r6(fp(xi));
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td class="x-cell">$x_${i+1}=${fmt(xi)}$</td>
+      <td class="result-cell">$${fmt(fxi)}$</td>
+      <td><input type="number" class="verif-input" id="inp-${i}" placeholder="f′(${fmt(xi)})…" step="any"/></td>
+      <td id="ans-${i}" style="color:var(--muted);">—</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  document.getElementById('score-badge').classList.remove('show');
+}
+
+function verifyTable(){
+  let correct=0;
+  PX.forEach((xi,i)=>{
+    const inp = document.getElementById(`inp-${i}`);
+    const ans = document.getElementById(`ans-${i}`);
+    const exact = r6(fp(xi));
+    const userVal = parseFloat(inp.value);
+    const ok = !isNaN(userVal) && Math.abs(r6(userVal)-exact)<0.01;
+    inp.classList.remove('correct','wrong');
+    inp.classList.add(ok?'correct':'wrong');
+    ans.innerHTML = `$${fmt(exact)}$`;
+    if(ok) correct++;
+  });
+  const badge = document.getElementById('score-badge');
+  badge.textContent = `${correct}/${PX.length} correctas`;
+  badge.classList.add('show');
+  renderMath();
+}
+
+function fillTable(){
+  PX.forEach((xi,i)=>{
+    const inp = document.getElementById(`inp-${i}`);
+    const ans = document.getElementById(`ans-${i}`);
+    const exact = r6(fp(xi));
+    inp.value = fmt(exact);
+    inp.classList.remove('wrong');
+    inp.classList.add('correct');
+    ans.innerHTML = `$${fmt(exact)}$`;
+  });
+  const badge = document.getElementById('score-badge');
+  badge.textContent = `${PX.length}/${PX.length} correctas`;
+  badge.classList.add('show');
+  renderMath();
+}
+
+function clearTable(){
+  PX.forEach((_,i)=>{
+    const inp = document.getElementById(`inp-${i}`);
+    const ans = document.getElementById(`ans-${i}`);
+    inp.value=''; inp.classList.remove('correct','wrong');
+    ans.innerHTML='—';
+  });
+  document.getElementById('score-badge').classList.remove('show');
+}
+
+function toggleHint(){
+  const h = document.getElementById('hint-box');
+  h.classList.toggle('show');
+}
+
+/* ──────────────────────────────────────────────
+   GRÁFICO PRINCIPAL D3
+────────────────────────────────────────────── */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  box.querySelectorAll('svg').forEach(s=>s.remove());
+  const W = box.clientWidth || 550;
+  const H = Math.max(320, Math.round(W*0.62));
+  const m = {top:24,right:24,bottom:40,left:50};
+  const iW = W-m.left-m.right;
+  const iH = H-m.top-m.bottom;
+
+  /* domain */
+  const allX = PX.concat([Math.min(...PX)-1.5, Math.max(...PX)+1.5]);
+  const xMin = Math.min(...PX)-2.2, xMax = Math.max(...PX)+2.2;
+  const xs = d3.range(xMin,xMax,0.025).concat([xMax]);
+  const ys = xs.map(f);
+  const tanYs = PX.flatMap(xi=>[tangentLine(xi)(xMin), tangentLine(xi)(xMax)]);
+  const yMin = Math.min(...ys, ...tanYs)*1.12;
+  const yMax = Math.max(...ys)*1.12;
+
+  const xSc = d3.scaleLinear([xMin,xMax],[0,iW]);
+  const ySc = d3.scaleLinear([yMin,yMax],[iH,0]);
+
+  const svg = d3.select(box).append('svg')
+    .attr('width',W).attr('height',H);
+  const g = svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  /* clip */
+  g.append('defs').append('clipPath').attr('id','clip-main')
+    .append('rect').attr('width',iW).attr('height',iH);
+
+  const showGrid = document.getElementById('opt-grid').checked;
+  const showPts  = document.getElementById('opt-points').checked;
+  const showTan  = document.getElementById('opt-tangents').checked;
+  const showDeriv= document.getElementById('opt-deriv').checked;
+
+  /* grid */
+  if(showGrid){
+    g.append('g').attr('class','grid')
+      .selectAll('line.gy').data(ySc.ticks(6)).enter().append('line')
+      .attr('x1',0).attr('x2',iW)
+      .attr('y1',d=>ySc(d)).attr('y2',d=>ySc(d))
+      .attr('stroke','#e8e6e0').attr('stroke-dasharray','3,3');
+    g.append('g').attr('class','grid')
+      .selectAll('line.gx').data(xSc.ticks(8)).enter().append('line')
+      .attr('x1',d=>xSc(d)).attr('x2',d=>xSc(d))
+      .attr('y1',0).attr('y2',iH)
+      .attr('stroke','#e8e6e0').attr('stroke-dasharray','3,3');
+  }
+
+  /* axes */
+  const xAx = d3.axisBottom(xSc).ticks(8).tickSize(4);
+  const yAx = d3.axisLeft(ySc).ticks(6).tickSize(4);
+  g.append('g').attr('transform',`translate(0,${iH})`).call(xAx)
+    .selectAll('text').attr('font-family','JetBrains Mono,monospace').attr('font-size','11');
+  g.append('g').call(yAx)
+    .selectAll('text').attr('font-family','JetBrains Mono,monospace').attr('font-size','11');
+
+  /* axis labels */
+  g.append('text').attr('x',iW/2).attr('y',iH+34)
+    .attr('text-anchor','middle').attr('font-family','JetBrains Mono,monospace')
+    .attr('font-size','12').attr('fill','#6b6560').text('x');
+  g.append('text').attr('transform','rotate(-90)').attr('x',-iH/2).attr('y',-38)
+    .attr('text-anchor','middle').attr('font-family','JetBrains Mono,monospace')
+    .attr('font-size','12').attr('fill','#6b6560').text('y');
+
+  /* origin cross */
+  if(xSc(0)>=0&&xSc(0)<=iW)
+    g.append('line').attr('x1',xSc(0)).attr('x2',xSc(0)).attr('y1',0).attr('y2',iH)
+      .attr('stroke','rgba(0,59,117,.2)').attr('stroke-width',1);
+  if(ySc(0)>=0&&ySc(0)<=iH)
+    g.append('line').attr('x1',0).attr('x2',iW).attr('y1',ySc(0)).attr('y2',ySc(0))
+      .attr('stroke','rgba(0,59,117,.2)').attr('stroke-width',1);
+
+  const clip = g.append('g').attr('clip-path','url(#clip-main)');
+
+  /* f'(x) curve */
+  if(showDeriv){
+    const lineDp = d3.line().x(x=>xSc(x)).y(x=>ySc(fp(x))).curve(d3.curveCatmullRom);
+    clip.append('path').datum(xs).attr('d',lineDp)
+      .attr('fill','none').attr('stroke','rgba(155,24,69,.45)').attr('stroke-width',1.5)
+      .attr('stroke-dasharray','6,3');
+  }
+
+  /* tangent lines */
+  const tanColors = ['#9b1845','#003B75','#2e7d52'];
+  if(showTan){
+    PX.forEach((xi,i)=>{
+      const tl = tangentLine(xi);
+      const txs = [xMin, xMax];
+      const lineTan = d3.line().x(x=>xSc(x)).y(x=>ySc(tl(x)));
+      clip.append('path').datum(txs).attr('d',lineTan)
+        .attr('fill','none').attr('stroke',tanColors[i%3]).attr('stroke-width',1.4)
+        .attr('stroke-dasharray','5,4').attr('opacity',.75);
+    });
+  }
+
+  /* f(x) curve */
+  const line = d3.line().x(x=>xSc(x)).y(x=>ySc(f(x))).curve(d3.curveCatmullRom);
+  clip.append('path').datum(xs).attr('d',line)
+    .attr('fill','none').attr('stroke','#003B75').attr('stroke-width',2.5);
+
+  /* point markers */
+  if(showPts){
+    PX.forEach((xi,i)=>{
+      const fxi = f(xi);
+      const fpxi = fmt(fp(xi));
+      g.append('circle').attr('cx',xSc(xi)).attr('cy',ySc(fxi))
+        .attr('r',6).attr('fill',tanColors[i%3]).attr('stroke',tanColors[i%3])
+        .attr('stroke-width',2).attr('cursor','pointer')
+        .on('click',()=>{
+          document.getElementById('active-pt').textContent=`x=${fmt(xi)}, f′=${fpxi}`;
+          renderMath();
+        });
+      /* label */
+      g.append('text').attr('x',xSc(xi)+8).attr('y',ySc(fxi)-8)
+        .attr('font-family','JetBrains Mono,monospace').attr('font-size','11')
+        .attr('fill',tanColors[i%3]).text(`x${i+1}=${fmt(xi)}`);
+    });
+  }
+
+  /* ── Tooltip on mousemove ── */
+  const tooltip = document.getElementById('tooltip');
+  svg.on('mousemove', function(event){
+    const [mx] = d3.pointer(event, g.node());
+    const xVal = xSc.invert(mx);
+    if(xVal<xMin||xVal>xMax){ tooltip.style.display='none'; return; }
+    const fVal = f(xVal), fpVal = fp(xVal);
+    document.getElementById('cursor-x').textContent=`x = ${fmt(xVal)}`;
+    document.getElementById('cursor-fx').textContent=`f(x) = ${fmt(fVal)}`;
+    document.getElementById('cursor-fpx').textContent=`f′(x) = ${fmt(fpVal)}`;
+    const cy = ySc(fVal);
+    tooltip.style.display='block';
+    tooltip.style.left=`${mx+m.left}px`;
+    tooltip.style.top=`${cy+m.top}px`;
+    tooltip.textContent=`(${fmt(xVal)}, ${fmt(fVal)})`;
+  }).on('mouseleave',()=>{
+    tooltip.style.display='none';
+    document.getElementById('cursor-x').textContent='x = —';
+    document.getElementById('cursor-fx').textContent='f(x) = —';
+    document.getElementById('cursor-fpx').textContent='f′(x) = —';
+  });
+
+  /* store for animation */
+  window._chartState = {svg, g, clip, xSc, ySc, xMin, xMax, iW, iH, W, H, m, xs};
+}
+
+/* ──────────────────────────────────────────────
+   ANIMACIÓN SECANTE → TANGENTE
+────────────────────────────────────────────── */
+function toggleAnim(){
+  if(animRunning){ stopAnim(); return; }
+  startAnim();
+}
+
+function stopAnim(){
+  animRunning=false;
+  if(animFrame) cancelAnimationFrame(animFrame);
+  document.getElementById('btn-anim').textContent='▶ Animar secante → tangente';
+  document.getElementById('anim-status').textContent='';
+  drawChart();
+}
+
+function startAnim(){
+  animRunning=true;
+  document.getElementById('btn-anim').textContent='■ Detener animación';
+  animPoint = 0;
+  animH = 2.0;
+  animateStep();
+}
+
+function animateStep(){
+  if(!animRunning) return;
+  const cs = window._chartState;
+  if(!cs) return;
+
+  const xi = PX[animPoint % PX.length];
+  const {g, clip, xSc, ySc, xMin, xMax} = cs;
+
+  /* remove old secant */
+  clip.selectAll('.anim-secant').remove();
+  g.selectAll('.anim-h-point').remove();
+  g.selectAll('.anim-label').remove();
+
+  const xh = xi + animH;
+  const slope = (f(xh)-f(xi))/animH;
+  const secLine = x => slope*(x-xi)+f(xi);
+
+  /* draw secant */
+  clip.append('line').attr('class','anim-secant')
+    .attr('x1',xSc(xMin)).attr('y1',ySc(secLine(xMin)))
+    .attr('x2',xSc(xMax)).attr('y2',ySc(secLine(xMax)))
+    .attr('stroke','#c8a951').attr('stroke-width',2).attr('opacity',.9);
+
+  /* h point */
+  g.append('circle').attr('class','anim-h-point')
+    .attr('cx',xSc(xh)).attr('cy',ySc(f(xh)))
+    .attr('r',5).attr('fill','#c8a951').attr('stroke','#fff').attr('stroke-width',1.5);
+
+  g.append('text').attr('class','anim-label')
+    .attr('x',xSc(xi+animH/2)).attr('y',ySc(f(xi))-22)
+    .attr('text-anchor','middle')
+    .attr('font-family','JetBrains Mono,monospace').attr('font-size','11')
+    .attr('fill','#c8a951')
+    .text(`h=${fmt(animH)}, m=${fmt(slope)}`);
+
+  document.getElementById('anim-status').textContent =
+    `h = ${fmt(animH)} → m_sec = ${fmt(slope)} → f′(${fmt(xi)}) = ${fmt(fp(xi))}`;
+
+  animH *= 0.88;
+  if(Math.abs(animH)<0.001){
+    animPoint++;
+    animH=2.0;
+    if(animPoint>=PX.length){ stopAnim(); return; }
+  }
+  animFrame = requestAnimationFrame(()=>setTimeout(animateStep,32));
+}
+
+/* ──────────────────────────────────────────────
+   TARJETAS DE RECTA TANGENTE
+────────────────────────────────────────────── */
+function buildTangentCards(){
+  const grid = document.getElementById('tangent-grid');
+  grid.innerHTML='';
+  const dp = buildDpLatex();
+  const maxSlope = Math.max(...PX.map(x=>Math.abs(fp(x))));
+  PX.forEach((xi,i)=>{
+    const fxi = r6(f(xi));
+    const fpxi = r6(fp(xi));
+    const tl = tangentLine(xi);
+    /* build tangent equation string */
+    const intercept = r6(tl(0));
+    const sign = intercept>=0?'+':'-';
+    const tanStr = `${fmt(fpxi)}x ${sign} ${fmt(Math.abs(intercept))}`;
+    const pct = Math.min(100, Math.round(Math.abs(fpxi)/Math.max(1,maxSlope)*100));
+    const card = document.createElement('div');
+    card.className='tangent-card';
+    card.innerHTML=`
+      <div class="tc-point">Punto $x_{${i+1}} = ${fmt(xi)}$</div>
+      <div class="tc-fx">$f(${fmt(xi)}) = ${fmt(fxi)}$</div>
+      <div class="tc-dpx">$f'(${fmt(xi)}) = ${fmt(fpxi)}$</div>
+      <div class="tc-tangent">$y = ${tanStr}$</div>
+      <div class="tc-slope-bar"><div class="tc-slope-fill" style="width:${pct}%"></div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/* ──────────────────────────────────────────────
+   MÓDULO H (SECANTE → TANGENTE con chart propio)
+────────────────────────────────────────────── */
+function buildHSelect(){
+  const sel = document.getElementById('h-point-select');
+  sel.innerHTML='';
+  PX.forEach((xi,i)=>{
+    const opt = document.createElement('option');
+    opt.value=i;
+    opt.textContent=`x${i+1} = ${fmt(xi)}`;
+    sel.appendChild(opt);
+  });
+}
+
+function updateHSection(){
+  const idx = parseInt(document.getElementById('h-point-select').value)||0;
+  const xi = PX[idx]||PX[0];
+  const hRaw = parseFloat(document.getElementById('h-slider').value);
+  const h = hRaw===0?0.0001:hRaw;
+  document.getElementById('h-val').textContent=fmt(hRaw);
+
+  const qr = r6((f(xi+h)-f(xi))/h);
+  const exact = r6(fp(xi));
+  const dp = buildDpLatex();
+  const fnStr = buildFnLatex();
+
+  document.getElementById('h-formula').innerHTML =
+    `$$\\frac{f(${fmt(xi)}+h)-f(${fmt(xi)})}{h}\\bigg|_{h=${fmt(hRaw)}}
+    = \\frac{${fmt(r6(f(xi+h)))} - ${fmt(r6(f(xi)))}}{${fmt(h)}}
+    = ${fmt(qr)} \\xrightarrow[h\\to 0]{} f'(${fmt(xi)}) = ${fmt(exact)}$$`;
+
+  /* mini chart */
+  const hBox = document.getElementById('h-chart-box');
+  hBox.innerHTML='';
+  const W2 = hBox.clientWidth||550;
+  const H2 = 230;
+  const m2={top:18,right:18,bottom:36,left:46};
+  const iW2=W2-m2.left-m2.right, iH2=H2-m2.top-m2.bottom;
+
+  const xMin2=xi-2.5, xMax2=xi+2.5;
+  const xs2 = d3.range(xMin2,xMax2,0.03).concat([xMax2]);
+  const allY=[...xs2.map(f), f(xi+h)];
+  const yMin2=Math.min(...allY)*1.15, yMax2=Math.max(...allY)*1.15;
+  const xSc2=d3.scaleLinear([xMin2,xMax2],[0,iW2]);
+  const ySc2=d3.scaleLinear([yMin2,yMax2],[iH2,0]);
+
+  const svg2=d3.select(hBox).append('svg').attr('width',W2).attr('height',H2);
+  const g2=svg2.append('g').attr('transform',`translate(${m2.left},${m2.top})`);
+
+  g2.append('g').attr('transform',`translate(0,${iH2})`).call(d3.axisBottom(xSc2).ticks(6).tickSize(3))
+    .selectAll('text').attr('font-family','JetBrains Mono,monospace').attr('font-size','10');
+  g2.append('g').call(d3.axisLeft(ySc2).ticks(5).tickSize(3))
+    .selectAll('text').attr('font-family','JetBrains Mono,monospace').attr('font-size','10');
+
+  /* f(x) */
+  const lnF=d3.line().x(x=>xSc2(x)).y(x=>ySc2(f(x))).curve(d3.curveCatmullRom);
+  g2.append('path').datum(xs2).attr('d',lnF).attr('fill','none').attr('stroke','#003B75').attr('stroke-width',2);
+
+  /* secant */
+  const secSlope=(f(xi+h)-f(xi))/h;
+  const secLine=x=>secSlope*(x-xi)+f(xi);
+  g2.append('line')
+    .attr('x1',xSc2(xMin2)).attr('y1',ySc2(secLine(xMin2)))
+    .attr('x2',xSc2(xMax2)).attr('y2',ySc2(secLine(xMax2)))
+    .attr('stroke','#c8a951').attr('stroke-width',2);
+
+  /* tangent */
+  const tl2=tangentLine(xi);
+  g2.append('line')
+    .attr('x1',xSc2(xMin2)).attr('y1',ySc2(tl2(xMin2)))
+    .attr('x2',xSc2(xMax2)).attr('y2',ySc2(tl2(xMax2)))
+    .attr('stroke','#9b1845').attr('stroke-width',1.8).attr('stroke-dasharray','5,3');
+
+  /* points */
+  [[xi,f(xi),'#003B75'],[xi+h,f(xi+h),'#c8a951']].forEach(([x,y,c])=>{
+    g2.append('circle').attr('cx',xSc2(x)).attr('cy',ySc2(y)).attr('r',5)
+      .attr('fill',c).attr('stroke','#fff').attr('stroke-width',1.5);
+  });
+
+  /* legend */
+  const leg=[['#c8a951','Secante (h='+fmt(hRaw)+')'],['#9b1845','Tangente (h→0)'],['#003B75','f(x)']];
+  leg.forEach(([c,lbl],i)=>{
+    g2.append('rect').attr('x',iW2-130).attr('y',8+i*16).attr('width',12).attr('height',3).attr('fill',c);
+    g2.append('text').attr('x',iW2-113).attr('y',12+i*16)
+      .attr('font-family','JetBrains Mono,monospace').attr('font-size','9.5').attr('fill','#6b6560').text(lbl);
+  });
+
+  renderMath();
+}
+
+/* ──────────────────────────────────────────────
+   CONCLUSIÓN DINÁMICA
+────────────────────────────────────────────── */
+function updateConclusion(){
+  const dp = buildDpLatex();
+  const fn = buildFnLatex();
+  let rows = PX.map((xi,i)=>{
+    const fpxi=r6(fp(xi));
+    const fxi=r6(f(xi));
+    const interp = fpxi>0?'creciente y con pendiente positiva':fpxi<0?'decreciente y con pendiente negativa':'en un punto crítico (pendiente = 0)';
+    return `En $x_{${i+1}}=${fmt(xi)}$: $f'(${fmt(xi)})=${fmt(fpxi)}$, la curva es <em>${interp}</em>.`;
+  }).join('<br/>');
+
+  document.getElementById('conclusion-text').innerHTML=`
+    Dada $f(x)=${fn}$, su derivada $f'(x)=${dp}$ da la tasa de cambio instantánea en cada punto.<br/><br/>
+    ${rows}<br/><br/>
+    Geométricamente, $f'(x_i)$ es la <strong>pendiente de la recta tangente</strong> a la curva en el punto
+    $(x_i,\\,f(x_i))$. Una pendiente mayor en valor absoluto indica que la curva es más empinada.
+    La animación de secante→tangente ilustra cómo el cociente incremental
+    $\\dfrac{f(x_i+h)-f(x_i)}{h}\\xrightarrow{h\\to 0}f'(x_i)$.
+  `;
+}
+
+/* ──────────────────────────────────────────────
+   RE-RENDER KaTeX
+────────────────────────────────────────────── */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'$',right:'$',display:false},
+      ],
+      throwOnError:false
+    });
+  }
+}
+
+/* ──────────────────────────────────────────────
+   RESIZE
+────────────────────────────────────────────── */
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(()=>{ drawChart(); updateHSection(); },200);
+});
+
+/* ──────────────────────────────────────────────
+   INIT — called when KaTeX auto-render loads
+────────────────────────────────────────────── */
+function initPage(){
+  applyAll();
+}
+</script>
+</body>
+</html>

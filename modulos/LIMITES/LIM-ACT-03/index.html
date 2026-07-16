@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actividad 3 — Límite lateral único debido al dominio · Cursillo de Actualización Docente</title>
+
+<!-- SUPUESTO: los logos logo_ubb.png, logo_seminario.png y logo_cmm.png se encuentran en la misma carpeta que index.html -->
+<!-- SUPUESTO: la tabla original lista x = 2 (el propio punto) seguido de valores decrecientes hacia 2 por la derecha.
+     Aquí se ordenan de forma creciente (a, a+1e-4, a+1e-3, a+1e-2, a+0.1, a+0.25) para que la lectura de la
+     tendencia sea monótona; se conservan exactamente los mismos desplazamientos. -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ─────────────────────────────────────────────
+   IDENTIDAD VISUAL
+   ───────────────────────────────────────────── */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--light);
+  color:var(--text);
+  font-family:'Source Serif 4',Georgia,serif;
+  font-size:17px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;font-weight:700;margin:0;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 6px 26px rgba(200,169,81,.22);
+  padding:16px 26px;
+}
+.header-grid{
+  max-width:1180px;margin:0 auto;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;gap:26px;
+}
+.header-logos{display:flex;align-items:center;gap:16px;}
+.header-logos img{
+  height:52px;width:auto;object-fit:contain;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.28));
+}
+.header-center{text-align:center;}
+.header-center .seminario{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:5px;
+}
+.header-center .titulo{
+  font-family:'Playfair Display',serif;
+  color:#fff;font-size:1.42rem;line-height:1.25;
+}
+.header-center .subtitulo{
+  color:rgba(255,255,255,.72);
+  font-size:.86rem;font-style:italic;margin-top:3px;
+}
+.header-author{text-align:right;}
+.header-author .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.56rem;letter-spacing:.2em;
+  color:rgba(200,169,81,.78);margin-bottom:4px;
+}
+.header-author .nombre{
+  font-family:'Playfair Display',serif;
+  color:#fff;font-size:1rem;white-space:nowrap;
+}
+
+/* ── LAYOUT ── */
+main{max-width:880px;margin:0 auto;padding:50px 22px 80px;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.activity-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09);
+  overflow:hidden;
+  animation:fadeUp .6s cubic-bezier(.2,.7,.3,1) both;
+}
+.card-head{
+  background:var(--navy);
+  padding:17px 24px;
+  display:flex;align-items:center;gap:15px;
+}
+.card-num{
+  flex:0 0 auto;
+  width:36px;height:36px;border-radius:50%;
+  background:var(--crimson);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1rem;
+  box-shadow:0 0 0 3px rgba(255,255,255,.12);
+}
+.card-head h1{color:#fff;font-size:1.2rem;line-height:1.3;}
+.card-body{padding:30px 32px 36px;}
+
+section.block{margin-top:40px;}
+section.block:first-child{margin-top:0;}
+.block-title{
+  font-size:1.06rem;color:var(--navy);
+  padding-bottom:8px;margin-bottom:16px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.block-title .n{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.74rem;color:var(--crimson);
+  border:1px solid var(--crimson);border-radius:2px;
+  padding:1px 6px;
+}
+p{margin:0 0 12px;}
+.small{font-size:.9rem;color:var(--muted);}
+
+/* ── OBJETIVO ── */
+.objetivo-box{
+  background:var(--accent-bg);
+  border-left:4px solid var(--crimson);
+  padding:16px 20px;border-radius:0 3px 3px 0;
+  margin-bottom:26px;
+}
+.objetivo-box .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--crimson);font-weight:700;margin-bottom:6px;
+}
+.objetivo-box p{margin:0;font-size:.97rem;}
+
+/* ── FUNCIÓN ── */
+.function-display{
+  background:#fafaf7;border:1px solid var(--border);
+  border-radius:3px;padding:16px 18px 20px;text-align:center;
+  margin-bottom:8px;
+}
+.function-display .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+}
+
+/* ── DOMINIO (barra visual) ── */
+.dom-strip{
+  margin-top:14px;background:#fbfaf7;border:1px solid var(--border);
+  border-radius:3px;padding:14px 18px 10px;
+}
+.dom-strip .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:10px;
+}
+
+/* ── PANEL DE PARÁMETROS ── */
+.a-selector-wrap{
+  background:#fbfaf7;border:1px solid var(--border);
+  border-left:4px solid var(--navy);
+  border-radius:0 3px 3px 0;padding:18px 20px;
+}
+.param-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:14px;margin-bottom:14px;
+}
+.param-field label{
+  display:block;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:5px;
+}
+input[type=number],select{
+  width:100%;padding:7px 9px;
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  border:1px solid var(--border);border-radius:2px;
+  background:#fff;color:var(--text);
+}
+input[type=number]:focus,select:focus{
+  outline:2px solid var(--navy);outline-offset:1px;border-color:var(--navy);
+}
+.preview-box{
+  background:#fff;border:1px dashed var(--border);
+  border-radius:2px;padding:11px 14px;font-size:.92rem;
+  color:var(--muted);
+}
+.preview-box strong{color:var(--navy);}
+
+/* ── BOTONES ── */
+.btn-row{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0;}
+button{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.76rem;letter-spacing:.06em;
+  padding:8px 15px;border-radius:2px;cursor:pointer;
+  border:1px solid transparent;
+  transition:transform .14s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+.btn-verify{background:var(--crimson);color:#fff;}
+.btn-verify:hover{background:#7f1439;box-shadow:0 4px 12px rgba(155,24,69,.28);}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:#002e5c;box-shadow:0 4px 12px rgba(0,59,117,.28);}
+.btn-ghost{background:transparent;color:var(--navy);border-color:var(--navy);}
+.btn-ghost:hover{background:var(--accent-bg);}
+.btn-preset{
+  background:#fff;color:var(--muted);border-color:var(--border);
+  font-size:.72rem;padding:6px 11px;
+}
+.btn-preset:hover{border-color:var(--navy);color:var(--navy);background:var(--accent-bg);}
+button[disabled]{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* ── TABLAS ── */
+.table-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:3px;}
+table{border-collapse:collapse;width:100%;font-family:'JetBrains Mono',monospace;font-size:.82rem;}
+th,td{border:1px solid var(--border);padding:8px 6px;text-align:center;white-space:nowrap;}
+thead th{background:var(--navy);color:#fff;font-weight:500;letter-spacing:.04em;}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+th.rowlab{background:#fbfaf7;color:var(--navy);font-weight:700;text-align:right;padding-right:10px;}
+td.point-col{background:#e9f5ee !important;color:var(--success);font-weight:700;}
+th.point-col{background:var(--success) !important;}
+td.out-col{background:#f2f0ec !important;}
+th.out-col{background:#6b6560 !important;}
+table input{
+  width:74px;padding:5px 4px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  border:1px solid var(--border);border-radius:2px;background:#fff;
+}
+table input.correct{border-color:var(--success);background:#e9f5ee;color:var(--success);font-weight:700;}
+table input.wrong{border-color:var(--crimson);background:#fdeef2;color:var(--crimson);}
+
+.badge{
+  display:none;margin-left:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.74rem;
+  padding:7px 13px;border-radius:2px;
+}
+.badge.show{display:inline-block;}
+.badge.ok{background:#e9f5ee;color:var(--success);border:1px solid var(--success);}
+.badge.mid{background:#fdf6e6;color:#8a6a15;border:1px solid var(--gold);}
+.badge.bad{background:#fdeef2;color:var(--crimson);border:1px solid var(--crimson);}
+
+.hint-box{
+  display:none;margin-top:12px;
+  background:#fdf9ee;border:1px solid var(--gold);border-left:4px solid var(--gold);
+  padding:12px 15px;border-radius:0 3px 3px 0;font-size:.92rem;
+}
+.hint-box.show{display:block;}
+
+/* ── GRÁFICO ── */
+.chart-box{
+  position:relative;width:100%;height:420px;
+  background:#fdfdfb;border:1px solid var(--border);border-radius:3px;
+  cursor:crosshair;overflow:hidden;
+}
+.chart-opts{
+  display:flex;flex-wrap:wrap;gap:16px;
+  margin:12px 0 4px;font-size:.84rem;color:var(--muted);
+}
+.chart-opts label{display:flex;align-items:center;gap:6px;cursor:pointer;}
+.chart-opts input[type=checkbox]{accent-color:var(--navy);width:15px;height:15px;cursor:pointer;}
+.range-row{display:flex;align-items:center;gap:12px;margin-top:10px;font-size:.84rem;color:var(--muted);}
+input[type=range]{accent-color:var(--navy);flex:1;cursor:pointer;min-width:110px;}
+
+.grid line{stroke:#e4e0d6;stroke-dasharray:2 3;}
+.axis path,.axis line{stroke:#9c968c;}
+.axis text{font-family:'JetBrains Mono',monospace;font-size:10px;fill:var(--muted);}
+.curve{fill:none;stroke:var(--navy);stroke-width:2.4;}
+.open-dot{fill:#fff;stroke:var(--navy);stroke-width:2.2;}
+.closed-dot{fill:var(--crimson);stroke:#fff;stroke-width:1.4;}
+.tbl-dot{fill:var(--gold);stroke:#fff;stroke-width:1.2;cursor:pointer;}
+.vline{stroke:var(--crimson);stroke-width:1.2;stroke-dasharray:5 4;opacity:.75;}
+.hline{stroke:var(--gold);stroke-width:1.2;stroke-dasharray:5 4;opacity:.85;}
+.nodomain{fill:#6b6560;opacity:.10;}
+.nodomain-hatch{stroke:#6b6560;stroke-width:1;opacity:.30;}
+
+.tooltip{
+  position:absolute;pointer-events:none;opacity:0;
+  background:var(--navy);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  padding:6px 9px;border-radius:2px;
+  transform:translate(-50%,-142%);
+  transition:opacity .12s ease;white-space:nowrap;z-index:5;
+}
+.tooltip::after{
+  content:'';position:absolute;left:50%;top:100%;
+  transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--navy);
+}
+
+/* ── PANEL LATERALES ── */
+.lat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+.lat-card{
+  background:#fbfaf7;border:1px solid var(--border);
+  border-top:3px solid var(--navy);border-radius:2px;padding:13px 15px;
+}
+.lat-card.dead{border-top-color:var(--muted);background:#f4f2ee;}
+.lat-card .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px;
+}
+.lat-card .val{font-family:'JetBrains Mono',monospace;font-size:1.12rem;color:var(--navy);font-weight:700;}
+.lat-card.dead .val{color:var(--muted);}
+.lat-card .note{font-size:.82rem;color:var(--muted);margin-top:4px;}
+.verdict{
+  margin-top:14px;padding:13px 16px;border-radius:0 3px 3px 0;
+  background:#fdeef2;border-left:4px solid var(--crimson);font-size:.95rem;
+}
+
+/* ── REFLEXIÓN ── */
+.q-list{list-style:none;margin:0;padding:0;counter-reset:q;}
+.q-item{
+  background:#fbfaf7;border:1px solid var(--border);
+  border-left:4px solid var(--navy);border-radius:0 3px 3px 0;
+  padding:14px 18px 14px 46px;margin-bottom:12px;position:relative;
+}
+.q-item::before{
+  counter-increment:q;content:counter(q);
+  position:absolute;left:13px;top:14px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.q-item .q-text{font-size:.97rem;margin-bottom:9px;}
+.q-opts{display:flex;flex-wrap:wrap;gap:8px;}
+.q-opt{
+  background:#fff;color:var(--text);border:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  padding:6px 12px;border-radius:2px;cursor:pointer;
+}
+.q-opt:hover{border-color:var(--navy);background:var(--accent-bg);}
+.q-opt.sel{border-color:var(--navy);background:var(--accent-bg);color:var(--navy);font-weight:700;}
+.q-opt.good{border-color:var(--success);background:#e9f5ee;color:var(--success);font-weight:700;}
+.q-opt.bad{border-color:var(--crimson);background:#fdeef2;color:var(--crimson);}
+.q-fb{
+  display:none;margin-top:10px;padding:10px 13px;border-radius:0 2px 2px 0;
+  font-size:.9rem;background:#fdf9ee;border-left:3px solid var(--gold);
+}
+.q-fb.show{display:block;}
+.q-fb.ok{background:#e9f5ee;border-left-color:var(--success);}
+.q-fb.no{background:#fdeef2;border-left-color:var(--crimson);}
+
+/* ── ε–δ ── */
+.ed-section{margin-top:16px;}
+.ed-toggle{width:100%;text-align:left;}
+.ed-body{display:none;margin-top:16px;}
+.ed-body.show{display:block;}
+.def-box{
+  background:var(--navy);color:#fff;
+  border-radius:3px;padding:18px 22px;
+  box-shadow:inset 0 0 0 1px rgba(200,169,81,.35);
+}
+.def-box .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  position:relative;margin:14px 0;padding:12px 16px 12px 46px;
+  background:#fbfaf7;border:1px solid var(--border);border-radius:2px;font-size:.94rem;
+}
+.proof-step .sn{
+  position:absolute;left:12px;top:12px;
+  width:23px;height:23px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.qed{
+  background:var(--accent-bg);border:1px solid var(--navy);
+  border-radius:2px;padding:12px 16px;margin-top:14px;
+  font-size:.94rem;display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.qed .sym{font-family:'JetBrains Mono',monospace;font-size:1.2rem;color:var(--navy);}
+
+/* ── CONCLUSIÓN ── */
+.concl-box{
+  background:#fbfaf7;border:1px solid var(--border);
+  border-left:4px solid var(--gold);border-radius:0 3px 3px 0;
+  padding:18px 22px;
+}
+.concl-box .lab{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:9px;
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:26px 22px 34px;text-align:center;background:var(--light);
+}
+footer p{
+  margin:0;font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:.12em;color:var(--muted);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  body{font-size:16px;}
+  .header-grid{grid-template-columns:1fr;gap:14px;text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .card-body{padding:22px 16px 28px;}
+  main{padding:32px 12px 60px;}
+  .lat-grid{grid-template-columns:1fr;}
+  .chart-box{height:340px;}
+  .param-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="Seminario">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="seminario">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="titulo">Límite lateral único debido al dominio</div>
+      <div class="subtitulo">Cuando el dominio impide acercarse por ambos lados</div>
+    </div>
+    <div class="header-author">
+      <div class="label">MATERIAL DE</div>
+      <div class="nombre">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════ MAIN ══════════ -->
+<main>
+<div class="activity-card">
+
+  <div class="card-head">
+    <div class="card-num">3</div>
+    <h1>Límite lateral único debido al dominio</h1>
+  </div>
+
+  <div class="card-body">
+
+    <!-- ── OBJETIVO ── -->
+    <div class="objetivo-box">
+      <div class="lab">Objetivo</div>
+      <p>Comprender que en algunos casos solo se puede estudiar el límite <em>por un solo lado</em>, debido a que el dominio no permite acercarse desde ambos lados.</p>
+    </div>
+
+    <!-- ── FUNCIÓN ── -->
+    <div class="function-display">
+      <div class="lab">Función</div>
+      <div id="fn-display">$$h(x)=\sqrt{x-2}$$</div>
+    </div>
+
+    <div class="dom-strip">
+      <div class="lab">Dominio de h</div>
+      <div id="dom-tex"></div>
+      <div id="dom-line" style="margin-top:8px"></div>
+      <p class="small" id="dom-note" style="margin:8px 0 0"></p>
+    </div>
+
+    <!-- ── PARÁMETROS ── -->
+    <section class="block">
+      <h2 class="block-title"><span class="n">0</span> Panel de parámetros</h2>
+      <p class="small">La actividad se generaliza a la familia
+        $\;h(x)=c\,\sqrt{\,\sigma\,(x-a)\,}+k$, donde $\sigma=+1$ da una raíz <em>por la derecha</em>
+        ($\mathrm{Dom}=[a,\infty)$) y $\sigma=-1$ la <em>refleja</em>, dando una raíz por la izquierda
+        ($\mathrm{Dom}=(-\infty,a]$). Todo —tabla, gráfico, laterales, ε–δ y conclusión— se recalcula.</p>
+
+      <div class="a-selector-wrap">
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-a">Punto&nbsp;a</label>
+            <input type="number" id="p-a" value="2" step="0.5">
+          </div>
+          <div class="param-field">
+            <label for="p-c">Amplitud&nbsp;c</label>
+            <input type="number" id="p-c" value="1" step="0.5">
+          </div>
+          <div class="param-field">
+            <label for="p-k">Traslación&nbsp;k</label>
+            <input type="number" id="p-k" value="0" step="0.5">
+          </div>
+          <div class="param-field">
+            <label for="p-s">Lado accesible&nbsp;σ</label>
+            <select id="p-s">
+              <option value="1" selected>σ = +1 · derecha [a, ∞)</option>
+              <option value="-1">σ = −1 · izquierda (−∞, a]</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer (original)</button>
+        </div>
+
+        <div class="btn-row" style="margin-top:0">
+          <button class="btn-preset" data-preset="2,1,0,1">a = 2 (original)</button>
+          <button class="btn-preset" data-preset="-1,1,0,1">a = −1</button>
+          <button class="btn-preset" data-preset="2,1,0,-1">σ = −1 (lado izquierdo)</button>
+          <button class="btn-preset" data-preset="0,2,1,1">c = 2, k = 1</button>
+          <button class="btn-preset" data-preset="3,-1,4,1">c = −1 (rama hacia abajo)</button>
+        </div>
+
+        <div class="preview-box" id="preview"></div>
+      </div>
+    </section>
+
+    <!-- ── TABLA ── -->
+    <section class="block">
+      <h2 class="block-title">
+        <span class="n">1</span> Complete la tabla para $x$ cercanos a $a$ <em>por el lado accesible</em>
+        <span class="badge" id="badge"></span>
+      </h2>
+      <p class="small" id="tabla-note"></p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody><tr id="tbody-row"></tr></tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify">Verificar</button>
+        <button class="btn-primary" id="btn-fill">Rellenar solución</button>
+        <button class="btn-ghost" id="btn-clear">Limpiar</button>
+        <button class="btn-ghost" id="btn-hint">Pista</button>
+        <button class="btn-ghost" id="btn-toggle-out">Mostrar columnas del lado prohibido</button>
+      </div>
+
+      <div class="hint-box" id="hint"></div>
+    </section>
+
+    <!-- ── GRÁFICO ── -->
+    <section class="block">
+      <h2 class="block-title"><span class="n">2</span> Simulador gráfico e interpretación</h2>
+      <p class="small">La zona <span class="mono">gris rayada</span> es la región donde $h$ <strong>no existe</strong>: allí no hay curva que recorrer, luego no hay acercamiento posible. El punto $\big(a,\;h(a)\big)$ se dibuja <strong>cerrado</strong>, porque a diferencia de la Actividad 2 aquí $a$ <em>sí</em> pertenece al dominio.</p>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> Grilla</label>
+        <label><input type="checkbox" id="opt-pts" checked> Puntos de la tabla</label>
+        <label><input type="checkbox" id="opt-lines" checked> Líneas guía $x=a$, $y=L$</label>
+        <label><input type="checkbox" id="opt-dom" checked> Sombrear región sin dominio</label>
+        <label><input type="checkbox" id="opt-eps"> Bandas ε–δ (unilaterales)</label>
+      </div>
+
+      <div class="range-row">
+        <span class="mono">ZOOM</span>
+        <input type="range" id="p-zoom" min="1" max="10" step="0.5" value="4">
+        <span class="mono" id="zoom-lab"></span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Animar acercamiento</button>
+        <button class="btn-ghost" id="btn-anim-stop" disabled>■ Detener</button>
+      </div>
+      <p class="small" id="anim-note" style="margin-top:-4px"></p>
+
+      <div class="lat-grid">
+        <div class="lat-card" id="card-left">
+          <div class="lab">Límite por la izquierda</div>
+          <div id="lat-l-tex" style="margin-bottom:4px"></div>
+          <div class="val" id="lat-l-val">—</div>
+          <div class="note" id="lat-l-note"></div>
+        </div>
+        <div class="lat-card" id="card-right">
+          <div class="lab">Límite por la derecha</div>
+          <div id="lat-r-tex" style="margin-bottom:4px"></div>
+          <div class="val" id="lat-r-val">—</div>
+          <div class="note" id="lat-r-note"></div>
+        </div>
+      </div>
+
+      <div class="verdict" id="verdict"></div>
+    </section>
+
+    <!-- ── REFLEXIÓN ── -->
+    <section class="block">
+      <h2 class="block-title">
+        <span class="n">3</span> Reflexione
+        <span class="badge" id="badge-q"></span>
+      </h2>
+      <p class="small">Responda a partir de la tabla y del gráfico. Los enunciados se adaptan a los parámetros actuales.</p>
+
+      <ol class="q-list" id="q-list"></ol>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-q-check">Comprobar respuestas</button>
+        <button class="btn-ghost" id="btn-q-reset">Reiniciar reflexión</button>
+      </div>
+    </section>
+
+    <!-- ── COMPARACIÓN CON ACTIVIDAD 2 ── -->
+    <section class="block">
+      <h2 class="block-title"><span class="n">4</span> Contraste: dos maneras distintas de «fallar»</h2>
+      <p class="small">Conviene no confundir esta situación con la de la actividad anterior. En ambas hay un problema en $x=a$, pero de naturaleza opuesta.</p>
+      <div class="table-scroll">
+        <table id="cmp-table"></table>
+      </div>
+    </section>
+
+    <!-- ── ε–δ ── -->
+    <section class="block ed-section">
+      <h2 class="block-title"><span class="n">5</span> Módulo avanzado: definición ε–δ unilateral</h2>
+      <button class="btn-ghost ed-toggle" id="btn-ed">▸ Mostrar la definición formal y la demostración</button>
+
+      <div class="ed-body" id="ed-body">
+        <div class="def-box">
+          <div class="lab">Definición de límite lateral</div>
+          <div id="def-tex"></div>
+        </div>
+
+        <div class="range-row" style="margin-top:18px">
+          <span class="mono">ε</span>
+          <input type="range" id="p-eps" min="0.05" max="2" step="0.05" value="0.5">
+          <span class="mono" id="eps-lab"></span>
+        </div>
+        <p class="small" id="delta-line"></p>
+
+        <div id="proof"></div>
+      </div>
+    </section>
+
+    <!-- ── CONCLUSIÓN ── -->
+    <section class="block">
+      <h2 class="block-title"><span class="n">6</span> Conclusión esperada</h2>
+      <div class="concl-box">
+        <div class="lab">Conclusión dinámica</div>
+        <div id="concl"></div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 3 · Dr. Eligio Colmenares</p>
+</footer>
+
+<!-- CDNs SIN onload, en orden -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL (única fuente de verdad)
+   ══════════════════════════════════════════════ */
+let PA = 2;       // punto a
+let PC = 1;       // amplitud c
+let PK = 0;       // traslación k
+let PS = 1;       // σ = +1 (dominio a la derecha) | −1 (a la izquierda)
+let PZOOM = 4;
+let PEPS = 0.5;
+let SHOW_GRID = true, SHOW_PTS = true, SHOW_LINES = true, SHOW_DOM = true, SHOW_EPS = false;
+let SHOW_OUT = false;   // mostrar columnas del lado prohibido en la tabla
+
+let animTimer = null;
+let animState = null;   // {x, done}
+const Q_ANS   = {};
+
+const TOL = 1e-9;
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — UTILIDADES NUMÉRICAS
+   ══════════════════════════════════════════════ */
+const r6 = v => Math.round(v * 1e6) / 1e6;
+
+function fmt(v, d = 4){
+  if (!isFinite(v)) return '—';
+  const s = r6(v).toFixed(d);
+  return s.replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+}
+function fmt2(v){ return fmt(v, 2); }
+function num(s){ return String(s).replace('-', '−'); }
+
+/* ── h(x) — definida en UN SOLO lugar ──
+   h(x) = c · sqrt( σ (x − a) ) + k
+   El radicando σ(x−a) debe ser ≥ 0 ⇒ fuera del dominio devuelve NaN. */
+function h(x){
+  const rad = PS * (x - PA);
+  if (rad < -1e-12) return NaN;          // fuera del dominio: h no existe
+  return PC * Math.sqrt(Math.max(0, rad)) + PK;
+}
+
+/* ── ¿pertenece x al dominio? ── */
+function inDom(x){ return PS * (x - PA) >= -1e-12; }
+
+/* ── Límite lateral accesible: L = h(a) = k ── */
+function L(){ return PK; }
+
+/* ── Etiquetas del lado accesible / prohibido ── */
+function sideAcc(){ return PS > 0 ? '+' : '-'; }   // exponente del lado accesible
+function sideBan(){ return PS > 0 ? '-' : '+'; }
+function sideAccWord(){ return PS > 0 ? 'derecha' : 'izquierda'; }
+function sideBanWord(){ return PS > 0 ? 'izquierda' : 'derecha'; }
+function domLatex(){
+  return PS > 0
+    ? `\\mathrm{Dom}(h)=\\left[${fmt2(PA)},\\;+\\infty\\right)`
+    : `\\mathrm{Dom}(h)=\\left(-\\infty,\\;${fmt2(PA)}\\right]`;
+}
+
+/* ── Desplazamientos de la tabla (los de la imagen: 0, 1e-4, 1e-3, 1e-2, 0.1, 0.25) ── */
+const OFFS = [0, 0.0001, 0.001, 0.01, 0.1, 0.25];
+
+/* Columnas accesibles: a + σ·offset.  Columnas prohibidas (opcionales): a − σ·offset. */
+function tableXs(){
+  const acc = OFFS.map(o => r6(PA + PS * o));
+  if (!SHOW_OUT) return acc;
+  const ban = OFFS.filter(o => o > 0).map(o => r6(PA - PS * o)).reverse();
+  return PS > 0 ? [...ban, ...acc] : [...acc, ...ban];
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* degrada sin romper */ }
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — LECTURA DE PARÁMETROS
+   ══════════════════════════════════════════════ */
+function readParams(){
+  const a = parseFloat(document.getElementById('p-a').value);
+  const c = parseFloat(document.getElementById('p-c').value);
+  const k = parseFloat(document.getElementById('p-k').value);
+  const s = parseFloat(document.getElementById('p-s').value);
+
+  PA = isFinite(a) ? a : 2;
+  PC = (isFinite(c) && Math.abs(c) > 1e-12) ? c : 1;   // c = 0 haría h constante: se evita
+  PK = isFinite(k) ? k : 0;
+  PS = (s < 0) ? -1 : 1;
+
+  if (PC !== c) document.getElementById('p-c').value = PC;
+
+  PZOOM = parseFloat(document.getElementById('p-zoom').value) || 4;
+  PEPS  = parseFloat(document.getElementById('p-eps').value)  || 0.5;
+
+  SHOW_GRID  = document.getElementById('opt-grid').checked;
+  SHOW_PTS   = document.getElementById('opt-pts').checked;
+  SHOW_LINES = document.getElementById('opt-lines').checked;
+  SHOW_DOM   = document.getElementById('opt-dom').checked;
+  SHOW_EPS   = document.getElementById('opt-eps').checked;
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — LaTeX de la función
+   ══════════════════════════════════════════════ */
+function fnLatex(){
+  const cT   = (PC === 1) ? '' : (PC === -1 ? '-' : `${fmt2(PC)}\\,`);
+  const inner = (PS > 0) ? `x-${fmt2(PA)}` : `${fmt2(PA)}-x`;
+  const kT   = (PK === 0) ? '' : (PK > 0 ? `+${fmt2(PK)}` : `-${fmt2(Math.abs(PK))}`);
+  return `h(x)=${cT}\\sqrt{\\,${inner}\\,}${kT}`;
+}
+function radLatex(){ return (PS > 0) ? `x-${fmt2(PA)}` : `${fmt2(PA)}-x`; }
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — TABLA
+   ══════════════════════════════════════════════ */
+function buildTable(){
+  const xs    = tableXs();
+  const thead = document.getElementById('thead-row');
+  const tbody = document.getElementById('tbody-row');
+  thead.innerHTML = '';
+  tbody.innerHTML = '';
+
+  const th0 = document.createElement('th');
+  th0.className = 'rowlab'; th0.textContent = 'x';
+  thead.appendChild(th0);
+
+  const td0 = document.createElement('th');
+  td0.className = 'rowlab'; td0.textContent = 'h(x)';
+  tbody.appendChild(td0);
+
+  xs.forEach((xi, i) => {
+    const isA  = Math.abs(xi - PA) < 1e-12;
+    const out  = !inDom(xi);
+
+    const th = document.createElement('th');
+    th.textContent = num(r6(xi));
+    if (isA) th.className = 'point-col';
+    else if (out) th.className = 'out-col';
+    thead.appendChild(th);
+
+    const td = document.createElement('td');
+    if (isA) td.className = 'point-col';
+    else if (out) td.className = 'out-col';
+
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.dataset.i = i;
+    inp.setAttribute('aria-label', 'h en x = ' + r6(xi));
+    if (out) inp.placeholder = 'ND';
+    td.appendChild(inp);
+    tbody.appendChild(td);
+  });
+
+  document.getElementById('badge').className = 'badge';
+}
+
+function tableInputs(){ return Array.from(document.querySelectorAll('#tabla input')); }
+
+function verifyTable(){
+  const xs = tableXs();
+  let ok = 0, total = 0;
+
+  tableInputs().forEach((inp, i) => {
+    const xi  = xs[i];
+    const raw = inp.value.trim().replace(',', '.').replace('−', '-');
+    inp.classList.remove('correct', 'wrong');
+    total++;
+
+    /* Columna del lado prohibido: la respuesta correcta es "no definido" */
+    if (!inDom(xi)){
+      const good = raw === '' || /^(nd|n\/d|no definido|indefinido|no existe|—|-)$/i.test(raw);
+      inp.classList.add(good ? 'correct' : 'wrong');
+      if (good) ok++;
+      return;
+    }
+
+    const v = parseFloat(raw);
+    if (!isFinite(v)){ inp.classList.add('wrong'); return; }
+
+    const target = h(xi);
+    const tolRel = Math.max(1e-3, Math.abs(target) * 5e-4);
+    const good   = Math.abs(v - target) <= tolRel;
+    inp.classList.add(good ? 'correct' : 'wrong');
+    if (good) ok++;
+  });
+
+  const b = document.getElementById('badge');
+  b.textContent = `${ok} / ${total} correctas`;
+  b.className = 'badge show ' + (ok === total ? 'ok' : (ok >= total * 0.6 ? 'mid' : 'bad'));
+}
+
+function fillTable(){
+  const xs = tableXs();
+  tableInputs().forEach((inp, i) => {
+    const xi = xs[i];
+    inp.classList.remove('correct', 'wrong');
+    inp.value = inDom(xi) ? fmt(h(xi), 4) : 'ND';
+  });
+  const b = document.getElementById('badge');
+  b.textContent = 'Solución mostrada';
+  b.className = 'badge show mid';
+}
+
+function clearTable(){
+  tableInputs().forEach(inp => { inp.value = ''; inp.classList.remove('correct', 'wrong'); });
+  document.getElementById('badge').className = 'badge';
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO D3
+   ══════════════════════════════════════════════ */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 700;
+  const H = box.clientHeight || 420;
+  const M = {top:20, right:24, bottom:38, left:52};
+  const iw = Math.max(60, W - M.left - M.right);
+  const ih = Math.max(60, H - M.top  - M.bottom);
+
+  const xMin = PA - PZOOM;
+  const xMax = PA + PZOOM;
+
+  /* ── dominio y: SOLO los puntos que existen (filtrar NaN) ── */
+  const xVals  = d3.range(xMin, xMax + 1e-9, (xMax - xMin) / 500);
+  const curveY = xVals.map(h).filter(isFinite);
+  const extraY = [L(), L() + PEPS, L() - PEPS];
+  const allY   = [...curveY, ...extraY].filter(isFinite);
+
+  let yLo = allY.length ? Math.min(...allY) : -5;
+  let yHi = allY.length ? Math.max(...allY) :  5;
+  if (Math.abs(yHi - yLo) < 1e-6){ yLo -= 1; yHi += 1; }
+  const pad = (yHi - yLo) * 0.14;
+  yLo -= pad; yHi += pad;
+
+  const x = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const y = d3.scaleLinear().domain([yLo, yHi]).range([ih, 0]);
+
+  const svg = d3.select('#chart-box').append('svg').attr('width', W).attr('height', H);
+  const defs = svg.append('defs');
+  defs.append('clipPath').attr('id', 'clip-plot')
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  /* patrón de rayado para la región sin dominio */
+  const pat = defs.append('pattern')
+    .attr('id', 'hatch').attr('width', 7).attr('height', 7)
+    .attr('patternUnits', 'userSpaceOnUse')
+    .attr('patternTransform', 'rotate(45)');
+  pat.append('rect').attr('width', 7).attr('height', 7).attr('fill', '#6b6560').attr('opacity', .07);
+  pat.append('line').attr('x1', 0).attr('y1', 0).attr('x2', 0).attr('y2', 7)
+    .attr('class', 'nodomain-hatch');
+
+  const gRoot = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
+
+  if (SHOW_GRID){
+    gRoot.append('g').attr('class', 'grid')
+      .attr('transform', `translate(0,${ih})`)
+      .call(d3.axisBottom(x).ticks(8).tickSize(-ih).tickFormat(''))
+      .select('.domain').remove();
+    gRoot.append('g').attr('class', 'grid')
+      .call(d3.axisLeft(y).ticks(7).tickSize(-iw).tickFormat(''))
+      .select('.domain').remove();
+  }
+
+  gRoot.append('g').attr('class', 'axis')
+    .attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).ticks(8));
+  gRoot.append('g').attr('class', 'axis').call(d3.axisLeft(y).ticks(7));
+
+  gRoot.append('text').attr('x', iw).attr('y', ih - 8).attr('text-anchor', 'end')
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '11px')
+    .style('fill', 'var(--muted)').text('x');
+  gRoot.append('text').attr('x', 6).attr('y', 12)
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '11px')
+    .style('fill', 'var(--muted)').text('h(x)');
+
+  if (0 >= yLo && 0 <= yHi)
+    gRoot.append('line').attr('x1', 0).attr('x2', iw).attr('y1', y(0)).attr('y2', y(0))
+      .attr('stroke', '#b5aea3').attr('stroke-width', 1);
+  if (0 >= xMin && 0 <= xMax)
+    gRoot.append('line').attr('y1', 0).attr('y2', ih).attr('x1', x(0)).attr('x2', x(0))
+      .attr('stroke', '#b5aea3').attr('stroke-width', 1);
+
+  const plot = gRoot.append('g').attr('clip-path', 'url(#clip-plot)');
+
+  /* ── REGIÓN SIN DOMINIO (el corazón de esta actividad) ── */
+  if (SHOW_DOM){
+    const x0 = (PS > 0) ? 0      : x(PA);
+    const x1 = (PS > 0) ? x(PA)  : iw;
+    plot.append('rect')
+      .attr('x', x0).attr('width', Math.max(0, x1 - x0))
+      .attr('y', 0).attr('height', ih)
+      .attr('fill', 'url(#hatch)');
+    plot.append('text')
+      .attr('x', (x0 + x1) / 2).attr('y', 22)
+      .attr('text-anchor', 'middle')
+      .style('font-family', 'JetBrains Mono, monospace').style('font-size', '10.5px')
+      .style('fill', '#6b6560')
+      .text('h no está definida aquí');
+  }
+
+  /* ── bandas ε–δ (unilaterales) ── */
+  const DELTA = deltaOf(PEPS);
+  if (SHOW_EPS){
+    plot.append('rect')
+      .attr('x', 0).attr('width', iw)
+      .attr('y', y(L() + PEPS)).attr('height', Math.abs(y(L() - PEPS) - y(L() + PEPS)))
+      .attr('fill', 'var(--gold)').attr('opacity', .18);
+    /* la franja δ vive SOLO del lado accesible */
+    const dx0 = (PS > 0) ? x(PA) : x(PA - DELTA);
+    const dx1 = (PS > 0) ? x(PA + DELTA) : x(PA);
+    plot.append('rect')
+      .attr('x', Math.min(dx0, dx1)).attr('width', Math.abs(dx1 - dx0))
+      .attr('y', 0).attr('height', ih)
+      .attr('fill', 'var(--navy)').attr('opacity', .13);
+  }
+
+  if (SHOW_LINES){
+    plot.append('line').attr('class', 'vline')
+      .attr('x1', x(PA)).attr('x2', x(PA)).attr('y1', 0).attr('y2', ih);
+    plot.append('line').attr('class', 'hline')
+      .attr('x1', 0).attr('x2', iw).attr('y1', y(L())).attr('y2', y(L()));
+  }
+
+  /* ── CURVA: una sola rama, la del lado accesible.
+        Nunca se muestrea el lado prohibido (h daría NaN). ── */
+  const line = d3.line().x(d => x(d[0])).y(d => y(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+
+  const from = (PS > 0) ? PA   : xMin;
+  const to   = (PS > 0) ? xMax : PA;
+  const n    = 400;
+  const pts  = d3.range(0, n + 1)
+    .map(i => from + (to - from) * (i / n))
+    .map(xi => [xi, h(xi)])
+    .filter(d => isFinite(d[1]));
+
+  if (pts.length > 1)
+    plot.append('path').datum(pts).attr('class', 'curve').attr('d', line);
+
+  /* ── PUNTO EN x = a — criterio programático ──
+     fc = h(a) = k es FINITO (a ∈ Dom h) y coincide con el límite lateral
+     ⇒ el valor SÍ se alcanza ⇒ punto CERRADO.
+     (Contraste con la Actividad 2, donde f(a) = NaN ⇒ punto abierto.) */
+  const fc      = h(PA);
+  const reached = isFinite(fc) && Math.abs(fc - L()) < TOL;
+  plot.append('circle')
+    .attr('class', reached ? 'closed-dot' : 'open-dot')
+    .attr('cx', x(PA)).attr('cy', y(isFinite(fc) ? fc : L())).attr('r', 5.6);
+
+  plot.append('text')
+    .attr('x', x(PA) + (PS > 0 ? 10 : -10))
+    .attr('y', y(L()) - 11)
+    .attr('text-anchor', PS > 0 ? 'start' : 'end')
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '10.5px')
+    .style('fill', 'var(--crimson)')
+    .text(`h(${fmt2(PA)}) = ${fmt2(L())}  (sí se alcanza)`);
+
+  /* ── puntos de la tabla (solo los del dominio) ── */
+  if (SHOW_PTS){
+    const tp = tableXs().filter(xi => inDom(xi) && xi >= xMin && xi <= xMax && Math.abs(xi - PA) > 1e-12);
+    plot.selectAll('.tbl-dot').data(tp).enter().append('circle')
+      .attr('class', 'tbl-dot')
+      .attr('cx', d => x(d)).attr('cy', d => y(h(d))).attr('r', 4.2)
+      .on('mouseenter', (ev, d) => showTip(d, h(d)))
+      .on('mouseleave', hideTip)
+      .on('click', (ev, d) => {
+        const idx = tableXs().findIndex(t => Math.abs(t - d) < 1e-12);
+        const inp = tableInputs()[idx];
+        if (inp){ inp.value = fmt(h(d), 4); inp.focus(); inp.classList.remove('wrong'); }
+      });
+  }
+
+  /* ── punto móvil de la animación ── */
+  if (animState && isFinite(animState.x)){
+    const xi = animState.x;
+    const yi = h(xi);
+    if (isFinite(yi)){
+      const c = plot.append('circle').attr('cx', x(xi)).attr('cy', y(yi)).attr('r', 6);
+      /* Al terminar, el punto móvil aterriza sobre h(a), que SÍ se alcanza ⇒ CERRADO.
+         Coherente con el punto estático y con el panel de laterales. */
+      if (animState.done && reached) c.attr('class', 'closed-dot');
+      else if (animState.done)       c.attr('class', 'open-dot');
+      else c.attr('fill', 'var(--success)').attr('stroke', '#fff').attr('stroke-width', 1.4);
+    }
+  }
+
+  /* ── tooltip ── */
+  const tip = document.getElementById('tooltip');
+  gRoot.append('rect')
+    .attr('width', iw).attr('height', ih).attr('fill', 'transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, this);
+      const xv = x.invert(mx);
+      if (!inDom(xv)){
+        tip.innerHTML = `x = ${fmt(xv,3)} · h(x) no existe (fuera del dominio)`;
+        tip.style.left = (M.left + mx) + 'px';
+        tip.style.top  = (M.top  + ih / 2) + 'px';
+        tip.style.opacity = 1;
+        return;
+      }
+      const yv = h(xv);
+      if (!isFinite(yv)){ hideTip(); return; }
+      tip.innerHTML = `x = ${fmt(xv,3)} · h(x) = ${fmt(yv,3)}`;
+      tip.style.left = (M.left + x(xv)) + 'px';
+      tip.style.top  = (M.top  + y(yv)) + 'px';
+      tip.style.opacity = 1;
+    })
+    .on('mouseleave', hideTip);
+
+  function showTip(xi, yi){
+    tip.innerHTML = `x = ${fmt(xi,4)} · h(x) = ${fmt(yi,4)}`;
+    tip.style.left = (M.left + x(xi)) + 'px';
+    tip.style.top  = (M.top  + y(yi)) + 'px';
+    tip.style.opacity = 1;
+  }
+  function hideTip(){ tip.style.opacity = 0; }
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN (acercamiento por UN solo lado)
+   ══════════════════════════════════════════════ */
+function startAnim(){
+  stopAnim(false);
+  const d0 = Math.max(0.6, PZOOM * 0.55);
+  let step = 0;
+  const N  = 46;
+
+  document.getElementById('btn-anim').disabled = true;
+  document.getElementById('btn-anim-stop').disabled = false;
+
+  animTimer = setInterval(() => {
+    step++;
+    const t = step / N;
+    const d = d0 * Math.pow(1 - t, 2.6);
+    animState = { x: PA + PS * d, done: false };
+
+    if (step >= N){
+      animState = { x: PA, done: true };   // aterriza exactamente en a, que SÍ pertenece al dominio
+      stopAnim(true);
+    }
+    drawChart();
+    updatePanels();
+  }, 42);
+}
+
+function stopAnim(keepState){
+  if (animTimer){ clearInterval(animTimer); animTimer = null; }
+  if (!keepState) animState = null;
+  document.getElementById('btn-anim').disabled = false;
+  document.getElementById('btn-anim-stop').disabled = true;
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — ε–δ UNILATERAL
+   |h(x) − L| = |c|·√(σ(x−a)) < ε  ⟺  σ(x−a) < (ε/|c|)²
+   ⇒ δ = (ε/|c|)²                                            */
+function deltaOf(e){
+  const c = Math.abs(PC);
+  if (c < 1e-12) return PZOOM;
+  return Math.pow(e / c, 2);
+}
+
+function renderProof(){
+  const a  = fmt2(PA);
+  const c  = Math.abs(PC);
+  const Lv = fmt(L());
+  const rad = radLatex();
+  const sideT = sideAcc() === '+' ? '^{+}' : '^{-}';
+  const ineq  = (PS > 0) ? `0&lt;x-${a}&lt;\\delta` : `0&lt;${a}-x&lt;\\delta`;
+
+  document.getElementById('def-tex').innerHTML =
+    `$$\\lim_{x\\to ${a}${sideT}} h(x)=${Lv}
+      \\iff \\forall\\varepsilon&gt;0\\;\\exists\\delta&gt;0:\\;
+      ${ineq} \\;\\Rightarrow\\; \\bigl|h(x)-${Lv}\\bigr|&lt;\\varepsilon$$
+     <p style="margin:12px 0 0;font-size:.9rem;color:rgba(255,255,255,.8)">
+     Nótese la diferencia con el límite bilateral: la hipótesis <strong>no</strong> es $0&lt;|x-${a}|&lt;\\delta$,
+     sino solo la mitad ${sideAccWord() === 'derecha' ? 'derecha' : 'izquierda'} de ese entorno. Es la única
+     mitad donde hay función que evaluar.</p>`;
+
+  document.getElementById('proof').innerHTML = `
+    <h3 style="font-size:.98rem;color:var(--navy);margin:20px 0 4px">Demostración formal del límite lateral</h3>
+    <p class="small">Se prueba que $\\displaystyle\\lim_{x\\to ${a}${sideT}} h(x)=${Lv}$ para los parámetros actuales.</p>
+
+    <div class="proof-step"><div class="sn">1</div>
+      <strong>Sea $\\varepsilon&gt;0$ arbitrario.</strong> Buscamos $\\delta&gt;0$ dependiente solo de $\\varepsilon$.
+    </div>
+
+    <div class="proof-step"><div class="sn">2</div>
+      <strong>Expresión del error.</strong> Para todo $x$ del dominio, con $L=${Lv}$,
+      $$\\bigl|h(x)-L\\bigr|=\\Bigl|${PC===1?'':fmt2(PC)+'\\,'}\\sqrt{\\,${rad}\\,}${PK===0?'':(PK>0?'+'+fmt2(PK):'-'+fmt2(Math.abs(PK)))}-${Lv}\\Bigr|
+      =${c===1?'':fmt(c)+'\\,'}\\sqrt{\\,${rad}\\,}.$$
+      La traslación $k$ se cancela, y solo queda la amplitud $|c|=${fmt(c)}$ por la raíz.
+    </div>
+
+    <div class="proof-step"><div class="sn">3</div>
+      <strong>Despeje.</strong> Queremos $${c===1?'':fmt(c)+'\\,'}\\sqrt{\\,${rad}\\,}&lt;\\varepsilon$.
+      Como ambos miembros son no negativos, elevar al cuadrado es equivalente:
+      $$${rad}&lt;\\left(\\frac{\\varepsilon}{${fmt(c)}}\\right)^{2}.$$
+      <em>Aquí aparece la peculiaridad de la raíz</em>: $\\delta$ depende de $\\varepsilon$ de forma <strong>cuadrática</strong>, no lineal.
+    </div>
+
+    <div class="proof-step"><div class="sn">4</div>
+      <strong>Elección de $\\delta$.</strong> Tomamos
+      $$\\delta=\\left(\\frac{\\varepsilon}{${fmt(c)}}\\right)^{2}.$$
+    </div>
+
+    <div class="proof-step"><div class="sn">5</div>
+      <strong>Cadena de desigualdades.</strong> Si $${ineq}$ (lo que además garantiza $x\\in\\mathrm{Dom}(h)$), entonces
+      $$\\bigl|h(x)-L\\bigr|=${c===1?'':fmt(c)+'\\,'}\\sqrt{\\,${rad}\\,}&lt;${c===1?'':fmt(c)+'\\,'}\\sqrt{\\delta}
+      =${c===1?'':fmt(c)+'\\cdot'}\\frac{\\varepsilon}{${fmt(c)}}=\\varepsilon.$$
+    </div>
+
+    <div class="qed">
+      <span>Queda probado que $\\displaystyle\\lim_{x\\to ${a}${sideT}} h(x)=${Lv}$. En cambio,
+      $\\displaystyle\\lim_{x\\to ${a}^{${sideBan()}}} h(x)$ <strong>ni siquiera puede plantearse</strong>: no hay
+      puntos del dominio en esa mitad del entorno, luego la implicación de la definición sería vacía.
+      Por eso el límite bilateral <strong>no existe</strong>.</span>
+      <span class="sym">□</span>
+    </div>
+  `;
+  renderMath(document.getElementById('ed-body'));
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ══════════════════════════════════════════════ */
+function questions(){
+  const a  = fmt2(PA);
+  const Lv = fmt(L());
+  const accW = sideAccWord(), banW = sideBanWord();
+  const sT   = (PS > 0) ? '^{+}' : '^{-}';
+  const bT   = (PS > 0) ? '^{-}' : '^{+}';
+  const cmp  = (PS > 0) ? `menores que ${a}` : `mayores que ${a}`;
+
+  return [
+    {
+      q: `¿Está definida la función para valores ${cmp}?`,
+      opts: [
+        `No: el radicando $${radLatex()}$ sería negativo.`,
+        `Sí, pero toma valores negativos.`,
+        `Sí: la raíz está definida para todo $x\\in\\mathbb{R}$.`
+      ],
+      ok: 0,
+      fb: `Correcto. La raíz cuadrada real exige radicando $\\geq 0$. Para $x$ ${cmp} se tendría $${radLatex()}&lt;0$, y $\\sqrt{\\text{negativo}}$ <strong>no es un número real</strong>. De ahí que $${domLatex()}$: la función simplemente <em>no existe</em> a la ${banW} de $${a}$ — no es que valga cero ni que sea negativa, es que no hay valor alguno.`
+    },
+    {
+      q: `¿Desde qué lado se puede estudiar el límite en $x=${a}$, y por qué?`,
+      opts: [
+        `Solo por la ${accW}: es el único lado con puntos del dominio.`,
+        `Por ambos lados, como en cualquier función.`,
+        `Solo por la ${banW}.`
+      ],
+      ok: 0,
+      fb: `Correcto. Un límite lateral requiere <em>puntos del dominio arbitrariamente próximos</em> por ese lado. A la ${banW} de $${a}$ no hay ninguno: no existe sucesión $x_n\\to ${a}^{${sideBan()}}$ con $x_n\\in\\mathrm{Dom}(h)$. Por tanto el acercamiento solo es posible por la <strong>${accW}</strong>.`
+    },
+    {
+      q: `¿Qué valor parece alcanzar la función cuando $x\\to ${a}${sT}$?`,
+      opts: [
+        `Se aproxima a $${Lv}$.`,
+        `Crece sin cota.`,
+        `No se aproxima a ningún valor.`
+      ],
+      ok: 0,
+      fb: `Correcto. La tabla lo muestra: al reducir la distancia a $${a}$, el radicando tiende a $0$ y $h(x)\\to ${Lv}$. Aquí hay un matiz importante frente a la Actividad 2: este valor <strong>sí se alcanza</strong>, porque $h(${a})=${Lv}$ está definido. Por eso el punto del gráfico es <em>cerrado</em>.`
+    },
+    {
+      q: `¿Existe el límite $\\lim\\limits_{x\\to ${a}} h(x)$ (bilateral)? ¿Por qué sí o por qué no?`,
+      opts: [
+        `No existe: falta un límite lateral, el de la ${banW}.`,
+        `Sí existe y vale $${Lv}$, porque el lateral accesible vale $${Lv}$.`,
+        `Sí existe, porque $h(${a})=${Lv}$ está definida.`
+      ],
+      ok: 0,
+      fb: `Correcto, y es el punto central de la actividad. El límite bilateral existe <strong>si y solo si</strong> ambos laterales existen <em>y</em> coinciden. Aquí $\\lim_{x\\to ${a}${bT}} h(x)$ <strong>no está definido</strong> (fuera del dominio), de modo que la condición no puede cumplirse: el límite bilateral <strong>no existe</strong>. <br><br>Cuidado con las trampas: que $h(${a})$ exista <em>no</em> implica que exista el límite (opción 3 confunde valor con límite), y que un lateral valga $${Lv}$ tampoco basta por sí solo (opción 2 olvida al otro).<br><br><em>Nota de rigor:</em> bajo la convención de límite <em>relativo al dominio</em> —habitual en análisis— se escribiría $\\lim_{x\\to ${a}} h(x)=${Lv}$, entendiendo el límite dentro de $\\mathrm{Dom}(h)$. La conclusión esperada en este curso adopta la convención clásica de cálculo, que exige ambos laterales.`
+    }
+  ];
+}
+
+function buildQuestions(){
+  const list = document.getElementById('q-list');
+  list.innerHTML = '';
+  Object.keys(Q_ANS).forEach(k => delete Q_ANS[k]);
+
+  questions().forEach((Q, qi) => {
+    const li = document.createElement('li');
+    li.className = 'q-item';
+
+    const txt = document.createElement('div');
+    txt.className = 'q-text';
+    txt.innerHTML = Q.q;
+    li.appendChild(txt);
+
+    const opts = document.createElement('div');
+    opts.className = 'q-opts';
+    Q.opts.forEach((o, oi) => {
+      const b = document.createElement('button');
+      b.className = 'q-opt'; b.type = 'button';
+      b.innerHTML = o;
+      b.dataset.q = qi; b.dataset.o = oi;
+      b.addEventListener('click', () => {
+        Q_ANS[qi] = oi;
+        opts.querySelectorAll('.q-opt').forEach(e => e.classList.remove('sel','good','bad'));
+        b.classList.add('sel');
+        li.querySelector('.q-fb').className = 'q-fb';
+        document.getElementById('badge-q').className = 'badge';
+      });
+      opts.appendChild(b);
+    });
+    li.appendChild(opts);
+
+    const fb = document.createElement('div');
+    fb.className = 'q-fb';
+    li.appendChild(fb);
+
+    list.appendChild(li);
+  });
+  renderMath(list);
+}
+
+function checkQuestions(){
+  const Qs = questions();
+  let ok = 0;
+
+  Qs.forEach((Q, qi) => {
+    const li = document.querySelectorAll('#q-list .q-item')[qi];
+    if (!li) return;
+    const fb  = li.querySelector('.q-fb');
+    const sel = Q_ANS[qi];
+
+    li.querySelectorAll('.q-opt').forEach(b => {
+      const oi = Number(b.dataset.o);
+      b.classList.remove('sel','good','bad');
+      if (oi === Q.ok) b.classList.add('good');
+      else if (oi === sel) b.classList.add('bad');
+    });
+
+    if (sel === undefined){
+      fb.className = 'q-fb show';
+      fb.innerHTML = '<strong>Sin responder.</strong> ' + Q.fb;
+    } else if (sel === Q.ok){
+      ok++;
+      fb.className = 'q-fb show ok';
+      fb.innerHTML = Q.fb;
+    } else {
+      fb.className = 'q-fb show no';
+      fb.innerHTML = Q.fb;
+    }
+  });
+
+  const b = document.getElementById('badge-q');
+  b.textContent = `${ok} / ${Qs.length} correctas`;
+  b.className = 'badge show ' + (ok === Qs.length ? 'ok' : (ok >= Qs.length * 0.6 ? 'mid' : 'bad'));
+  renderMath(document.getElementById('q-list'));
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — TABLA COMPARATIVA (Act. 2 vs Act. 3)
+   ══════════════════════════════════════════════ */
+function buildCompare(){
+  const a = fmt2(PA);
+  const rows = [
+    ['¿Está $a$ en el dominio?',      'No: $g(a)$ no existe ($\\tfrac{0}{0}$)', `Sí: $h(${a})=${fmt(L())}$ existe`],
+    ['¿Se puede acercar por ambos lados?', 'Sí: hay función a izquierda y derecha', `No: solo por la ${sideAccWord()}`],
+    ['Límite lateral izquierdo',      '$L^{-}=L$ (existe)', PS > 0 ? 'No definido (sin dominio)' : `$=${fmt(L())}$ (existe)`],
+    ['Límite lateral derecho',        '$L^{+}=L$ (existe)', PS > 0 ? `$=${fmt(L())}$ (existe)` : 'No definido (sin dominio)'],
+    ['¿Existe el límite bilateral?',  'Sí, vale $L$',       'No: falta un lateral'],
+    ['Punto en $x=a$ en el gráfico',  'Abierto ○ (no se alcanza)', 'Cerrado ● (sí se alcanza)'],
+    ['¿Es continua en $a$?',          'No (evitable: se repara redefiniendo)', 'No en sentido bilateral; sí lateralmente'],
+    ['Moraleja',                      'El límite puede existir sin la función', 'La función puede existir sin el límite']
+  ];
+
+  document.getElementById('cmp-table').innerHTML = `
+    <thead><tr>
+      <th style="text-align:left;padding-left:12px"></th>
+      <th>Actividad 2 · $\\dfrac{x^{2}-a^{2}}{x-a}$</th>
+      <th>Actividad 3 · $\\sqrt{\\,${radLatex()}\\,}$</th>
+    </tr></thead>
+    <tbody>${rows.map(r => `
+      <tr>
+        <th class="rowlab" style="text-align:left;padding-left:12px">${r[0]}</th>
+        <td>${r[1]}</td>
+        <td>${r[2]}</td>
+      </tr>`).join('')}
+    </tbody>`;
+  renderMath(document.getElementById('cmp-table'));
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — PANELES DINÁMICOS
+   ══════════════════════════════════════════════ */
+function updatePanels(){
+  const a   = fmt2(PA);
+  const Lv  = fmt(L());
+  const sT  = (PS > 0) ? '^{+}' : '^{-}';
+  const bT  = (PS > 0) ? '^{-}' : '^{+}';
+  const accW = sideAccWord(), banW = sideBanWord();
+
+  /* función y dominio */
+  document.getElementById('fn-display').innerHTML = `$$${fnLatex()}$$`;
+  document.getElementById('dom-tex').innerHTML =
+    `$$${radLatex()} \\;\\geq\\; 0 \\quad\\Longleftrightarrow\\quad ${domLatex()}$$`;
+  document.getElementById('dom-note').innerHTML =
+    `La raíz cuadrada real solo admite radicando no negativo. A la <strong>${banW}</strong> de $${a}$ la función <strong>no existe</strong>: no hay puntos que evaluar, ni sucesiones con las que acercarse.`;
+  drawDomainLine();
+
+  /* previsualización */
+  document.getElementById('preview').innerHTML =
+    `Caso actual: $h(x)=${fnLatex().replace('h(x)=','')}$, con $${domLatex()}$.
+     El acercamiento a $${a}$ solo es posible por la <strong>${accW}</strong>, y allí
+     <strong>$L=${Lv}$</strong>. El límite bilateral <strong>no existe</strong>.`;
+
+  /* nota de la tabla */
+  document.getElementById('tabla-note').innerHTML =
+    `Escriba $h(x)$ con al menos 4 decimales. La columna verde es $x=${a}$, donde la función <strong>sí está definida</strong>: $h(${a})=${Lv}$. ${SHOW_OUT ? 'Las columnas grises están <strong>fuera del dominio</strong>: escriba <span class="mono">ND</span>.' : ''}`;
+
+  /* pista */
+  document.getElementById('hint').innerHTML =
+    `<strong>Pista.</strong> Evalúe el radicando antes de la raíz. Para $x=${fmt(PA + PS*0.01)}$:
+     $${radLatex().replace('x', fmt(PA + PS*0.01))}=0.01$, luego
+     $h=${PC===1?'':fmt2(PC)+'\\cdot'}\\sqrt{0.01}${PK===0?'':(PK>0?'+'+fmt2(PK):'-'+fmt2(Math.abs(PK)))}=${fmt(h(PA + PS*0.01),4)}$.
+     Observe que la raíz hace que $h$ se acerque a $${Lv}$ <em>mucho más lento</em> que una recta: para ganar un decimal en $h$, hay que acercarse <strong>cien veces más</strong> en $x$.`;
+
+  /* laterales — el prohibido queda "muerto" */
+  const accId = (PS > 0) ? 'card-right' : 'card-left';
+  const banId = (PS > 0) ? 'card-left'  : 'card-right';
+  document.getElementById(accId).className = 'lat-card';
+  document.getElementById(banId).className = 'lat-card dead';
+
+  document.getElementById('lat-l-tex').innerHTML = `$\\lim\\limits_{x\\to ${a}^{-}} h(x)$`;
+  document.getElementById('lat-r-tex').innerHTML = `$\\lim\\limits_{x\\to ${a}^{+}} h(x)$`;
+
+  const accVal  = fmt(L(), 4);
+  const accNote = `Existe: la tabla converge a ${accVal}.`;
+  const banNote = `No está definido: no hay puntos del dominio a la ${banW} de ${a}.`;
+
+  if (PS > 0){
+    document.getElementById('lat-l-val').textContent  = 'no definido';
+    document.getElementById('lat-l-note').textContent = banNote;
+    document.getElementById('lat-r-val').textContent  = accVal;
+    document.getElementById('lat-r-note').textContent = accNote;
+  } else {
+    document.getElementById('lat-l-val').textContent  = accVal;
+    document.getElementById('lat-l-note').textContent = accNote;
+    document.getElementById('lat-r-val').textContent  = 'no definido';
+    document.getElementById('lat-r-note').textContent = banNote;
+  }
+
+  /* veredicto */
+  document.getElementById('verdict').innerHTML =
+    `<strong>El límite bilateral no existe.</strong> Existe $\\lim_{x\\to ${a}${sT}} h(x)=${Lv}$, pero
+     $\\lim_{x\\to ${a}${bT}} h(x)$ <strong>no está definido</strong> porque ese lado queda fuera del dominio.
+     Como la existencia del límite exige que <em>ambos</em> laterales existan y coincidan, la condición falla por
+     <strong>ausencia</strong> de uno de ellos —no por discrepancia entre ellos.`;
+
+  /* nota de la animación */
+  document.getElementById('anim-note').innerHTML =
+    `El punto móvil solo puede venir por la <strong>${accW}</strong>: no hay curva por la ${banW} sobre la que deslizarse. Al llegar, aterriza sobre $h(${a})=${Lv}$ y queda <strong>cerrado</strong> —el valor sí se alcanza.`;
+
+  /* zoom / ε */
+  document.getElementById('zoom-lab').textContent = `[${fmt2(PA-PZOOM)}, ${fmt2(PA+PZOOM)}]`;
+  document.getElementById('eps-lab').textContent  = `ε = ${fmt2(PEPS)}`;
+  document.getElementById('delta-line').innerHTML =
+    `Para $\\varepsilon=${fmt2(PEPS)}$ basta tomar
+     $\\delta=\\left(\\dfrac{\\varepsilon}{|c|}\\right)^{2}=\\left(\\dfrac{${fmt2(PEPS)}}{${fmt(Math.abs(PC))}}\\right)^{2}=${fmt(deltaOf(PEPS),4)}$.
+     La dependencia es <strong>cuadrática</strong> en $\\varepsilon$ (no lineal, como en la Actividad 2): así de rápido «aplasta» la raíz al eje. Active «Bandas ε–δ» para ver que la franja $\\delta$ vive <em>solo</em> del lado accesible.`;
+
+  /* conclusión esperada */
+  document.getElementById('concl').innerHTML =
+    `<p style="text-align:center;margin-bottom:14px">
+       $$\\lim_{x\\to ${a}${bT}} h(x)\\;\\text{no está definida (fuera del dominio)}
+         \\qquad\\text{pero}\\qquad
+         \\lim_{x\\to ${a}${sT}} h(x)=${Lv}$$
+       $$\\text{Por tanto,}\\;\\lim_{x\\to ${a}} h(x)\\;\\text{no existe (falta un límite lateral)}$$
+     </p>
+     <p>La lección es fina y conviene enunciarla con cuidado: <strong>el límite bilateral no falla porque los laterales
+     discrepen, sino porque uno de ellos ni siquiera puede formularse</strong>. Para hablar de $\\lim_{x\\to ${a}${bT}}$
+     harían falta puntos del dominio arbitrariamente cerca de $${a}$ por la ${banW}, y no los hay.</p>
+     <p>Es la situación <em>opuesta</em> a la de la Actividad 2. Allí la función <strong>no existía en el punto</strong>
+     pero el límite <strong>sí</strong>. Aquí la función <strong>sí existe en el punto</strong>
+     ($h(${a})=${Lv}$, punto cerrado en el gráfico) y sin embargo el límite <strong>no</strong>.
+     Valor de la función y valor del límite son nociones independientes: ninguna implica la otra.</p>
+     <p class="small">El comportamiento sí queda plenamente descrito por el <strong>límite lateral</strong>
+     $\\lim_{x\\to ${a}${sT}} h(x)=${Lv}$, y también por la <strong>continuidad lateral</strong>: $h$ es continua por la
+     ${accW} en $${a}$, pues el lateral existe y coincide con $h(${a})$. Es todo lo que el dominio permite afirmar —y es suficiente.</p>`;
+
+  renderProof();
+  buildCompare();
+  renderMath(document.querySelector('main'));
+}
+
+/* ── barra visual del dominio ── */
+function drawDomainLine(){
+  const host = document.getElementById('dom-line');
+  host.innerHTML = '';
+  if (!window.d3) return;
+
+  const W = host.clientWidth || 600, H = 46;
+  const svg = d3.select(host).append('svg').attr('width', W).attr('height', H);
+  const m = 26, iw = Math.max(40, W - 2 * m);
+  const x = d3.scaleLinear().domain([PA - 4, PA + 4]).range([0, iw]);
+  const g = svg.append('g').attr('transform', `translate(${m},16)`);
+
+  /* recta real */
+  g.append('line').attr('x1', 0).attr('x2', iw).attr('y1', 0).attr('y2', 0)
+    .attr('stroke', '#b5aea3').attr('stroke-width', 1.4);
+
+  /* tramo SIN dominio: rayado gris */
+  const bx0 = (PS > 0) ? 0     : x(PA);
+  const bx1 = (PS > 0) ? x(PA) : iw;
+  g.append('line').attr('x1', bx0).attr('x2', bx1).attr('y1', 0).attr('y2', 0)
+    .attr('stroke', '#6b6560').attr('stroke-width', 5)
+    .attr('stroke-dasharray', '3 4').attr('opacity', .35);
+
+  /* tramo CON dominio: navy sólido */
+  const ax0 = (PS > 0) ? x(PA) : 0;
+  const ax1 = (PS > 0) ? iw    : x(PA);
+  g.append('line').attr('x1', ax0).attr('x2', ax1).attr('y1', 0).attr('y2', 0)
+    .attr('stroke', 'var(--navy)').attr('stroke-width', 5);
+
+  /* punto CERRADO en a: pertenece al dominio (corchete cerrado) */
+  g.append('circle').attr('class', 'closed-dot').attr('cx', x(PA)).attr('cy', 0).attr('r', 5.4);
+
+  g.append('text').attr('x', x(PA)).attr('y', 22).attr('text-anchor', 'middle')
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '10px')
+    .style('fill', 'var(--crimson)').text(`a = ${fmt2(PA)}`);
+
+  g.append('text').attr('x', (ax0 + ax1) / 2).attr('y', -9).attr('text-anchor', 'middle')
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '9.5px')
+    .style('fill', 'var(--navy)').text('h existe');
+
+  g.append('text').attr('x', (bx0 + bx1) / 2).attr('y', -9).attr('text-anchor', 'middle')
+    .style('font-family', 'JetBrains Mono, monospace').style('font-size', '9.5px')
+    .style('fill', '#6b6560').text('h no existe');
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — REFRESCO GLOBAL
+   ══════════════════════════════════════════════ */
+function refreshAll(rebuild){
+  readParams();
+  if (rebuild){ buildTable(); buildQuestions(); }
+  updatePanels();
+  drawChart();
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ══════════════════════════════════════════════ */
+function initPage(){
+  buildTable();
+  buildQuestions();
+
+  /* parámetros */
+  document.getElementById('btn-apply').addEventListener('click', () => { stopAnim(false); refreshAll(true); });
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-a').value = 2;
+    document.getElementById('p-c').value = 1;
+    document.getElementById('p-k').value = 0;
+    document.getElementById('p-s').value = '1';
+    document.getElementById('p-zoom').value = 4;
+    stopAnim(false); refreshAll(true);
+  });
+  document.querySelectorAll('.btn-preset').forEach(b => {
+    b.addEventListener('click', () => {
+      const [a, c, k, s] = b.dataset.preset.split(',').map(Number);
+      document.getElementById('p-a').value = a;
+      document.getElementById('p-c').value = c;
+      document.getElementById('p-k').value = k;
+      document.getElementById('p-s').value = String(s);
+      stopAnim(false); refreshAll(true);
+    });
+  });
+  ['p-a','p-c','p-k'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter'){ stopAnim(false); refreshAll(true); }
+    });
+  });
+  document.getElementById('p-s').addEventListener('change', () => { stopAnim(false); refreshAll(true); });
+
+  /* tabla */
+  document.getElementById('btn-verify').addEventListener('click', () => { readParams(); verifyTable(); });
+  document.getElementById('btn-fill'  ).addEventListener('click', () => { readParams(); fillTable();   });
+  document.getElementById('btn-clear' ).addEventListener('click', clearTable);
+  document.getElementById('btn-hint'  ).addEventListener('click', () => {
+    const el = document.getElementById('hint');
+    el.classList.toggle('show');
+    if (el.classList.contains('show')) renderMath(el);
+  });
+  document.getElementById('btn-toggle-out').addEventListener('click', function(){
+    SHOW_OUT = !SHOW_OUT;
+    this.textContent = SHOW_OUT
+      ? 'Ocultar columnas del lado prohibido'
+      : 'Mostrar columnas del lado prohibido';
+    readParams(); buildTable(); updatePanels(); drawChart();
+  });
+
+  /* gráfico */
+  ['opt-grid','opt-pts','opt-lines','opt-dom','opt-eps'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { readParams(); drawChart(); });
+  });
+  document.getElementById('p-zoom').addEventListener('input', () => refreshAll(false));
+  document.getElementById('btn-anim').addEventListener('click', () => { readParams(); startAnim(); });
+  document.getElementById('btn-anim-stop').addEventListener('click', () => { stopAnim(false); drawChart(); });
+
+  /* reflexión */
+  document.getElementById('btn-q-check').addEventListener('click', () => { readParams(); checkQuestions(); });
+  document.getElementById('btn-q-reset').addEventListener('click', () => {
+    readParams(); buildQuestions();
+    document.getElementById('badge-q').className = 'badge';
+  });
+
+  /* ε–δ */
+  document.getElementById('btn-ed').addEventListener('click', function(){
+    const b = document.getElementById('ed-body');
+    b.classList.toggle('show');
+    const open = b.classList.contains('show');
+    this.textContent = (open ? '▾ Ocultar' : '▸ Mostrar') + ' la definición formal y la demostración';
+    if (open) renderMath(b);
+  });
+  document.getElementById('p-eps').addEventListener('input', () => {
+    readParams();
+    document.getElementById('eps-lab').textContent = `ε = ${fmt2(PEPS)}`;
+    document.getElementById('delta-line').innerHTML =
+      `Para $\\varepsilon=${fmt2(PEPS)}$ basta tomar $\\delta=\\left(\\dfrac{\\varepsilon}{|c|}\\right)^{2}=${fmt(deltaOf(PEPS),4)}$. La dependencia es <strong>cuadrática</strong> en $\\varepsilon$.`;
+    renderMath(document.getElementById('delta-line'));
+    drawChart();
+  });
+
+  /* resize */
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { readParams(); drawChart(); drawDomainLine(); }, 130);
+  });
+
+  refreshAll(false);
+}
+
+/* ══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }   // respaldo: KaTeX/D3 degradan sin romper
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

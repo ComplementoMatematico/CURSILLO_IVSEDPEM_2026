@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actividad 6 — Límites al infinito y asíntotas horizontales · Cursillo de Actualización Docente</title>
+
+<!-- ── DEPENDENCIAS CDN (sin onload; ver arrancador boot() al final) ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── VARIABLES DE IDENTIDAD VISUAL ── */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+
+/* ── BASE ── */
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--light); color:var(--text);
+  font-family:'Source Serif 4', Georgia, serif;
+  font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Playfair Display', Georgia, serif; margin:0; font-weight:600;}
+:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 4px 22px rgba(200,169,81,.22);
+  padding:16px 26px;
+}
+.header-inner{
+  max-width:1120px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{
+  height:52px; width:auto; object-fit:contain;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.28));
+}
+.header-center{text-align:center;}
+.header-center .seminar{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.66rem; letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:5px;
+}
+.header-center .title{
+  color:#fff; font-size:1.48rem; line-height:1.2; letter-spacing:.01em;
+}
+.header-center .subtitle{
+  color:rgba(255,255,255,.72); font-size:.86rem; font-style:italic; margin-top:3px;
+}
+.header-author{text-align:right; line-height:1.35;}
+.header-author .label{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(200,169,81,.78);
+}
+.header-author .name{
+  font-family:'Playfair Display', serif; color:#fff; font-size:1rem; margin-top:2px;
+}
+
+/* ── MAIN ── */
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+/* ── TARJETA DE ACTIVIDAD ── */
+@keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:none;}}
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09);
+  overflow:hidden; animation:fadeUp .6s ease both;
+}
+.card-head{
+  background:var(--navy); color:#fff;
+  padding:18px 26px; display:flex; align-items:center; gap:16px;
+}
+.card-num{
+  flex:0 0 auto; width:38px; height:38px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono', monospace; font-weight:600; font-size:1rem;
+  box-shadow:0 2px 9px rgba(0,0,0,.25);
+}
+.card-head h1{font-size:1.24rem; line-height:1.3;}
+
+.card-body{padding:30px 30px 36px;}
+section.block{margin-top:38px;}
+section.block:first-child{margin-top:0;}
+h2.block-title{
+  font-size:1.1rem; color:var(--navy);
+  padding-bottom:8px; margin-bottom:16px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+h2.block-title::before{
+  content:''; width:4px; height:17px; background:var(--crimson); border-radius:1px;
+}
+p{margin:0 0 14px;}
+p:last-child{margin-bottom:0;}
+
+/* ── OBJETIVO ── */
+.objetivo-box{
+  background:var(--accent-bg); border-left:4px solid var(--crimson);
+  padding:16px 20px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .tag{
+  font-family:'JetBrains Mono', monospace; font-size:.62rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--crimson);
+  display:block; margin-bottom:6px;
+}
+
+/* ── DISPLAY DE FUNCIÓN ── */
+.function-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin-top:22px;
+}
+.function-display .tag{
+  font-family:'JetBrains Mono', monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:10px;
+}
+
+/* ── PANEL DE PARÁMETROS ── */
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:20px 22px;
+}
+.param-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:16px; align-items:end;
+}
+.param-field label{
+  display:block; font-family:'JetBrains Mono', monospace;
+  font-size:.62rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:6px;
+}
+input[type=number], select{
+  width:100%; padding:8px 10px;
+  font-family:'JetBrains Mono', monospace; font-size:.9rem;
+  color:var(--text); background:#fff;
+  border:1px solid var(--border); border-radius:3px;
+}
+input[type=number]:focus, select:focus{border-color:var(--navy);}
+input[type=range]{width:100%; accent-color:var(--navy);}
+
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:16px;}
+button{
+  font-family:'JetBrains Mono', monospace; font-size:.76rem;
+  letter-spacing:.06em; padding:9px 15px; border-radius:3px;
+  cursor:pointer; border:1px solid transparent;
+  transition:transform .12s ease, background .18s ease, color .18s ease;
+}
+button:hover{transform:translateY(-1px);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#821239;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#002c58;}
+.btn-ghost{background:transparent; color:var(--navy); border-color:var(--navy);}
+.btn-ghost:hover{background:var(--accent-bg);}
+.btn-ghost.running{background:var(--crimson); border-color:var(--crimson); color:#fff;}
+
+.preset-row{margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);}
+.preset-row .plabel{
+  font-family:'JetBrains Mono', monospace; font-size:.6rem;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:9px;
+}
+.preset-row .btn-row{margin-top:0;}
+.preview-line{
+  margin-top:16px; padding:11px 14px;
+  background:var(--accent-bg); border-left:3px solid var(--navy);
+  border-radius:0 3px 3px 0; font-size:.94rem;
+}
+
+/* ── TABLAS ── */
+.table-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:3px;}
+table{border-collapse:collapse; width:100%; font-family:'JetBrains Mono', monospace; font-size:.85rem;}
+th{
+  background:var(--navy); color:#fff; font-weight:500;
+  padding:11px 12px; text-align:center; white-space:nowrap;
+  font-size:.78rem; letter-spacing:.05em;
+}
+td{padding:8px 10px; text-align:center; border-top:1px solid var(--border); white-space:nowrap;}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+td input.cell{
+  width:112px; padding:6px 7px; text-align:center;
+  font-family:'JetBrains Mono', monospace; font-size:.85rem;
+  border:1px solid var(--border); border-radius:2px; background:#fff;
+}
+td input.cell.correct{border-color:var(--success); background:#eaf5ef; color:var(--success);}
+td input.cell.wrong{border-color:var(--crimson); background:#fbecf1; color:var(--crimson);}
+
+.score-badge{
+  display:none; margin-top:14px; padding:9px 15px; border-radius:3px;
+  font-family:'JetBrains Mono', monospace; font-size:.8rem;
+  background:var(--accent-bg); border-left:3px solid var(--navy); color:var(--navy);
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#eaf5ef; border-left-color:var(--success); color:var(--success);}
+.hint-box{
+  margin-top:14px; padding:12px 15px; font-size:.92rem;
+  background:#fdfaf0; border:1px dashed var(--gold); border-radius:3px;
+}
+.hint-box[hidden]{display:none;}
+
+/* ── GRÁFICO ── */
+.chart-box{
+  position:relative; margin-top:6px; width:100%; height:430px;
+  border:1px solid var(--border); border-radius:3px;
+  background:var(--white); cursor:crosshair; overflow:hidden;
+}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; margin:14px 0 6px;
+  font-family:'JetBrains Mono', monospace; font-size:.74rem; color:var(--muted);
+}
+.chart-opts label{display:flex; align-items:center; gap:6px; cursor:pointer;}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); cursor:pointer;}
+.range-ctl{margin-top:14px;}
+.range-ctl label{
+  display:block; font-family:'JetBrains Mono', monospace;
+  font-size:.62rem; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:6px;
+}
+
+.axis path, .axis line{stroke:#b9b3a8;}
+.axis text{font-family:'JetBrains Mono', monospace; font-size:10.5px; fill:var(--muted);}
+.grid line{stroke:#e3ded4; stroke-dasharray:2.5 3.5;}
+.grid path{stroke:none;}
+.axis-label{font-family:'JetBrains Mono', monospace; font-size:11px; fill:var(--navy); font-weight:600;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.4;}
+.asymptote{stroke:var(--crimson); stroke-width:1.8; stroke-dasharray:7 5; opacity:.9;}
+.band{fill:var(--gold); opacity:.15;}
+.band-edge{stroke:var(--gold); stroke-width:1.2; stroke-dasharray:4 3;}
+.xM-line{stroke:var(--navy); stroke-width:1.3; stroke-dasharray:4 4; opacity:.6;}
+.tbl-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.4; cursor:pointer;}
+.tbl-dot:hover{r:6.5;}
+.mover{fill:var(--crimson); stroke:#fff; stroke-width:1.6;}
+.open-dot{fill:#fff; stroke:var(--navy); stroke-width:2.2;}
+.closed-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.4;}
+
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff;
+  font-family:'JetBrains Mono', monospace; font-size:.72rem;
+  padding:6px 9px; border-radius:3px; white-space:nowrap;
+  transform:translate(-50%,-125%); transition:opacity .12s;
+  box-shadow:0 3px 10px rgba(0,0,0,.22);
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; margin-left:-5px;
+  border:5px solid transparent; border-top-color:var(--navy); border-bottom:0;
+}
+.tooltip.on{opacity:1;}
+
+/* ── PANEL DE LECTURA EN VIVO ── */
+.live-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px; margin-top:16px;
+}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--navy); border-radius:3px;
+  padding:12px 14px; text-align:center;
+}
+.live-cell .k{
+  font-family:'JetBrains Mono', monospace; font-size:.58rem;
+  letter-spacing:.15em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono', monospace; font-size:1rem; color:var(--navy); font-weight:600;
+}
+.live-cell.hl{border-top-color:var(--crimson);}
+.live-cell.hl .v{color:var(--crimson);}
+
+/* ── MÓDULO ε–M ── */
+.ed-section{margin-top:18px;}
+.ed-def{
+  background:var(--navy); color:#fff;
+  border-left:4px solid var(--gold);
+  padding:18px 22px; border-radius:0 3px 3px 0;
+}
+.ed-def .tag{
+  font-family:'JetBrains Mono', monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--gold);
+  display:block; margin-bottom:9px;
+}
+.ed-def .katex{color:#fff;}
+.proof-step{
+  position:relative; padding:12px 16px 12px 46px; margin-top:12px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  font-size:.95rem;
+}
+.proof-step .n{
+  position:absolute; left:12px; top:12px;
+  width:22px; height:22px; border-radius:50%;
+  background:var(--navy); color:#fff;
+  font-family:'JetBrains Mono', monospace; font-size:.68rem;
+  display:flex; align-items:center; justify-content:center;
+}
+.qed-box{
+  margin-top:14px; padding:14px 18px;
+  background:#eaf5ef; border-left:4px solid var(--success);
+  border-radius:0 3px 3px 0; font-size:.95rem;
+}
+.qed-box .qed{float:right; font-size:1.1rem; color:var(--success);}
+details summary{
+  cursor:pointer; font-family:'JetBrains Mono', monospace;
+  font-size:.76rem; letter-spacing:.06em; color:var(--navy);
+  padding:10px 14px; background:var(--accent-bg);
+  border:1px solid var(--border); border-radius:3px; list-style:none;
+}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:'▸ '; color:var(--crimson);}
+details[open] summary::before{content:'▾ ';}
+
+/* ── CONCLUSIÓN ── */
+.conclusion{
+  background:var(--accent-bg); border:1px solid var(--border);
+  border-top:3px solid var(--gold); border-radius:3px;
+  padding:20px 22px;
+}
+.conclusion .tag{
+  font-family:'JetBrains Mono', monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--navy);
+  display:block; margin-bottom:10px;
+}
+.ext-list{margin:0; padding-left:20px;}
+.ext-list li{margin-bottom:6px;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:26px 22px 34px; text-align:center;
+  font-family:'JetBrains Mono', monospace;
+  font-size:.66rem; letter-spacing:.13em;
+  color:var(--muted); text-transform:uppercase;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  body{font-size:16px;}
+  .header-inner{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .card-body{padding:22px 18px 28px;}
+  main{padding:32px 14px 60px;}
+  .chart-box{height:340px;}
+  .live-panel{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER INSTITUCIONAL ══════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-logos">
+      <img src="assets/logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="assets/logo_seminario.png" alt="Seminario">
+      <img src="assets/logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <h1 class="title">Límites al infinito y asíntotas horizontales</h1>
+      <div class="subtitle">Actividad interactiva de exploración numérica y gráfica</div>
+    </div>
+    <div class="header-author">
+      <div class="label">Material de</div>
+      <div class="name">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+<article class="activity-card">
+
+  <div class="card-head">
+    <div class="card-num">6</div>
+    <h1>¿Qué ocurre con <span id="head-fx"></span> cuando <span id="head-x"></span> crece sin límite?</h1>
+  </div>
+
+  <div class="card-body">
+
+    <!-- ── OBJETIVO ── -->
+    <section class="block">
+      <div class="objetivo-box">
+        <span class="tag">Objetivo</span>
+        Comprender de manera intuitiva que al dividir una constante por un número que crece
+        indefinidamente, el resultado se hace cada vez más pequeño, acercándose a cero. Generalizamos
+        la idea a expresiones de la forma <span id="obj-gen"></span> y la conectamos con la existencia
+        de <strong>asíntotas horizontales</strong>.
+      </div>
+
+      <div class="function-display">
+        <span class="tag">Función</span>
+        <div id="fn-display"></div>
+      </div>
+    </section>
+
+    <!-- ── PARÁMETROS ── -->
+    <section class="block">
+      <h2 class="block-title">Panel de parámetros</h2>
+      <div class="a-selector-wrap">
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-k">Constante k</label>
+            <input type="number" id="p-k" value="1" step="0.5">
+          </div>
+          <div class="param-field">
+            <label for="p-n">Exponente n</label>
+            <input type="number" id="p-n" value="1" step="1" min="1" max="6">
+          </div>
+          <div class="param-field">
+            <label for="p-c">Desplazamiento c</label>
+            <input type="number" id="p-c" value="0" step="0.5">
+          </div>
+          <div class="param-field">
+            <label for="p-base">Base de la tabla</label>
+            <select id="p-base">
+              <option value="10" selected>×10 (1, 10, 100, …)</option>
+              <option value="2">×2 (1, 2, 4, 8, …)</option>
+              <option value="5">×5 (1, 5, 25, …)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restaurar</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plabel">Casos pedagógicos</span>
+          <div class="btn-row">
+            <button class="btn-ghost preset" data-k="1" data-n="1" data-c="0">1/x</button>
+            <button class="btn-ghost preset" data-k="5" data-n="1" data-c="0">5/x</button>
+            <button class="btn-ghost preset" data-k="7" data-n="2" data-c="0">7/x²</button>
+            <button class="btn-ghost preset" data-k="300" data-n="3" data-c="0">300/x³</button>
+            <button class="btn-ghost preset" data-k="1" data-n="1" data-c="2">2 + 1/x</button>
+          </div>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+    </section>
+
+    <!-- ── EXPLORACIÓN NUMÉRICA ── -->
+    <section class="block">
+      <h2 class="block-title">Exploración numérica</h2>
+      <p>Completa la tabla: observa qué ocurre con los valores de <span id="tx-fx"></span> cuando
+      <span id="tx-x1"></span> toma valores cada vez más grandes.</p>
+
+      <div class="table-scroll">
+        <table id="tbl">
+          <thead><tr id="tbl-head"></tr></thead>
+          <tbody><tr id="tbl-body"></tr></tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-check">Verificar</button>
+        <button class="btn-primary" id="btn-fill">Rellenar</button>
+        <button class="btn-ghost" id="btn-clear">Limpiar</button>
+        <button class="btn-ghost" id="btn-hint">Pista</button>
+      </div>
+      <div class="score-badge" id="score"></div>
+      <div class="hint-box" id="hint" hidden></div>
+    </section>
+
+    <!-- ── GRÁFICO ── -->
+    <section class="block">
+      <h2 class="block-title">Representación gráfica</h2>
+      <p>Observa cómo se comporta la curva cuando <span id="gx-x"></span> crece hacia el infinito.
+      La recta punteada roja es la <strong>asíntota horizontal</strong> candidata.</p>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-pts" checked> puntos de la tabla</label>
+        <label><input type="checkbox" id="opt-asym" checked> asíntota y = L</label>
+        <label><input type="checkbox" id="opt-band" checked> banda L ± ε</label>
+        <label><input type="checkbox" id="opt-neg"> rama x &lt; 0</label>
+      </div>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tip"></div>
+      </div>
+
+      <div class="range-ctl">
+        <label for="p-xmax">Ventana horizontal · x<sub>máx</sub> = <span id="lbl-xmax">40</span></label>
+        <input type="range" id="p-xmax" min="10" max="600" step="5" value="40">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-ghost" id="btn-anim">▶ Animar x → ∞</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">x actual</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">f(x)</span><span class="v" id="lv-fx">—</span></div>
+        <div class="live-cell hl"><span class="k">|f(x) − L|</span><span class="v" id="lv-err">—</span></div>
+        <div class="live-cell"><span class="k">Límite L</span><span class="v" id="lv-L">—</span></div>
+      </div>
+    </section>
+
+    <!-- ── MÓDULO ε–M ── -->
+    <section class="block">
+      <h2 class="block-title">Módulo formal ε–M</h2>
+      <details class="ed-section">
+        <summary>Definición formal, banda de tolerancia y demostración</summary>
+
+        <div style="margin-top:16px;">
+          <div class="ed-def">
+            <span class="tag">Definición (límite al infinito)</span>
+            <div id="ed-formal"></div>
+          </div>
+
+          <div class="range-ctl" style="margin-top:18px;">
+            <label for="p-eps">Tolerancia ε = <span id="lbl-eps">0.1</span></label>
+            <input type="range" id="p-eps" min="0.005" max="1" step="0.005" value="0.1">
+          </div>
+
+          <div class="live-panel">
+            <div class="live-cell"><span class="k">ε elegido</span><span class="v" id="lv-eps">—</span></div>
+            <div class="live-cell hl"><span class="k">M(ε) suficiente</span><span class="v" id="lv-M">—</span></div>
+            <div class="live-cell"><span class="k">f(M)</span><span class="v" id="lv-fM">—</span></div>
+          </div>
+
+          <div id="proof-wrap"></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ── CONCLUSIÓN ── -->
+    <section class="block">
+      <h2 class="block-title">Conclusión</h2>
+      <div class="conclusion">
+        <span class="tag">Conclusión esperada</span>
+        <div id="concl-text"></div>
+        <div id="concl-math" style="margin-top:6px;"></div>
+        <div id="concl-asym" style="margin-top:12px;"></div>
+      </div>
+
+      <p style="margin-top:22px;"><strong>Extensión.</strong> Verifica que lo mismo ocurre con otras
+      expresiones similares (pulsa cada una para cargarla en el panel de parámetros):</p>
+      <ul class="ext-list" id="ext-list"></ul>
+    </section>
+
+  </div>
+</article>
+</main>
+
+<footer>
+  Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 6 · Dr. Eligio Colmenares
+</footer>
+
+<!-- ══════════ CDNs (sin onload) ══════════ -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   ESTADO GLOBAL — única fuente de verdad
+   f(x) = c + k / x^n     ⇒  L = c   (asíntota horizontal y = c)
+   ══════════════════════════════════════════════════════════ */
+let PK = 1;      // constante del numerador
+let PN = 1;      // exponente
+let PC = 0;      // desplazamiento vertical (= límite L)
+let PBASE = 10;  // razón de la progresión de la tabla
+let PXMAX = 40;  // ventana horizontal
+let PEPS = 0.1;  // tolerancia ε
+let showNeg = false;
+
+let animTimer = null, animRunning = false;
+
+/* ── FUNCIÓN ÚNICA ── */
+function f(x){
+  if (x === 0) return NaN;
+  return PC + PK / Math.pow(x, PN);
+}
+function L(){ return PC; }
+
+/* ── UTILIDADES NUMÉRICAS ── */
+function r6(v){ return Math.round(v * 1e6) / 1e6; }
+function fmt(v){
+  if (!isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a !== 0 && (a < 1e-4 || a >= 1e6)) return v.toExponential(2);
+  let s = r6(v).toFixed(6).replace(/0+$/,'').replace(/\.$/,'');
+  return s === '-0' ? '0' : s;
+}
+function fmtX(v){
+  if (Math.abs(v) >= 1e5) return v.toExponential(0);
+  return String(r6(v));
+}
+/* Coeficiente k en LaTeX (evita "1x" y signos feos) */
+function kTex(){ return fmt(PK); }
+function denTex(){ return PN === 1 ? 'x' : `x^{${PN}}`; }
+function fTexSafe(){
+  const base = `\\dfrac{${kTex()}}{${denTex()}}`;
+  if (PC === 0) return base;
+  if (PC > 0)  return `${fmt(PC)} + ${base}`;
+  return `${base} ${fmt(PC)}`;   // p. ej.  \dfrac{1}{x} -2
+}
+
+/* ── SECUENCIA DE LA TABLA ── */
+function tableXs(){
+  const xs = []; let v = 1;
+  for (let i = 0; i < 6; i++){ xs.push(v); v *= PBASE; }
+  return xs;
+}
+
+/* ══════════════════════════════════════════════════════════
+   KaTeX
+   ══════════════════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* degradación silenciosa */ }
+}
+
+/* ══════════════════════════════════════════════════════════
+   LECTURA DE PARÁMETROS
+   ══════════════════════════════════════════════════════════ */
+function readParams(){
+  const k = parseFloat(document.getElementById('p-k').value);
+  const n = parseInt(document.getElementById('p-n').value, 10);
+  const c = parseFloat(document.getElementById('p-c').value);
+  const b = parseFloat(document.getElementById('p-base').value);
+
+  PK = isFinite(k) && k !== 0 ? k : 1;
+  PN = Number.isInteger(n) && n >= 1 && n <= 6 ? n : 1;
+  PC = isFinite(c) ? c : 0;
+  PBASE = isFinite(b) && b > 1 ? b : 10;
+
+  PXMAX = parseFloat(document.getElementById('p-xmax').value) || 40;
+  PEPS  = parseFloat(document.getElementById('p-eps').value)  || 0.1;
+  showNeg = document.getElementById('opt-neg').checked;
+}
+
+/* ══════════════════════════════════════════════════════════
+   RENDER DE TEXTOS Y FÓRMULAS (LaTeX con &lt; / &gt; SIEMPRE)
+   ══════════════════════════════════════════════════════════ */
+function renderStatics(){
+  document.getElementById('head-fx').innerHTML  = `$\\frac{${kTex()}}{${denTex()}}$`;
+  document.getElementById('head-x').innerHTML   = `$x$`;
+  document.getElementById('obj-gen').innerHTML  = `$\\frac{k}{x^{n}}$`;
+  document.getElementById('tx-fx').innerHTML    = `$f(x)$`;
+  document.getElementById('tx-x1').innerHTML    = `$x$`;
+  document.getElementById('gx-x').innerHTML     = `$x$`;
+
+  document.getElementById('fn-display').innerHTML =
+    `$$f(x) = ${fTexSafe()} \\qquad (x &gt; 0)$$`;
+
+  const nTxt = PN === 1 ? 'la primera potencia' : `la potencia ${PN}`;
+  document.getElementById('preview').innerHTML =
+    `Caso actual: dividimos la constante $k = ${kTex()}$ entre ${nTxt} de $x$` +
+    (PC !== 0 ? `, y sumamos el desplazamiento $c = ${fmt(PC)}$` : '') +
+    `. Como el denominador crece sin límite, el cociente se desvanece y ` +
+    `$f(x)$ se aproxima a $L = ${fmt(L())}$.`;
+}
+
+/* ── Tabla ── */
+function buildTable(){
+  const xs = tableXs();
+  const head = document.getElementById('tbl-head');
+  const body = document.getElementById('tbl-body');
+  head.innerHTML = '<th>$x$</th>' + xs.map(x => `<th>${fmtX(x)}</th>`).join('');
+  body.innerHTML = '<td><strong>$f(x)$</strong></td>' +
+    xs.map((x,i) => `<td><input class="cell" type="text" data-i="${i}"
+       inputmode="decimal" aria-label="f(${fmtX(x)})" placeholder="?"></td>`).join('');
+  document.getElementById('score').className = 'score-badge';
+  renderMath(document.getElementById('tbl'));
+}
+function tableAnswers(){ return tableXs().map(x => r6(f(x))); }
+
+function checkTable(){
+  const ans = tableAnswers();
+  let ok = 0, filled = 0;
+  document.querySelectorAll('#tbl input.cell').forEach(inp => {
+    const i = +inp.dataset.i;
+    const raw = inp.value.trim().replace(',', '.');
+    inp.classList.remove('correct','wrong');
+    if (raw === '') return;
+    filled++;
+    const v = parseFloat(raw);
+    const tol = Math.max(Math.abs(ans[i]) * 5e-3, 1e-9);
+    if (isFinite(v) && Math.abs(v - ans[i]) <= tol){ inp.classList.add('correct'); ok++; }
+    else inp.classList.add('wrong');
+  });
+  const badge = document.getElementById('score');
+  badge.className = 'score-badge show' + (ok === ans.length ? ' perfect' : '');
+  badge.textContent = filled === 0
+    ? 'Completa al menos una celda antes de verificar.'
+    : `Puntaje: ${ok} / ${ans.length} correctas`;
+}
+function fillTable(){
+  const ans = tableAnswers();
+  document.querySelectorAll('#tbl input.cell').forEach(inp => {
+    inp.value = fmt(ans[+inp.dataset.i]);
+    inp.classList.remove('wrong'); inp.classList.add('correct');
+  });
+  const badge = document.getElementById('score');
+  badge.className = 'score-badge show perfect';
+  badge.textContent = 'Solución cargada. Observa la caída hacia L.';
+}
+function clearTable(){
+  document.querySelectorAll('#tbl input.cell').forEach(inp => {
+    inp.value = ''; inp.classList.remove('correct','wrong');
+  });
+  document.getElementById('score').className = 'score-badge';
+}
+function renderHint(){
+  const el = document.getElementById('hint');
+  el.innerHTML = `Evalúa $f$ en cada valor: por ejemplo, para $x = ${fmtX(PBASE)}$ se tiene ` +
+    `$f(${fmtX(PBASE)}) = ${fTexSafe().replace(/x/g, fmtX(PBASE))} = ${fmt(f(PBASE))}$. ` +
+    `Fíjate en que cada vez que $x$ se multiplica por ${fmtX(PBASE)}, el término ` +
+    `$\\frac{${kTex()}}{${denTex()}}$ se divide por ${fmtX(Math.pow(PBASE, PN))}.`;
+  renderMath(el);
+}
+
+/* ── Módulo ε–M ── */
+function Mof(eps){
+  // |f(x) - L| = |k| / x^n  <  eps   ⇔   x  >  (|k|/eps)^(1/n)
+  const safeEps = eps <= 0 ? 1e-9 : eps;
+  return Math.pow(Math.abs(PK) / safeEps, 1 / PN);
+}
+function renderEpsilon(){
+  const M = Mof(PEPS);
+  document.getElementById('lbl-eps').textContent = fmt(PEPS);
+  document.getElementById('lv-eps').textContent  = fmt(PEPS);
+  document.getElementById('lv-M').textContent    = fmt(M);
+  document.getElementById('lv-fM').textContent   = fmt(f(M));
+
+  const ed = document.getElementById('ed-formal');
+  ed.innerHTML =
+    `$$\\lim_{x\\to\\infty} f(x) = L \\iff ` +
+    `\\forall\\varepsilon&gt;0\\ \\ \\exists M&gt;0 : \\ x&gt;M \\Rightarrow |f(x)-L|&lt;\\varepsilon$$`;
+  renderMath(ed);
+
+  const kAbs = fmt(Math.abs(PK));
+  const pw   = PN === 1 ? 'x' : `x^{${PN}}`;
+  const wrap = document.getElementById('proof-wrap');
+  wrap.innerHTML = `
+    <div class="proof-step"><span class="n">1</span>
+      Sea $\\varepsilon&gt;0$ arbitrario. Queremos hallar $M&gt;0$ tal que
+      $x&gt;M \\Rightarrow |f(x)-L|&lt;\\varepsilon$, donde $L = ${fmt(L())}$.
+    </div>
+    <div class="proof-step"><span class="n">2</span>
+      Calculamos la distancia al límite:
+      $$|f(x)-L| = \\left|\\ \\dfrac{${kTex()}}{${pw}}\\ \\right|
+      = \\dfrac{${kAbs}}{${pw}} \\quad (x&gt;0).$$
+    </div>
+    <div class="proof-step"><span class="n">3</span>
+      Imponemos la condición deseada y despejamos $x$:
+      $$\\dfrac{${kAbs}}{${pw}} &lt; \\varepsilon
+      \\iff ${pw} &gt; \\dfrac{${kAbs}}{\\varepsilon}
+      \\iff x &gt; \\left(\\dfrac{${kAbs}}{\\varepsilon}\\right)^{1/${PN}}.$$
+    </div>
+    <div class="proof-step"><span class="n">4</span>
+      <strong>Elección de $M$:</strong> tomamos
+      $$M = \\left(\\dfrac{${kAbs}}{\\varepsilon}\\right)^{1/${PN}}.$$
+      Para el $\\varepsilon = ${fmt(PEPS)}$ del slider, esto da $M \\approx ${fmt(M)}$.
+    </div>
+    <div class="proof-step"><span class="n">5</span>
+      <strong>Verificación:</strong> si $x&gt;M$, entonces se cumple
+      $\\ ${pw} &gt; \\dfrac{${kAbs}}{\\varepsilon}\\ $
+      y, por tanto,
+      $$|f(x)-L| = \\dfrac{${kAbs}}{${pw}} &lt; \\dfrac{${kAbs}}{\\ ${kAbs}/\\varepsilon\\ } = \\varepsilon.$$
+    </div>
+    <div class="qed-box"><span class="qed">□</span>
+      Como $\\varepsilon&gt;0$ era arbitrario, queda probado que
+      $\\lim_{x\\to\\infty} \\left( ${fTexSafe()} \\right) = ${fmt(L())}$.
+    </div>`;
+  renderMath(wrap);
+}
+
+/* ── Conclusión dinámica ── */
+function renderConclusion(){
+  const t = document.getElementById('concl-text');
+  const m = document.getElementById('concl-math');
+  const a = document.getElementById('concl-asym');
+
+  t.innerHTML = `A medida que $x$ crece sin límite, el denominador $${denTex()}$ se hace enorme, ` +
+    `de modo que el cociente $\\frac{${kTex()}}{${denTex()}}$ se hace cada vez más pequeño y ` +
+    `se acerca a cero. En consecuencia, los valores de $f(x)$ se aproximan a $${fmt(L())}$. Es decir,`;
+
+  m.innerHTML = `$$\\lim_{x\\to\\infty} \\left( ${fTexSafe()} \\right) = ${fmt(L())}$$`;
+
+  a.innerHTML = `Por lo tanto, la recta $y = ${fmt(L())}$ es una <strong>asíntota horizontal</strong> ` +
+    `de la gráfica de $f$. Nótese que la conclusión no depende del valor de $k$: mientras $n \\geq 1$, ` +
+    `el término $\\frac{k}{x^{n}}$ se desvanece y solo sobrevive la constante $c$.`;
+
+  renderMath(document.getElementById('concl-text').parentElement);
+}
+function renderExtensions(){
+  const items = [
+    {k:5,   n:1, c:0},
+    {k:7,   n:2, c:0},
+    {k:300, n:3, c:0}
+  ];
+  const ul = document.getElementById('ext-list');
+  ul.innerHTML = items.map((it,i) =>
+    `<li><a href="#" class="ext" data-i="${i}">$\\lim\\limits_{x\\to\\infty} \\dfrac{${it.k}}{${it.n===1?'x':'x^{'+it.n+'}'}} = 0$</a></li>`
+  ).join('');
+  renderMath(ul);
+
+  ul.querySelectorAll('a.ext').forEach(link => {
+    link.addEventListener('click', ev => {
+      ev.preventDefault();
+      const it = items[+link.dataset.i];
+      document.getElementById('p-k').value = it.k;
+      document.getElementById('p-n').value = it.n;
+      document.getElementById('p-c').value = it.c;
+      applyAll();
+      document.getElementById('fn-display').scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════════════════
+   GRÁFICO D3
+   ══════════════════════════════════════════════════════════ */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+
+  const W = box.clientWidth || 700;
+  const H = box.clientHeight || 430;
+  const m = {top:22, right:26, bottom:42, left:58};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const svg = d3.select('#chart-box').append('svg')
+    .attr('width', W).attr('height', H);
+  const g = svg.append('g').attr('transform', `translate(${m.left},${m.top})`);
+
+  /* Dominio x: empieza cerca de 0+ para ver la caída */
+  const xStart = showNeg ? -PXMAX : Math.max(0.35, PXMAX / 400);
+  const xEnd   = PXMAX;
+
+  /* Muestreo: rama positiva (y opcionalmente negativa), SIN cruzar x=0 */
+  const NS = 900;
+  const posXs = d3.range(NS + 1).map(i => Math.max(0.35, PXMAX/400) + i * (xEnd - Math.max(0.35, PXMAX/400)) / NS);
+  const negXs = showNeg ? d3.range(NS + 1).map(i => -PXMAX + i * (PXMAX - Math.max(0.35, PXMAX/400)) / NS) : [];
+
+  const posPts = posXs.map(x => ({x, y:f(x)})).filter(p => isFinite(p.y));
+  const negPts = negXs.map(x => ({x, y:f(x)})).filter(p => isFinite(p.y) && p.x < -0.3);
+
+  /* Puntos de la tabla visibles */
+  const tblPts = tableXs().map(x => ({x, y:f(x)}))
+    .filter(p => isFinite(p.y) && p.x >= xStart && p.x <= xEnd);
+
+  /* Dominio y: incluye curva visible, L y la banda ε */
+  const Lv = L();
+  const yCand = [...posPts.map(p => p.y), ...negPts.map(p => p.y), Lv, Lv + PEPS, Lv - PEPS]
+    .filter(isFinite);
+  /* Recorte robusto: usamos cuantiles para que la explosión cerca de 0 no aplaste la escala */
+  const sorted = yCand.slice().sort(d3.ascending);
+  let yLo = sorted.length ? d3.quantile(sorted, 0.02) : -1;
+  let yHi = sorted.length ? d3.quantile(sorted, 0.985) : 1;
+  const capHi = Lv + Math.max(Math.abs(PK) * 1.15, Math.abs(PEPS) * 6, 1);
+  const capLo = Lv - Math.max(Math.abs(PK) * 1.15, Math.abs(PEPS) * 6, 1);
+  yHi = Math.min(yHi, capHi); yLo = Math.max(yLo, capLo);
+  if (!(yHi > yLo)){ yHi = Lv + 1; yLo = Lv - 1; }
+  const pad = (yHi - yLo) * 0.12;
+  yLo -= pad; yHi += pad;
+
+  const x = d3.scaleLinear().domain([xStart, xEnd]).range([0, iw]);
+  const y = d3.scaleLinear().domain([yLo, yHi]).range([ih, 0]);
+
+  /* Clip-path */
+  svg.append('defs').append('clipPath').attr('id','clip')
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  /* Grilla */
+  if (document.getElementById('opt-grid').checked){
+    g.append('g').attr('class','grid')
+      .attr('transform',`translate(0,${ih})`)
+      .call(d3.axisBottom(x).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(y).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+
+  /* Banda L ± ε */
+  const plot = g.append('g').attr('clip-path','url(#clip)');
+  if (document.getElementById('opt-band').checked){
+    plot.append('rect').attr('class','band')
+      .attr('x', 0).attr('width', iw)
+      .attr('y', y(Lv + PEPS))
+      .attr('height', Math.max(0, y(Lv - PEPS) - y(Lv + PEPS)));
+    [Lv + PEPS, Lv - PEPS].forEach(v => {
+      plot.append('line').attr('class','band-edge')
+        .attr('x1',0).attr('x2',iw).attr('y1',y(v)).attr('y2',y(v));
+    });
+  }
+
+  /* Ejes */
+  const yAxisPos = (xStart <= 0 && xEnd >= 0) ? x(0) : 0;
+  g.append('g').attr('class','axis')
+    .attr('transform', `translate(0,${(yLo <= 0 && yHi >= 0) ? y(0) : ih})`)
+    .call(d3.axisBottom(x).ticks(8));
+  g.append('g').attr('class','axis')
+    .attr('transform', `translate(${yAxisPos},0)`)
+    .call(d3.axisLeft(y).ticks(6));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  /* Asíntota horizontal y = L (línea punteada, SIN puntos sobre ella) */
+  if (document.getElementById('opt-asym').checked){
+    plot.append('line').attr('class','asymptote')
+      .attr('x1',0).attr('x2',iw).attr('y1',y(Lv)).attr('y2',y(Lv));
+    g.append('text')
+      .attr('x', iw - 6).attr('y', y(Lv) - 7).attr('text-anchor','end')
+      .attr('font-family','JetBrains Mono, monospace').attr('font-size', 11)
+      .attr('fill', 'var(--crimson)')
+      .text(`y = ${fmt(Lv)}`);
+  }
+
+  /* Curva: cada rama por separado (nunca se cruza la asíntota vertical x=0) */
+  const line = d3.line()
+    .x(d => x(d.x)).y(d => y(d.y))
+    .curve(d3.curveCatmullRom.alpha(0.5));
+
+  if (negPts.length > 1)
+    plot.append('path').datum(negPts).attr('class','curve').attr('d', line);
+  if (posPts.length > 1)
+    plot.append('path').datum(posPts).attr('class','curve').attr('d', line);
+
+  /* Puntos de la tabla (clicables) */
+  const tip = document.getElementById('tip');
+  if (document.getElementById('opt-pts').checked){
+    plot.selectAll('circle.tbl-dot').data(tblPts).enter()
+      .append('circle').attr('class','tbl-dot')
+      .attr('cx', d => x(d.x)).attr('cy', d => y(d.y)).attr('r', 5)
+      .on('mouseenter', function(ev,d){
+        tip.classList.add('on');
+        tip.innerHTML = `x = ${fmtX(d.x)} · f(x) = ${fmt(d.y)}`;
+        tip.style.left = (m.left + x(d.x)) + 'px';
+        tip.style.top  = (m.top  + y(d.y)) + 'px';
+      })
+      .on('mouseleave', () => tip.classList.remove('on'))
+      .on('click', (ev,d) => updateLive(d.x));
+  }
+
+  /* Marcador del punto móvil de la animación */
+  plot.append('circle').attr('id','mover').attr('class','mover')
+      .attr('r', 6).style('display','none');
+  plot.append('line').attr('id','mover-line').attr('class','xM-line')
+      .style('display','none');
+
+  /* Tooltip que sigue el cursor */
+  g.append('rect')
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, this);
+      const xv = x.invert(mx);
+      const yv = f(xv);
+      if (!isFinite(yv) || xv <= 0 && !showNeg){ tip.classList.remove('on'); return; }
+      tip.classList.add('on');
+      tip.innerHTML = `x = ${fmt(xv)} · f(x) = ${fmt(yv)}`;
+      tip.style.left = (m.left + x(xv)) + 'px';
+      tip.style.top  = (m.top  + y(Math.min(Math.max(yv, yLo), yHi))) + 'px';
+    })
+    .on('mouseleave', () => tip.classList.remove('on'));
+
+  /* Guardamos escalas para la animación */
+  window.__scales = {x, y, m, iw, ih};
+}
+
+/* ── Panel en vivo ── */
+function updateLive(xv){
+  const Lv = L();
+  document.getElementById('lv-L').textContent = fmt(Lv);
+  if (xv === null || !isFinite(xv)){
+    document.getElementById('lv-x').textContent   = '—';
+    document.getElementById('lv-fx').textContent  = '—';
+    document.getElementById('lv-err').textContent = '—';
+    return;
+  }
+  const fv = f(xv);
+  document.getElementById('lv-x').textContent   = fmtX(r6(xv));
+  document.getElementById('lv-fx').textContent  = fmt(fv);
+  document.getElementById('lv-err').textContent = fmt(Math.abs(fv - Lv));
+
+  /* Marcador en el gráfico */
+  const S = window.__scales;
+  if (S && xv > 0 && xv >= S.x.domain()[0] && xv <= S.x.domain()[1]){
+    const yv = f(xv);
+    const yd = S.y.domain();
+    const yClamped = Math.min(Math.max(yv, yd[0]), yd[1]);
+    d3.select('#mover').style('display', null)
+      .attr('cx', S.x(xv)).attr('cy', S.y(yClamped));
+    d3.select('#mover-line').style('display', null)
+      .attr('x1', S.x(xv)).attr('x2', S.x(xv))
+      .attr('y1', 0).attr('y2', S.ih);
+  }
+}
+
+/* ── Animación x → ∞ ── */
+function toggleAnim(){
+  const btn = document.getElementById('btn-anim');
+  if (animRunning){
+    clearInterval(animTimer); animTimer = null; animRunning = false;
+    btn.classList.remove('running'); btn.textContent = '▶ Animar x → ∞';
+    return;
+  }
+  animRunning = true;
+  btn.classList.add('running'); btn.textContent = '■ Detener';
+
+  const S = window.__scales;
+  const xEnd = S ? S.x.domain()[1] : PXMAX;
+  const xIni = Math.max(0.6, xEnd / 300);
+  let step = 0;
+  const TOT = 160;
+
+  animTimer = setInterval(() => {
+    step++;
+    /* Progresión geométrica: la sensación de "crecer sin límite" */
+    const t  = step / TOT;
+    const xv = xIni * Math.pow(xEnd / xIni, t);
+    updateLive(xv);
+
+    if (step >= TOT){
+      clearInterval(animTimer); animTimer = null; animRunning = false;
+      btn.classList.remove('running'); btn.textContent = '▶ Animar x → ∞';
+      /* Estado final coherente: la curva NUNCA alcanza y = L.
+         Se dibuja un punto ABIERTO sobre la asíntota (valor no alcanzado). */
+      const S2 = window.__scales;
+      if (S2){
+        d3.select('#mover')
+          .attr('class','open-dot')
+          .attr('cx', S2.iw - 2).attr('cy', S2.y(L()))
+          .attr('r', 6);
+      }
+    }
+  }, 26);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ORQUESTACIÓN
+   ══════════════════════════════════════════════════════════ */
+function applyAll(){
+  readParams();
+  renderStatics();
+  buildTable();
+  renderHint();
+  renderEpsilon();
+  renderConclusion();
+  drawChart();
+  d3.select('#mover').attr('class','mover').style('display','none');
+  d3.select('#mover-line').style('display','none');
+  updateLive(null);
+  document.getElementById('lv-L').textContent = fmt(L());
+  renderMath(document.body);
+}
+
+function initPage(){
+  /* Parámetros */
+  document.getElementById('btn-apply').addEventListener('click', applyAll);
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-k').value = 1;
+    document.getElementById('p-n').value = 1;
+    document.getElementById('p-c').value = 0;
+    document.getElementById('p-base').value = '10';
+    document.getElementById('p-xmax').value = 40;
+    document.getElementById('p-eps').value = 0.1;
+    document.getElementById('lbl-xmax').textContent = '40';
+    applyAll();
+  });
+  ['p-k','p-n','p-c','p-base'].forEach(id => {
+    document.getElementById(id).addEventListener('change', applyAll);
+  });
+  document.querySelectorAll('button.preset').forEach(b => {
+    b.addEventListener('click', () => {
+      document.getElementById('p-k').value = b.dataset.k;
+      document.getElementById('p-n').value = b.dataset.n;
+      document.getElementById('p-c').value = b.dataset.c;
+      applyAll();
+    });
+  });
+
+  /* Tabla */
+  document.getElementById('btn-check').addEventListener('click', checkTable);
+  document.getElementById('btn-fill').addEventListener('click', fillTable);
+  document.getElementById('btn-clear').addEventListener('click', clearTable);
+  document.getElementById('btn-hint').addEventListener('click', () => {
+    const h = document.getElementById('hint');
+    h.hidden = !h.hidden;
+    if (!h.hidden) renderMath(h);
+  });
+
+  /* Gráfico */
+  ['opt-grid','opt-pts','opt-asym','opt-band','opt-neg'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { readParams(); drawChart(); });
+  });
+  document.getElementById('p-xmax').addEventListener('input', () => {
+    readParams();
+    document.getElementById('lbl-xmax').textContent = String(PXMAX);
+    drawChart();
+  });
+  document.getElementById('btn-anim').addEventListener('click', toggleAnim);
+
+  /* ε–M */
+  document.getElementById('p-eps').addEventListener('input', () => {
+    readParams(); renderEpsilon(); drawChart();
+  });
+
+  /* Resize */
+  let rz = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = setTimeout(() => { readParams(); drawChart(); }, 140);
+  });
+
+  renderExtensions();
+  applyAll();
+}
+
+/* ── ARRANQUE ROBUSTO (regla 5) ── */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+</body>
+</html>

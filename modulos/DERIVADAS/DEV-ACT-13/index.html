@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 13 — Punto de inflexión · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  /* Concavidad: púrpura = cóncava hacia arriba; ámbar = cóncava hacia abajo */
+  --cup:#5b3d8f; --cdown:#b5761c;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text], select{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus, select:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+/* ── SOLVE BOX ── */
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:56px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input, .answer-check select{max-width:170px;}
+
+/* ── TABLA ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:540px;}
+th, td{
+  border:1px solid var(--border); padding:9px 8px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+thead th{background:var(--navy); color:#fff; font-weight:500; letter-spacing:.05em; font-size:.78rem;}
+thead th.critcol{background:var(--gold); color:#3a2f0b;}
+tbody td.rowlbl{
+  background:#f4f2ec; font-weight:700; color:var(--navy);
+  text-align:left; padding-left:12px; white-space:nowrap;
+}
+tbody td.critcell{background:#fdf7e3; font-weight:700; color:#8a6f1e;}
+select.cell, input.cell{
+  width:100%; min-width:100px; border:1px solid var(--border);
+  background:#fff; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.8rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+select.cell{cursor:pointer;}
+select.cell.correct, input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+select.cell.wrong, input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── VEREDICTO ── */
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--muted); background:#fbfaf7;
+}
+.verdict.infl{border-left-color:var(--cup); background:#f4f1f9;}
+.verdict.none{border-left-color:var(--gold); background:#fdfaf0;}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.35rem; margin-bottom:8px;}
+.verdict.infl .vt{color:var(--cup);}
+.verdict.none .vt{color:#8a6f1e;}
+.verdict .vb{font-size:.94rem;}
+.arrow-pair{display:flex; gap:20px; justify-content:center; margin:14px 0 6px; font-family:'JetBrains Mono',monospace; flex-wrap:wrap;}
+.arrow-pair .ap{
+  text-align:center; padding:10px 18px; border-radius:3px;
+  background:#fff; border:1px solid var(--border); min-width:120px;
+}
+.arrow-pair .ap .s{font-size:1.5rem; font-weight:700; line-height:1;}
+.arrow-pair .ap .l{font-size:.62rem; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:6px;}
+.arrow-pair .ap.cup .s{color:var(--cup);}
+.arrow-pair .ap.cdown .s{color:var(--cdown);}
+.arrow-pair .ap.zero .s{color:#8a6f1e;}
+
+/* ── GRÁFICOS ── */
+.chart-box{
+  position:relative; width:100%; background:#fff;
+  border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.stack{display:flex; flex-direction:column; gap:0; margin-top:6px;}
+.stack .chart-box{border-radius:0; border-bottom:none;}
+.stack .chart-box:first-child{border-radius:3px 3px 0 0;}
+.stack .chart-box:last-child{border-radius:0 0 3px 3px; border-bottom:1px solid var(--border);}
+#chart-f{height:330px;}
+#chart-d1{height:210px;}
+#chart-d2{height:210px;}
+#chart-zoom{height:320px; border-radius:3px; border:1px solid var(--border);}
+.stack-lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--muted);
+  padding:7px 12px; background:#f4f2ec; border:1px solid var(--border);
+  border-bottom:none;
+}
+.stack-lbl:first-child{border-radius:3px 3px 0 0;}
+.stack-lbl b{color:var(--navy);}
+
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+.range-field{display:flex; align-items:center; gap:9px; flex:1; min-width:240px;}
+.range-field span{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted); white-space:nowrap;}
+input[type=range]{flex:1; accent-color:var(--navy); cursor:pointer; min-width:90px;}
+.probe-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.probe-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+}
+.probe-wrap .hval{color:var(--crimson); font-weight:700;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke-width:2.6;}
+.curve-cup{stroke:var(--cup);}
+.curve-cdown{stroke:var(--cdown);}
+.curve-plain{stroke:var(--navy);}
+.d1curve{fill:none; stroke:var(--crimson); stroke-width:2.1;}
+.d2curve{fill:none; stroke:var(--cup); stroke-width:2.1;}
+.band-cup{fill:var(--cup); opacity:.08;}
+.band-cdown{fill:var(--cdown); opacity:.09;}
+.infl-line{stroke:var(--gold); stroke-width:2; stroke-dasharray:6,4;}
+.infl-tan{stroke:var(--gold); stroke-width:2.4;}
+.probe-tan{stroke-width:2.2;}
+.osc-circle{fill:none; stroke-width:1.4; stroke-dasharray:4,3; opacity:.7;}
+.closed-dot{stroke:#fff; stroke-width:1.4;}
+.infl-dot{fill:var(--gold); stroke:var(--navy); stroke-width:1.8;}
+.test-dot{stroke:#fff; stroke-width:1.3;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell.pur{border-top-color:var(--cup);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell .v.cup{color:var(--cup);}
+.live-cell .v.cdown{color:var(--cdown);}
+.live-cell .v.zero{color:#8a6f1e;}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+.legend{
+  display:flex; flex-wrap:wrap; gap:16px; margin-top:10px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+}
+.legend .lg{display:flex; align-items:center; gap:7px;}
+.legend .sw{width:22px; height:3px; border-radius:2px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  #chart-f{height:260px;}
+  #chart-d1,#chart-d2{height:170px;}
+  #chart-zoom{height:250px;}
+  .btn-row button{flex:1 1 auto;}
+  .arrow-pair{flex-direction:column; gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 13 — Punto de inflexión</div>
+      <div class="header-sub">La segunda derivada: concavidad y cambio de curvatura</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">13</div>
+      <h2>Punto de inflexión en una función cúbica</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Resolver $f''(x)=0$, analizar el <strong>cambio de signo</strong> de $f''$ alrededor de ese
+        punto, y comprender que ese cambio corresponde a un cambio de <strong>concavidad</strong> de la
+        curva. Distinguir con claridad qué mide $f'$ (dirección: sube o baja) de qué mide $f''$
+        (curvatura: se abre hacia arriba o hacia abajo).</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función y sus derivadas</span>
+        <div id="func-katex">$$f(x)=x^{3}-3x \qquad f'(x)=3x^{2}-3 \qquad f''(x)=6x$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Cambia la familia y los coeficientes. Los puntos donde $f''=0$ se resuelven
+          <strong>algebraicamente</strong> y el veredicto se recalcula solo.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-fam">familia</label>
+            <select id="p-fam">
+              <option value="cubic" selected>cúbica · ax³ + bx² + cx + d</option>
+              <option value="quartic">cuártica · ax⁴ + bx³ + cx² + d</option>
+              <option value="quad">cuadrática · ax² + bx + c</option>
+              <option value="sin">seno · a·sen(bx) + c</option>
+              <option value="expq">gaussiana · a·e^(−bx²) + c</option>
+            </select>
+          </div>
+          <div class="param-field"><label for="p-a">a</label><input type="number" id="p-a" value="1" step="any"></div>
+          <div class="param-field"><label for="p-b">b</label><input type="number" id="p-b" value="0" step="any"></div>
+          <div class="param-field"><label for="p-c">c</label><input type="number" id="p-c" value="-3" step="any"></div>
+          <div class="param-field"><label for="p-d">d</label><input type="number" id="p-d" value="0" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="cubic,1,0,-3,0">Original · x³−3x</button>
+          <button class="btn-ghost" data-preset="cubic,1,-3,0,0">x³−3x² · inflexión en x=1</button>
+          <button class="btn-ghost" data-preset="quartic,1,0,0,0">x⁴ · ¡f″=0 SIN inflexión!</button>
+          <button class="btn-ghost" data-preset="quartic,1,0,-6,0">x⁴−6x² · dos inflexiones</button>
+          <button class="btn-ghost" data-preset="quad,1,0,0,0">x² · sin inflexión</button>
+          <button class="btn-ghost" data-preset="sin,1,1,0,0">sen x · infinitas</button>
+          <button class="btn-ghost" data-preset="expq,1,1,0,0">gaussiana · dos inflexiones</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) RESOLVER f''(x) = 0 ── -->
+      <div class="sec-title">a) Determine dónde $f''(x) = 0$</div>
+      <div class="solve-box" id="solve-box"></div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-a">Verificar respuesta</button>
+        <button class="btn-primary" id="btn-fill-a">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-a">Pista</button>
+        <span class="score-badge" id="score-a"></span>
+      </div>
+      <div class="hint-box" id="hint-a"></div>
+
+      <!-- ── b) CAMBIO DE SIGNO DE f'' ── -->
+      <div class="sec-title">b) Analice el cambio de signo de $f''(x)$ alrededor de ese punto</div>
+      <p style="font-size:.93rem;margin-bottom:6px;">
+        Igual que con $f'$ en la actividad anterior, tomamos un punto de prueba a cada lado.
+        Pero <strong>lo que se lee ahora es distinto</strong>: el signo de $f''$ no dice si la curva
+        sube o baja, sino <em>hacia dónde se abre</em>.
+      </p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-test"></tr>
+            <tr id="row-val"></tr>
+            <tr id="row-sign"></tr>
+            <tr id="row-conc"></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-b">Verificar</button>
+        <button class="btn-primary" id="btn-fill-b">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-clear-b">Limpiar</button>
+        <span class="score-badge" id="score-b"></span>
+      </div>
+
+      <div id="verdict-panel"></div>
+
+      <!-- ── c) GRÁFICA ── -->
+      <div class="sec-title">c) Grafique la función y localice el punto de inflexión</div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-color" checked> colorear por concavidad</label>
+        <label><input type="checkbox" id="opt-bands" checked> bandas</label>
+        <label><input type="checkbox" id="opt-itan" checked> tangente de inflexión</label>
+        <label><input type="checkbox" id="opt-probe" checked> tangente móvil</label>
+        <div class="range-field">
+          <span>zoom</span>
+          <input type="range" id="opt-zoom" min="1" max="10" step="0.5" value="3">
+          <span id="zoom-val">3</span>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="stack-lbl"><b>f(x)</b> — la curva. El color indica la concavidad.</div>
+        <div class="chart-box" id="chart-f"><div class="tooltip" id="tip-f"></div></div>
+        <div class="stack-lbl"><b>f ′(x)</b> — la pendiente. En la inflexión alcanza un extremo.</div>
+        <div class="chart-box" id="chart-d1"><div class="tooltip" id="tip-d1"></div></div>
+        <div class="stack-lbl"><b>f ″(x)</b> — la curvatura. Aquí es donde <em>cruza el cero</em>.</div>
+        <div class="chart-box" id="chart-d2"><div class="tooltip" id="tip-d2"></div></div>
+      </div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw" style="background:var(--cup)"></span> cóncava hacia arriba · $f''&gt;0$ · ∪</div>
+        <div class="lg"><span class="sw" style="background:var(--cdown)"></span> cóncava hacia abajo · $f''&lt;0$ · ∩</div>
+        <div class="lg"><span class="sw" style="background:var(--gold)"></span> punto de inflexión · $f''=0$ con cambio</div>
+      </div>
+
+      <div class="probe-wrap">
+        <span class="hlbl">Tangente móvil en x = <span class="hval" id="probe-val">0</span></span>
+        <input type="range" id="probe-slider" min="-3" max="3" step="0.01" value="0">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Cruzar la inflexión</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">f(x)</span><span class="v" id="lv-f">—</span></div>
+        <div class="live-cell crim"><span class="k">f ′(x) · dirección</span><span class="v" id="lv-d1">—</span></div>
+        <div class="live-cell pur"><span class="k">f ″(x) · curvatura</span><span class="v" id="lv-d2">—</span></div>
+        <div class="live-cell gold"><span class="k">concavidad</span><span class="v" id="lv-conc" style="font-size:.8rem;">—</span></div>
+      </div>
+
+      <p class="note">
+        Observa la <strong>tangente móvil</strong>: en una zona cóncava hacia arriba (∪), la curva queda
+        <em>por encima</em> de su tangente; en una zona cóncava hacia abajo (∩), queda <em>por debajo</em>.
+        En la inflexión, la tangente <strong>atraviesa</strong> la curva — el único punto donde eso ocurre.
+      </p>
+
+      <!-- ── LUPA ── -->
+      <div class="sec-title">Lupa: la tangente atraviesa la curva</div>
+      <div class="chart-box" id="chart-zoom"><div class="tooltip" id="tip-z"></div></div>
+      <div class="probe-wrap">
+        <span class="hlbl">radio de la lupa: <span class="hval" id="lens-val">1</span></span>
+        <input type="range" id="lens-slider" min="0.1" max="3" step="0.01" value="1">
+      </div>
+      <p class="note">
+        Acercamiento sobre el punto de inflexión. La recta dorada es la tangente allí.
+        A un lado la curva queda arriba; al otro, abajo. Ese <em>cruce</em> es la firma de la inflexión.
+      </p>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Concavidad, inflexión y por qué $f''=0$ no basta</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box">
+            <span class="lbl">Definiciones</span>
+            <div id="def-katex"></div>
+          </div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div id="conclusion"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 13 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════ */
+let FAM = 'cubic';
+let A = 1, B = 0, C = -3, D = 0;
+let ZOOM = 3;
+let LENS = 1;
+let PROBE = 0;
+let ANIM = null;
+let ZEROS = [];    // raíces de f''=0 (candidatos a inflexión)
+let FOCUS = 0;     // índice del candidato bajo análisis
+let TESTS = [];    // [{x, val, sign}] a izq/der del foco
+
+const TOL = 1e-9;
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — FUNCIONES PURAS: f, f', f''
+   ═══════════════════════════════════════════════ */
+function f(x){
+  switch(FAM){
+    case 'cubic':   return A*x*x*x + B*x*x + C*x + D;
+    case 'quartic': return A*x*x*x*x + B*x*x*x + C*x*x + D;
+    case 'quad':    return A*x*x + B*x + C;
+    case 'sin':     return A*Math.sin(B*x) + C;
+    case 'expq':    return A*Math.exp(-B*x*x) + C;
+    default:        return NaN;
+  }
+}
+function fp(x){
+  switch(FAM){
+    case 'cubic':   return 3*A*x*x + 2*B*x + C;
+    case 'quartic': return 4*A*x*x*x + 3*B*x*x + 2*C*x;
+    case 'quad':    return 2*A*x + B;
+    case 'sin':     return A*B*Math.cos(B*x);
+    case 'expq':    return -2*A*B*x*Math.exp(-B*x*x);
+    default:        return NaN;
+  }
+}
+function fpp(x){
+  switch(FAM){
+    case 'cubic':   return 6*A*x + 2*B;
+    case 'quartic': return 12*A*x*x + 6*B*x + 2*C;
+    case 'quad':    return 2*A;
+    case 'sin':     return -A*B*B*Math.sin(B*x);
+    case 'expq':    return 2*A*B*(2*B*x*x - 1)*Math.exp(-B*x*x);
+    default:        return NaN;
+  }
+}
+
+/* ── RAÍCES DE f''=0: resueltas algebraicamente ── */
+function secondZeros(){
+  const out = [];
+  const lo = center() - ZOOM, hi = center() + ZOOM;
+
+  switch(FAM){
+    case 'cubic':
+      /* 6Ax + 2B = 0 */
+      if (Math.abs(A) > TOL) out.push(-B / (3*A));
+      /* Si A=0 la "cúbica" es cuadrática: f''=2B constante, sin raíz (salvo B=0) */
+      break;
+
+    case 'quartic': {
+      /* 12Ax² + 6Bx + 2C = 0 */
+      if (Math.abs(A) < TOL){
+        if (Math.abs(B) > TOL) out.push(-2*C / (6*B));
+      } else {
+        const aa = 12*A, bb = 6*B, cc = 2*C;
+        const disc = bb*bb - 4*aa*cc;
+        if (disc > TOL){
+          const s = Math.sqrt(disc);
+          out.push((-bb - s)/(2*aa), (-bb + s)/(2*aa));
+        } else if (Math.abs(disc) <= TOL){
+          /* Raíz doble: f''=0 pero SIN cambio de signo → NO habrá inflexión */
+          out.push(-bb/(2*aa));
+        }
+      }
+      break;
+    }
+
+    case 'quad':
+      /* f'' = 2A, constante. Solo se anula si A=0 (degenerado, recta) */
+      break;
+
+    case 'sin': {
+      /* -AB²·sen(Bx) = 0 ⟺ Bx = kπ */
+      if (Math.abs(A) > TOL && Math.abs(B) > TOL){
+        const kLo = Math.floor(B*lo/Math.PI) - 1;
+        const kHi = Math.ceil(B*hi/Math.PI) + 1;
+        for (let k = kLo; k <= kHi; k++){
+          const x = k*Math.PI / B;
+          if (x >= lo - 1e-6 && x <= hi + 1e-6) out.push(x);
+        }
+      }
+      break;
+    }
+
+    case 'expq': {
+      /* 2AB(2Bx² − 1)e^(−Bx²) = 0 ⟺ 2Bx² = 1 ⟺ x = ±1/√(2B) */
+      if (Math.abs(A) > TOL && B > TOL){
+        const r = 1 / Math.sqrt(2*B);
+        out.push(-r, r);
+      }
+      break;
+    }
+  }
+
+  return out
+    .filter(x => isFinite(x))
+    .sort((u, v) => u - v)
+    .filter((x, i, arr) => i === 0 || Math.abs(x - arr[i-1]) > 1e-7);
+}
+
+function center(){
+  if (!ZEROS.length) return 0;
+  return ZEROS.reduce((s, v) => s + v, 0) / ZEROS.length;
+}
+
+/* ── PUNTOS DE PRUEBA a ambos lados del candidato, sin invadir el vecino ── */
+function buildTests(){
+  if (!ZEROS.length) return [];
+  const x0 = ZEROS[FOCUS];
+
+  let gapL = Infinity, gapR = Infinity;
+  if (FOCUS > 0)                gapL = x0 - ZEROS[FOCUS - 1];
+  if (FOCUS < ZEROS.length - 1) gapR = ZEROS[FOCUS + 1] - x0;
+
+  const stepL = Math.min(isFinite(gapL) ? gapL * 0.45 : 1, 1);
+  const stepR = Math.min(isFinite(gapR) ? gapR * 0.45 : 1, 1);
+
+  const xL = x0 - Math.max(stepL, 1e-3);
+  const xR = x0 + Math.max(stepR, 1e-3);
+
+  return [xL, xR].map(x => {
+    const v = fpp(x);
+    return {x, val: v, sign: Math.abs(v) < 1e-9 ? 0 : (v > 0 ? 1 : -1)};
+  });
+}
+
+/* ── VEREDICTO: ¿hay inflexión? Se decide por CAMBIO DE SIGNO de f'' ── */
+function verdict(){
+  if (!ZEROS.length) return {kind:'nozero'};
+  if (TESTS.length < 2) return {kind:'nozero'};
+  const sL = TESTS[0].sign, sR = TESTS[1].sign;
+  const x0 = ZEROS[FOCUS];
+  /* Inflexión ⟺ f'' cambia de signo. Si no cambia, NO hay inflexión. */
+  if (sL !== sR && sL !== 0 && sR !== 0)
+    return {kind:'infl', x:x0, y:f(x0), m:fp(x0), sL, sR};
+  return {kind:'none', x:x0, y:f(x0), m:fp(x0), sL, sR};
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 4 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+function sigGlyph(s){ return s > 0 ? '+' : (s < 0 ? '−' : '0'); }
+function concName(s){
+  if (s > 0) return 'cóncava hacia arriba (∪)';
+  if (s < 0) return 'cóncava hacia abajo (∩)';
+  return 'sin curvatura';
+}
+
+/* ── LaTeX ── */
+function fTex(){
+  const lead = a => Math.abs(a-1)<TOL ? '' : (Math.abs(a+1)<TOL ? '-' : fmt(a));
+  switch(FAM){
+    case 'cubic': {
+      let s = lead(A) + 'x^{3}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x^{2}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C) + 'x';
+      if (Math.abs(D)>TOL) s += ' ' + signTerm(D);
+      return s;
+    }
+    case 'quartic': {
+      let s = lead(A) + 'x^{4}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x^{3}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C) + 'x^{2}';
+      if (Math.abs(D)>TOL) s += ' ' + signTerm(D);
+      return s;
+    }
+    case 'quad': {
+      let s = lead(A) + 'x^{2}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'sin': {
+      let s = lead(A) + '\\operatorname{sen}(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'expq': {
+      let s = lead(A) + 'e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    default: return 'x';
+  }
+}
+function fpTex(){
+  switch(FAM){
+    case 'cubic': {
+      let s = fmt(3*A) + 'x^{2}';
+      if (Math.abs(2*B)>TOL) s += ' ' + signTerm(2*B) + 'x';
+      if (Math.abs(C)>TOL)   s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'quartic': {
+      let s = fmt(4*A) + 'x^{3}';
+      if (Math.abs(3*B)>TOL) s += ' ' + signTerm(3*B) + 'x^{2}';
+      if (Math.abs(2*C)>TOL) s += ' ' + signTerm(2*C) + 'x';
+      return s;
+    }
+    case 'quad': {
+      let s = fmt(2*A) + 'x';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B);
+      return s;
+    }
+    case 'sin':  return fmt(A*B) + '\\cos(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+    case 'expq': return fmt(-2*A*B) + 'x\\,e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+    default: return '';
+  }
+}
+function fppTex(){
+  switch(FAM){
+    case 'cubic': {
+      let s = fmt(6*A) + 'x';
+      if (Math.abs(2*B)>TOL) s += ' ' + signTerm(2*B);
+      return s;
+    }
+    case 'quartic': {
+      let s = fmt(12*A) + 'x^{2}';
+      if (Math.abs(6*B)>TOL) s += ' ' + signTerm(6*B) + 'x';
+      if (Math.abs(2*C)>TOL) s += ' ' + signTerm(2*C);
+      return s;
+    }
+    case 'quad':  return fmt(2*A);
+    case 'sin':   return fmt(-A*B*B) + '\\operatorname{sen}(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+    case 'expq':  return fmt(2*A*B) + '\\left(' + fmt(2*B) + 'x^{2} - 1\\right)e^{-' +
+                         (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+    default: return '';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  FAM = document.getElementById('p-fam').value;
+  const a = parseFloat(document.getElementById('p-a').value);
+  const b = parseFloat(document.getElementById('p-b').value);
+  const c = parseFloat(document.getElementById('p-c').value);
+  const d = parseFloat(document.getElementById('p-d').value);
+  A = isFinite(a) ? a : 1;
+  B = isFinite(b) ? b : 0;
+  C = isFinite(c) ? c : 0;
+  D = isFinite(d) ? d : 0;
+  ZOOM = parseFloat(document.getElementById('opt-zoom').value) || 3;
+  LENS = parseFloat(document.getElementById('lens-slider').value) || 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  ZEROS = secondZeros();
+  FOCUS = Math.min(FOCUS, Math.max(0, ZEROS.length - 1));
+  if (!ZEROS.length) FOCUS = 0;
+  TESTS = buildTests();
+
+  const ps = document.getElementById('probe-slider');
+  const c = center();
+  const lo = c - ZOOM, hi = c + ZOOM;
+  ps.min = lo; ps.max = hi; ps.step = (hi - lo)/800;
+  PROBE = ZEROS.length ? ZEROS[FOCUS] - Math.min(1, ZOOM*0.35) : c;
+  PROBE = Math.max(lo, Math.min(hi, PROBE));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolve();
+  buildTable();
+  renderVerdict();
+  drawAll();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+function drawAll(){
+  drawMain();
+  drawD1();
+  drawD2();
+  drawZoom();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + ' \\qquad f\'(x)=' + fpTex() +
+                 ' \\qquad f\'\'(x)=' + fppTex() + '$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  let html = '';
+  if (!ZEROS.length){
+    html = 'Caso actual: la ecuación $f\'\'(x) = 0$ <strong>no tiene solución</strong>. ' +
+      (FAM === 'quad'
+        ? 'En una parábola, $f\'\' = ' + fmt(2*A) + '$ es <strong>constante</strong> y nunca se anula: ' +
+          'la concavidad <em>jamás</em> cambia. Por eso una parábola <strong>no tiene inflexiones</strong>.'
+        : 'Sin candidato, no puede haber punto de inflexión.');
+  } else {
+    html = 'Caso actual: $f\'\'(x) = 0$ en ' +
+      '$x = ' + ZEROS.map(x => fmt(x,3)).join(',\\; ') + '$. ' +
+      (ZEROS.length > 1 ? 'Usa el selector para analizar cada candidato. ' : '') +
+      'Pero cuidado: anular $f\'\'$ es solo un <strong>candidato</strong>. ' +
+      'Hace falta verificar que <em>cambie de signo</em>.';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — a) RESOLVER f''(x)=0
+   ═══════════════════════════════════════════════ */
+function renderSolve(){
+  const box = document.getElementById('solve-box');
+  let html = '';
+
+  html += '<div class="solve-step"><span class="n">Paso 1</span><span class="b">' +
+    'Derivamos dos veces: $$f\'(x) = ' + fpTex() + ' \\qquad\\Longrightarrow\\qquad ' +
+    'f\'\'(x) = ' + fppTex() + '$$</span></div>';
+
+  html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+    'Planteamos $f\'\'(x) = 0$: $$' + fppTex() + ' = 0$$</span></div>';
+
+  if (!ZEROS.length){
+    let razon;
+    if (FAM === 'quad'){
+      razon = 'La segunda derivada es la <strong>constante</strong> $' + fmt(2*A) + '$, que ' +
+        (Math.abs(A) > TOL ? 'nunca se anula' : 'es idénticamente nula (caso degenerado)') + '. ' +
+        'La concavidad es la misma en todo punto: ' + concName(Math.sign(2*A)) + '.';
+    } else if (FAM === 'quartic' && Math.abs(A) > TOL){
+      const disc = 36*B*B - 96*A*C;
+      razon = 'Es una cuadrática en $x$. Su discriminante vale ' +
+        '$$\\Delta = (' + fmt(6*B) + ')^{2} - 4(' + fmt(12*A) + ')(' + fmt(2*C) + ') = ' + fmt(disc,3) + ' &lt; 0,$$' +
+        'que es <strong>negativo</strong>: no hay raíces reales. $f\'\'$ nunca se anula.';
+    } else {
+      razon = 'La ecuación no admite solución real con los coeficientes actuales.';
+    }
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' + razon + '</span></div>';
+    html += '<div class="solve-step"><span class="n">Conclusión</span><span class="b">' +
+      '<strong>No hay candidatos a inflexión.</strong> La curva conserva su concavidad ' +
+      'en toda la ventana.</span></div>';
+    box.innerHTML = html;
+    document.getElementById('score-a').className = 'score-badge';
+    renderMath(box);
+    return;
+  }
+
+  /* Desarrollo por familia */
+  if (FAM === 'cubic'){
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'Es una ecuación <strong>lineal</strong>. Despejamos: ' +
+      '$$' + fmt(6*A) + 'x = ' + fmt(-2*B) + ' \\quad\\Longrightarrow\\quad ' +
+      'x = \\dfrac{' + fmt(-2*B) + '}{' + fmt(6*A) + '} = ' + fmt(ZEROS[0], 4) + '$$' +
+      'Toda cúbica tiene <strong>exactamente un</strong> punto donde $f\'\'=0$: su $f\'\'$ es una recta ' +
+      'de pendiente no nula, y cruza el eje una sola vez.</span></div>';
+  } else if (FAM === 'quartic' && Math.abs(A) > TOL){
+    const disc = 36*B*B - 96*A*C;
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'Es una <strong>cuadrática</strong>. Discriminante: ' +
+      '$$\\Delta = (' + fmt(6*B) + ')^{2} - 4(' + fmt(12*A) + ')(' + fmt(2*C) + ') = ' + fmt(disc,3) + '$$' +
+      (Math.abs(disc) <= TOL
+        ? '<strong>Cero</strong>: hay una <strong>raíz doble</strong>. Anticipo importante: allí $f\'\'$ ' +
+          'se anula pero <em>no cambiará de signo</em>, así que <strong>no habrá inflexión</strong>.'
+        : '<strong>Positivo</strong>: dos raíces reales distintas, es decir, dos candidatos.') +
+      '</span></div>';
+    html += '<div class="solve-step"><span class="n">Paso 4</span><span class="b">' +
+      'Fórmula cuadrática: $$x = ' + ZEROS.map(x => fmt(x,4)).join(', \\qquad x = ') + '$$</span></div>';
+  } else if (FAM === 'sin'){
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'El seno se anula en los múltiplos de $\\pi$: ' +
+      '$$\\operatorname{sen}(' + fmt(B) + 'x) = 0 \\;\\Longleftrightarrow\\; ' + fmt(B) + 'x = k\\pi$$' +
+      'Hay <strong>infinitas</strong> inflexiones. En la ventana visible: ' +
+      '$x = ' + ZEROS.map(x => fmt(x,3)).join(',\\; ') + '$.</span></div>';
+  } else if (FAM === 'expq'){
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'Como $e^{-bx^{2}} &gt; 0$ siempre, el producto se anula solo si el paréntesis lo hace: ' +
+      '$$' + fmt(2*B) + 'x^{2} - 1 = 0 \\quad\\Longrightarrow\\quad x = \\pm\\dfrac{1}{\\sqrt{' + fmt(2*B) + '}} = \\pm' + fmt(Math.abs(ZEROS[1]), 4) + '$$' +
+      'La campana de Gauss tiene <strong>dos</strong> inflexiones, simétricas respecto del eje.</span></div>';
+  }
+
+  /* Chequeo */
+  const x0 = ZEROS[FOCUS];
+  html += '<div class="solve-step"><span class="n">Chequeo</span><span class="b">' +
+    'Sustituyendo: $f\'\'(' + fmt(x0,3) + ') = ' + fmt(fpp(x0), 6) + ' \\approx 0$ ✓ &nbsp;·&nbsp; ' +
+    'Punto de la curva: $\\left(' + fmt(x0,3) + ',\\; ' + fmt(f(x0),3) + '\\right)$, ' +
+    'con pendiente $f\'(' + fmt(x0,3) + ') = ' + fmt(fp(x0),3) + '$.</span></div>';
+
+  if (ZEROS.length > 1){
+    html += '<div class="answer-check"><label for="focus-sel">candidato a analizar</label>' +
+      '<select id="focus-sel">';
+    ZEROS.forEach((x, i) => {
+      html += '<option value="' + i + '"' + (i === FOCUS ? ' selected' : '') + '>x = ' + fmt(x,3) + '</option>';
+    });
+    html += '</select></div>';
+  }
+
+  html += '<div class="answer-check">' +
+    '<label for="ans-a">tu respuesta · x =</label>' +
+    '<input type="text" id="ans-a" class="cell" inputmode="decimal" placeholder="?"></div>';
+
+  box.innerHTML = html;
+
+  const sel = document.getElementById('focus-sel');
+  if (sel){
+    sel.addEventListener('change', ev => {
+      FOCUS = parseInt(ev.target.value, 10);
+      TESTS = buildTests();
+      buildTable(); renderVerdict(); drawAll(); renderConclusion();
+      setProbe(ZEROS[FOCUS] - Math.min(1, ZOOM*0.35));
+      setTimeout(() => renderMath(document.body), 0);
+    });
+  }
+
+  document.getElementById('score-a').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyA(){
+  const inp = document.getElementById('ans-a');
+  const badge = document.getElementById('score-a');
+  if (!inp){
+    badge.textContent = 'No hay candidato que verificar';
+    badge.className = 'score-badge show';
+    return;
+  }
+  const raw = inp.value.trim().replace(',', '.');
+  inp.classList.remove('correct','wrong');
+  if (raw === ''){
+    badge.textContent = 'Escribe un valor';
+    badge.className = 'score-badge show';
+    return;
+  }
+  const val = parseFloat(raw);
+  const hit = ZEROS.some(x => Math.abs(val - x) <= Math.max(Math.abs(x)*1e-3, 1e-3));
+  if (hit){
+    inp.classList.add('correct');
+    badge.textContent = '✓ Correcto';
+    badge.className = 'score-badge show perfect';
+  } else {
+    inp.classList.add('wrong');
+    badge.textContent = '✗ Revisa el despeje';
+    badge.className = 'score-badge show';
+  }
+}
+
+function fillA(){
+  const inp = document.getElementById('ans-a');
+  if (!inp) return;
+  inp.value = fmt(ZEROS[FOCUS], 4);
+  inp.classList.remove('wrong');
+  inp.classList.add('correct');
+  const badge = document.getElementById('score-a');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function toggleHintA(){
+  const box = document.getElementById('hint-a');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  let html = '<strong>Pista.</strong> Deriva <strong>dos veces</strong> y luego iguala a cero. ' +
+    'Fíjate en el <em>grado</em> de $f\'\'$: eso te dice cuántas soluciones esperar.';
+  if (FAM === 'cubic'){
+    html += '<p style="margin-top:8px;">Para una cúbica, $f\'\'$ es <strong>lineal</strong>: ' +
+      'una recta corta el eje exactamente una vez (si su pendiente no es nula). ' +
+      'Por eso toda cúbica tiene <strong>un solo</strong> punto de inflexión.</p>';
+  } else if (FAM === 'quartic'){
+    html += '<p style="margin-top:8px;">Para una cuártica, $f\'\'$ es <strong>cuadrática</strong>. ' +
+      'Calcula el discriminante primero: si es positivo hay dos candidatos; si es cero hay uno ' +
+      '(pero <em>ojo</em>, sin cambio de signo); si es negativo, ninguno.</p>';
+  } else if (FAM === 'expq'){
+    html += '<p style="margin-top:8px;">La exponencial $e^{-bx^{2}}$ es <strong>siempre positiva</strong>, ' +
+      'así que nunca aporta raíces. Iguala a cero solo el factor polinómico.</p>';
+  }
+  box.innerHTML = html;
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) TABLA DE SIGNOS DE f''
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-test');
+  const r2 = document.getElementById('row-val');
+  const r3 = document.getElementById('row-sign');
+  const r4 = document.getElementById('row-conc');
+
+  if (!ZEROS.length){
+    th.innerHTML = '<th style="background:var(--navy)">—</th>';
+    r1.innerHTML = '<td class="rowlbl">Sin candidato: $f\'\'$ no se anula.</td>';
+    r2.innerHTML = ''; r3.innerHTML = ''; r4.innerHTML = '';
+    document.getElementById('score-b').className = 'score-badge';
+    renderMath(document.getElementById('tabla'));
+    return;
+  }
+
+  const x0 = ZEROS[FOCUS];
+
+  th.innerHTML =
+    '<th style="background:var(--navy)">zona</th>' +
+    '<th>antes · x &lt; ' + fmt(x0,3) + '</th>' +
+    '<th class="critcol">x = ' + fmt(x0,3) + '</th>' +
+    '<th>después · x &gt; ' + fmt(x0,3) + '</th>';
+
+  r1.innerHTML =
+    '<td class="rowlbl">punto de prueba</td>' +
+    '<td>x = ' + fmt(TESTS[0].x, 3) + '</td>' +
+    '<td class="critcell">x = ' + fmt(x0, 3) + '</td>' +
+    '<td>x = ' + fmt(TESTS[1].x, 3) + '</td>';
+
+  r2.innerHTML =
+    '<td class="rowlbl">f ″(punto)</td>' +
+    '<td>' + fmt(TESTS[0].val, 4) + '</td>' +
+    '<td class="critcell">0</td>' +
+    '<td>' + fmt(TESTS[1].val, 4) + '</td>';
+
+  r3.innerHTML =
+    '<td class="rowlbl">signo de f ″</td>' +
+    '<td><select class="cell" data-row="sign" data-i="0">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">positivo (+)</option>' +
+      '<option value="-1">negativo (−)</option></select></td>' +
+    '<td class="critcell">cero</td>' +
+    '<td><select class="cell" data-row="sign" data-i="1">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">positivo (+)</option>' +
+      '<option value="-1">negativo (−)</option></select></td>';
+
+  r4.innerHTML =
+    '<td class="rowlbl">concavidad</td>' +
+    '<td><select class="cell" data-row="conc" data-i="0">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">hacia arriba ∪</option>' +
+      '<option value="-1">hacia abajo ∩</option></select></td>' +
+    '<td class="critcell">cambia</td>' +
+    '<td><select class="cell" data-row="conc" data-i="1">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">hacia arriba ∪</option>' +
+      '<option value="-1">hacia abajo ∩</option></select></td>';
+
+  document.getElementById('score-b').className = 'score-badge';
+}
+
+function verifyB(){
+  const cells = document.querySelectorAll('#tabla select.cell');
+  const badge = document.getElementById('score-b');
+  if (!cells.length){
+    badge.textContent = 'Sin candidato';
+    badge.className = 'score-badge show';
+    return;
+  }
+  let ok = 0, total = 0, tried = 0;
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    /* El mismo signo de f'' gobierna ambas filas: signo y concavidad */
+    const truth = TESTS[i].sign;
+    total++;
+    cell.classList.remove('correct','wrong');
+    if (cell.value === '') return;
+    tried++;
+    if (parseInt(cell.value, 10) === truth){ cell.classList.add('correct'); ok++; }
+    else cell.classList.add('wrong');
+  });
+  badge.textContent = tried === 0 ? 'Elige las opciones' : ok + ' / ' + total + ' correctas';
+  badge.className = 'score-badge show' + (ok === total && total > 0 ? ' perfect' : '');
+}
+
+function fillB(){
+  document.querySelectorAll('#tabla select.cell').forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.value = String(TESTS[i].sign);
+    cell.classList.remove('wrong');
+    cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score-b');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function clearB(){
+  document.querySelectorAll('#tabla select.cell').forEach(cell => {
+    cell.value = '';
+    cell.classList.remove('correct','wrong');
+  });
+  document.getElementById('score-b').className = 'score-badge';
+}
+
+/* ── VEREDICTO ── */
+function renderVerdict(){
+  const el = document.getElementById('verdict-panel');
+  const v = verdict();
+
+  if (v.kind === 'nozero'){
+    el.innerHTML = '<div class="verdict none"><span class="vk">Veredicto</span>' +
+      '<div class="vt">No hay punto de inflexión</div>' +
+      '<div class="vb">$f\'\'$ <strong>nunca se anula</strong>, luego no puede cambiar de signo. ' +
+      'La curva mantiene la <strong>misma concavidad</strong> en todo su dominio. ' +
+      (FAM === 'quad'
+        ? 'Una parábola es el ejemplo canónico: siempre ∪ (si $a&gt;0$) o siempre ∩ (si $a&lt;0$).'
+        : '') +
+      '</div></div>';
+    renderMath(el);
+    return;
+  }
+
+  const esInfl = v.kind === 'infl';
+  const cls = esInfl ? 'infl' : 'none';
+  const titulo = esInfl ? 'PUNTO DE INFLEXIÓN' : 'NO es inflexión';
+
+  let cuerpo;
+  if (esInfl){
+    const de = v.sL > 0 ? 'hacia arriba (∪)' : 'hacia abajo (∩)';
+    const a  = v.sR > 0 ? 'hacia arriba (∪)' : 'hacia abajo (∩)';
+    cuerpo = 'El signo de $f\'\'$ <strong>cambia</strong> de $' + sigGlyph(v.sL) + '$ a $' + sigGlyph(v.sR) + '$. ' +
+      'La curva pasa de ser cóncava <strong>' + de + '</strong> a cóncava <strong>' + a + '</strong>. ' +
+      'Ese cambio de curvatura es, por definición, un <strong>punto de inflexión</strong>. ' +
+      'Ocurre en $\\left(' + fmt(v.x,3) + ',\\; ' + fmt(v.y,3) + '\\right)$, donde la tangente ' +
+      'tiene pendiente $f\'(' + fmt(v.x,3) + ') = ' + fmt(v.m,3) + '$' +
+      (Math.abs(v.m) < 1e-7
+        ? ' — es decir, es <strong>horizontal</strong>. Aquí coinciden un punto crítico y una inflexión: ' +
+          'la curva se aplana pero <em>no</em> alcanza un extremo.'
+        : '. Nótese que la tangente <strong>no</strong> es horizontal: una inflexión no exige $f\'=0$.') +
+      '';
+  } else {
+    cuerpo = 'Aunque $f\'\'(' + fmt(v.x,3) + ') = 0$, el signo <strong>no cambia</strong>: es $' +
+      sigGlyph(v.sL) + '$ antes y $' + sigGlyph(v.sR) + '$ después. ' +
+      'La curva <strong>conserva su concavidad</strong> al pasar por ese punto. ' +
+      'Por tanto <strong>no es un punto de inflexión</strong>: la curvatura se debilita hasta anularse ' +
+      'un instante, pero no se invierte. Anular $f\'\'$ es <em>necesario</em> para la inflexión, ' +
+      'pero <strong>no suficiente</strong>.';
+  }
+
+  el.innerHTML =
+    '<div class="verdict ' + cls + '"><span class="vk">Veredicto en x = ' + fmt(v.x,3) + '</span>' +
+    '<div class="vt">' + titulo + '</div>' +
+    '<div class="arrow-pair">' +
+      '<div class="ap ' + (v.sL > 0 ? 'cup' : 'cdown') + '">' +
+        '<div class="s">' + (v.sL > 0 ? '∪' : '∩') + '</div>' +
+        '<div class="l">antes · f″ ' + sigGlyph(v.sL) + '</div></div>' +
+      '<div class="ap zero"><div class="s">0</div><div class="l">f″ = 0</div></div>' +
+      '<div class="ap ' + (v.sR > 0 ? 'cup' : 'cdown') + '">' +
+        '<div class="s">' + (v.sR > 0 ? '∪' : '∩') + '</div>' +
+        '<div class="l">después · f″ ' + sigGlyph(v.sR) + '</div></div>' +
+    '</div>' +
+    '<div class="vb">' + cuerpo + '</div></div>';
+
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MOTOR DE GRÁFICOS
+   Genérico: recibe qué función dibujar y cómo segmentarla.
+   ═══════════════════════════════════════════════ */
+function baseChart(sel, W, H, xMin, xMax, fn, opts){
+  d3.select(sel).selectAll('svg').remove();
+  const m = {top:16, right:22, bottom:32, left:56};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(50, H - m.top - m.bottom);
+
+  /* Segmentación por signo de f'' → colorea la CONCAVIDAD (no la monotonía) */
+  const N = 700, step = (xMax - xMin)/N;
+  const segs = [];
+  let cur = null;
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    const y = fn(x);
+    if (!isFinite(y)){ cur = null; continue; }
+    const s = opts.segmentBy ? opts.segmentBy(x) : 0;
+    if (!cur || cur.sign !== s){
+      if (cur && cur.pts.length) cur.pts.push([x, y]);
+      cur = {sign:s, pts:[]};
+      segs.push(cur);
+    }
+    cur.pts.push([x, y]);
+  }
+
+  const vals = segs.flatMap(s => s.pts).map(d => d[1]).filter(isFinite);
+  const extra = opts.extraY || [];
+  const cand = [...vals, ...extra].filter(isFinite);
+  let yMin = cand.length ? Math.min(...cand) : -1;
+  let yMax = cand.length ? Math.max(...cand) :  1;
+  if (opts.includeZero){ yMin = Math.min(yMin, 0); yMax = Math.max(yMax, 0); }
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const pad = (yMax - yMin)*0.14;
+  yMin -= pad; yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select(sel).append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-' + sel.replace(/[#\.]/g,'') + '-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  /* Bandas de concavidad, ALINEADAS en los tres gráficos */
+  if (opts.bands && ZEROS.length){
+    const edges = [xMin, ...ZEROS.filter(z => z > xMin && z < xMax), xMax];
+    for (let i = 0; i < edges.length - 1; i++){
+      const a = edges[i], b = edges[i+1];
+      const mid = (a + b)/2;
+      const s = Math.sign(fpp(mid));
+      if (!s) continue;
+      plot.append('rect')
+        .attr('class', s > 0 ? 'band-cup' : 'band-cdown')
+        .attr('x', xs(a)).attr('y', 0)
+        .attr('width', Math.max(0, xs(b) - xs(a))).attr('height', ih);
+    }
+  }
+
+  if (opts.grid !== false){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(4).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(4));
+
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke', opts.boldZero ? 'var(--muted)' : '#b9b3a8')
+      .attr('stroke-width', opts.boldZero ? 1.6 : 1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', -6).attr('y', -4).attr('text-anchor','end').text(opts.ylabel || '');
+
+  /* Verticales en TODOS los ceros de f'': el hilo que une los tres gráficos */
+  ZEROS.forEach((z, i) => {
+    if (z < xMin || z > xMax) return;
+    plot.append('line').attr('class','infl-line')
+      .attr('x1', xs(z)).attr('x2', xs(z)).attr('y1', 0).attr('y2', ih)
+      .attr('opacity', i === FOCUS ? 1 : .35);
+  });
+
+  /* Curva por segmentos */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  segs.forEach(s => {
+    if (s.pts.length < 2) return;
+    let cls = opts.cls || 'curve curve-plain';
+    if (opts.colorByConc)
+      cls = 'curve ' + (s.sign > 0 ? 'curve-cup' : (s.sign < 0 ? 'curve-cdown' : 'curve-plain'));
+    plot.append('path').datum(s.pts).attr('class', cls).attr('d', line);
+  });
+
+  return {svg, plot, g, xs, ys, m, iw, ih, yMin, yMax};
+}
+
+function attachTip(ctx, tipId, fmtFn){
+  const {svg, xs, ys, m, iw, ih, yMin, yMax} = ctx;
+  const tip = document.getElementById(tipId);
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const res = fmtFn(x);
+      if (!res){ tip.classList.remove('show'); return; }
+      tip.innerHTML = res.html;
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top  = (m.top  + ys(res.y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      setProbe(xs.invert(mx - m.left));
+    });
+}
+
+/* ── GRÁFICO 1: f, coloreado por CONCAVIDAD ── */
+function drawMain(){
+  const box = document.getElementById('chart-f');
+  if (!window.d3) return;
+  const W = box.clientWidth || 800, H = box.clientHeight || 330;
+  const c = center();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+
+  const colorOn = document.getElementById('opt-color').checked;
+  const bandsOn = document.getElementById('opt-bands').checked;
+  const itanOn  = document.getElementById('opt-itan').checked;
+  const probeOn = document.getElementById('opt-probe').checked;
+  const gridOn  = document.getElementById('opt-grid').checked;
+
+  const extraY = [];
+  ZEROS.forEach(z => { const v = f(z); if (isFinite(v)) extraY.push(v); });
+
+  const ctx = baseChart('#chart-f', W, H, xMin, xMax, f, {
+    segmentBy: x => { const v = fpp(x); return (!isFinite(v) || Math.abs(v) < 1e-12) ? 0 : (v > 0 ? 1 : -1); },
+    colorByConc: colorOn,
+    bands: bandsOn,
+    grid: gridOn,
+    ylabel: 'f(x)',
+    extraY
+  });
+  if (!ctx) return;
+  const {plot, xs, ys, iw, ih, yMin, yMax} = ctx;
+
+  /* TANGENTE en la inflexión: la recta que ATRAVIESA la curva */
+  if (itanOn && ZEROS.length){
+    const x0 = ZEROS[FOCUS], y0 = f(x0), m0 = fp(x0);
+    if (isFinite(y0) && isFinite(m0)){
+      plot.append('line').attr('class','infl-tan')
+        .attr('x1', xs(xMin)).attr('y1', ys(y0 + m0*(xMin - x0)))
+        .attr('x2', xs(xMax)).attr('y2', ys(y0 + m0*(xMax - x0)));
+      plot.append('circle').attr('class','infl-dot')
+        .attr('cx', xs(x0)).attr('cy', ys(y0)).attr('r', 6.5);
+      plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+        .attr('x', xs(x0) + 9).attr('y', ys(y0) - 10)
+        .text('f ″ = 0');
+    }
+  }
+
+  /* Tangente móvil: se ve cómo la curva queda arriba o abajo de ella */
+  if (probeOn){
+    const y0 = f(PROBE), m0 = fp(PROBE), c2 = fpp(PROBE);
+    if (isFinite(y0) && isFinite(m0)){
+      const col = c2 > 1e-9 ? 'var(--cup)' : (c2 < -1e-9 ? 'var(--cdown)' : 'var(--gold)');
+      plot.append('line').attr('class','probe-tan').attr('stroke', col)
+        .attr('x1', xs(xMin)).attr('y1', ys(y0 + m0*(xMin - PROBE)))
+        .attr('x2', xs(xMax)).attr('y2', ys(y0 + m0*(xMax - PROBE)));
+      plot.append('circle').attr('class','closed-dot').attr('fill', col)
+        .attr('cx', xs(PROBE)).attr('cy', ys(y0)).attr('r', 6);
+    }
+  }
+
+  attachTip(ctx, 'tip-f', x => {
+    const y = f(x), d1 = fp(x), d2 = fpp(x);
+    if (!isFinite(y) || y < yMin || y > yMax) return null;
+    return {y, html: 'x = ' + fmt(x,3) + '<br>f = ' + fmt(y,3) +
+      "<br>f ' = " + fmt(d1,3) + '<br>f ″ = ' + fmt(d2,3) +
+      '<br>' + (d2 > 1e-9 ? '∪ arriba' : (d2 < -1e-9 ? '∩ abajo' : 'inflexión'))};
+  });
+}
+
+/* ── GRÁFICO 2: f' ── */
+function drawD1(){
+  const box = document.getElementById('chart-d1');
+  if (!window.d3) return;
+  const W = box.clientWidth || 800, H = box.clientHeight || 210;
+  const c = center();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+  const bandsOn = document.getElementById('opt-bands').checked;
+
+  const ctx = baseChart('#chart-d1', W, H, xMin, xMax, fp, {
+    segmentBy: () => 0,
+    cls: 'd1curve',
+    bands: bandsOn,
+    includeZero: true,
+    boldZero: true,
+    ylabel: "f '(x)"
+  });
+  if (!ctx) return;
+  const {plot, xs, ys, yMin, yMax} = ctx;
+
+  /* En la inflexión, f' alcanza un EXTREMO: aquí se ve por qué */
+  ZEROS.forEach((z, i) => {
+    if (z < xMin || z > xMax) return;
+    const v = fp(z);
+    if (!isFinite(v) || v < yMin || v > yMax) return;
+    plot.append('circle').attr('class','infl-dot')
+      .attr('cx', xs(z)).attr('cy', ys(v)).attr('r', i === FOCUS ? 6 : 4)
+      .attr('opacity', i === FOCUS ? 1 : .45);
+    if (i === FOCUS){
+      plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+        .attr('x', xs(z) + 8).attr('y', ys(v) - 7)
+        .text('extremo de f ′');
+    }
+  });
+
+  if (document.getElementById('opt-probe').checked){
+    const v = fp(PROBE);
+    if (isFinite(v) && v >= yMin && v <= yMax){
+      plot.append('circle').attr('class','closed-dot').attr('fill','var(--crimson)')
+        .attr('cx', xs(PROBE)).attr('cy', ys(v)).attr('r', 5);
+    }
+  }
+
+  attachTip(ctx, 'tip-d1', x => {
+    const v = fp(x);
+    if (!isFinite(v) || v < yMin || v > yMax) return null;
+    return {y:v, html: 'x = ' + fmt(x,3) + "<br>f ' = " + fmt(v,4) +
+      '<br>' + (v > 1e-9 ? 'f sube ↗' : (v < -1e-9 ? 'f baja ↘' : 'f plana →'))};
+  });
+}
+
+/* ── GRÁFICO 3: f'' — aquí está el cruce por cero ── */
+function drawD2(){
+  const box = document.getElementById('chart-d2');
+  if (!window.d3) return;
+  const W = box.clientWidth || 800, H = box.clientHeight || 210;
+  const c = center();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+  const bandsOn = document.getElementById('opt-bands').checked;
+
+  const ctx = baseChart('#chart-d2', W, H, xMin, xMax, fpp, {
+    segmentBy: () => 0,
+    cls: 'd2curve',
+    bands: bandsOn,
+    includeZero: true,
+    boldZero: true,
+    ylabel: 'f ″(x)'
+  });
+  if (!ctx) return;
+  const {plot, xs, ys, yMin, yMax} = ctx;
+
+  /* Los cruces por cero: CERRADOS, porque f'' sí vale exactamente 0 ahí */
+  ZEROS.forEach((z, i) => {
+    if (z < xMin || z > xMax) return;
+    plot.append('circle').attr('class','infl-dot')
+      .attr('cx', xs(z)).attr('cy', ys(0)).attr('r', i === FOCUS ? 6.5 : 4.5)
+      .attr('opacity', i === FOCUS ? 1 : .45);
+  });
+
+  /* Puntos de prueba con su signo */
+  TESTS.forEach(t => {
+    if (t.x < xMin || t.x > xMax || !isFinite(t.val)) return;
+    if (t.val < yMin || t.val > yMax) return;
+    const col = t.val > 0 ? 'var(--cup)' : 'var(--cdown)';
+    plot.append('line')
+      .attr('x1', xs(t.x)).attr('x2', xs(t.x))
+      .attr('y1', ys(t.val)).attr('y2', ys(0))
+      .attr('stroke', col).attr('stroke-width',1.4)
+      .attr('stroke-dasharray','3,3').attr('opacity',.75);
+    plot.append('circle').attr('class','test-dot').attr('fill', col)
+      .attr('cx', xs(t.x)).attr('cy', ys(t.val)).attr('r', 5.2);
+    plot.append('text').attr('class','curve-lbl').attr('fill', col)
+      .attr('x', xs(t.x)).attr('y', ys(t.val) + (t.val > 0 ? -9 : 17))
+      .attr('text-anchor','middle')
+      .text(sigGlyph(t.sign));
+  });
+
+  attachTip(ctx, 'tip-d2', x => {
+    const v = fpp(x);
+    if (!isFinite(v) || v < yMin || v > yMax) return null;
+    return {y:v, html: 'x = ' + fmt(x,3) + '<br>f ″ = ' + fmt(v,4) +
+      '<br>' + (v > 1e-9 ? '∪ cóncava arriba' : (v < -1e-9 ? '∩ cóncava abajo' : 'f ″ = 0'))};
+  });
+}
+
+/* ── LUPA: la tangente atraviesa la curva ── */
+function drawZoom(){
+  const box = document.getElementById('chart-zoom');
+  d3.select('#chart-zoom').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 320;
+
+  if (!ZEROS.length){
+    d3.select('#chart-zoom').append('svg')
+      .attr('width', W).attr('height', H)
+      .append('text')
+      .attr('x', W/2).attr('y', H/2).attr('text-anchor','middle')
+      .attr('class','curve-lbl').attr('fill','var(--muted)')
+      .text('Sin candidato a inflexión: no hay nada que ampliar.');
+    return;
+  }
+
+  const x0 = ZEROS[FOCUS];
+  const xMin = x0 - LENS, xMax = x0 + LENS;
+  const y0 = f(x0), m0 = fp(x0);
+
+  const extraY = [];
+  if (isFinite(y0) && isFinite(m0)){
+    extraY.push(y0 + m0*(xMin - x0), y0 + m0*(xMax - x0));
+  }
+
+  const ctx = baseChart('#chart-zoom', W, H, xMin, xMax, f, {
+    segmentBy: x => { const v = fpp(x); return (!isFinite(v) || Math.abs(v) < 1e-12) ? 0 : (v > 0 ? 1 : -1); },
+    colorByConc: true,
+    bands: true,
+    ylabel: 'f(x)',
+    extraY
+  });
+  if (!ctx) return;
+  const {plot, xs, ys, iw, yMin, yMax} = ctx;
+
+  /* La tangente en la inflexión */
+  if (isFinite(y0) && isFinite(m0)){
+    plot.append('line').attr('class','infl-tan')
+      .attr('x1', xs(xMin)).attr('y1', ys(y0 + m0*(xMin - x0)))
+      .attr('x2', xs(xMax)).attr('y2', ys(y0 + m0*(xMax - x0)));
+    plot.append('circle').attr('class','infl-dot')
+      .attr('cx', xs(x0)).attr('cy', ys(y0)).attr('r', 7);
+
+    /* Etiquetas "curva arriba/abajo de la tangente" a cada lado */
+    const v = verdict();
+    if (v.kind === 'infl'){
+      const xa = x0 - LENS*0.55, xb = x0 + LENS*0.55;
+      [[xa, v.sL], [xb, v.sR]].forEach(([xx, s]) => {
+        const yc = f(xx), yt = y0 + m0*(xx - x0);
+        if (!isFinite(yc) || !isFinite(yt)) return;
+        if (yc < yMin || yc > yMax) return;
+        const arriba = yc > yt;
+        plot.append('text').attr('class','curve-lbl')
+          .attr('fill', s > 0 ? 'var(--cup)' : 'var(--cdown)')
+          .attr('x', xs(xx)).attr('y', ys(yc) + (arriba ? -12 : 20))
+          .attr('text-anchor','middle')
+          .text(arriba ? 'curva ARRIBA' : 'curva ABAJO');
+      });
+    }
+  }
+
+  attachTip(ctx, 'tip-z', x => {
+    const y = f(x), d2 = fpp(x);
+    if (!isFinite(y) || y < yMin || y > yMax) return null;
+    const yt = y0 + m0*(x - x0);
+    return {y, html: 'x = ' + fmt(x,4) + '<br>f ″ = ' + fmt(d2,5) +
+      '<br>curva − tangente = ' + fmt(y - yt, 5)};
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const y = f(PROBE), d1 = fp(PROBE), d2 = fpp(PROBE);
+  document.getElementById('lv-x').textContent = fmt(PROBE, 4);
+  document.getElementById('lv-f').textContent = fmt(y, 4);
+
+  const e1 = document.getElementById('lv-d1');
+  e1.textContent = fmt(d1, 4);
+  e1.className = 'v';
+
+  const e2 = document.getElementById('lv-d2');
+  const ec = document.getElementById('lv-conc');
+  e2.textContent = fmt(d2, 4);
+
+  if (!isFinite(d2)){
+    e2.className = 'v'; ec.textContent = '—'; ec.className = 'v';
+  } else if (d2 > 1e-9){
+    e2.className = 'v cup';
+    ec.textContent = '∪ hacia arriba'; ec.className = 'v cup';
+  } else if (d2 < -1e-9){
+    e2.className = 'v cdown';
+    ec.textContent = '∩ hacia abajo'; ec.className = 'v cdown';
+  } else {
+    e2.className = 'v zero';
+    ec.textContent = 'f ″ = 0'; ec.className = 'v zero';
+  }
+  ec.style.fontSize = '.8rem';
+}
+
+function setProbe(x){
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  PROBE = Math.max(lo, Math.min(hi, x));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+  updateLive();
+  drawMain(); drawD1(); drawD2();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Cruzar la inflexión';
+}
+
+function startAnim(){
+  stopAnim();
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  let from, to;
+
+  if (ZEROS.length){
+    const x0 = ZEROS[FOCUS];
+    const span = Math.max(Math.abs(TESTS[0].x - x0), Math.abs(TESTS[1].x - x0)) * 1.4;
+    from = Math.max(lo, x0 - span);
+    to   = Math.min(hi, x0 + span);
+  } else {
+    from = lo; to = hi;
+  }
+
+  let t = 0; const steps = 150;
+  document.getElementById('btn-anim').textContent = '● Cruzando…';
+
+  ANIM = setInterval(() => {
+    t++;
+    setProbe(from + (to - from) * (t/steps));
+    if (t >= steps){
+      stopAnim();
+      /* Estado final: después del cruce, para que se vea la concavidad invertida */
+      setProbe(ZEROS.length ? TESTS[1].x : to);
+    }
+  }, 28);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const v = verdict();
+  const hay = ZEROS.length > 0;
+  const esInfl = v.kind === 'infl';
+
+  /* La opción correcta se DERIVA del veredicto */
+  let ok0;
+  if (!hay)          ok0 = 2;
+  else if (esInfl)   ok0 = 0;
+  else               ok0 = 1;
+
+  const qs = [
+    {
+      q: hay
+         ? 'b) En $x = ' + fmt(v.x,3) + '$, donde $f\'\'=0$, ¿qué tenemos?'
+         : 'b) $f\'\'$ nunca se anula. ¿Qué se concluye?',
+      opts: hay
+        ? ['Un <strong>punto de inflexión</strong>: $f\'\'$ cambia de signo.',
+           '<strong>Ninguna inflexión</strong>: $f\'\'$ se anula pero no cambia de signo.',
+           'Un máximo o mínimo de $f$.']
+        : ['Que la curva tiene una inflexión en el origen.',
+           'Que $f$ es una recta.',
+           'Que la <strong>concavidad nunca cambia</strong>: no hay inflexión.'],
+      ok: ok0,
+      fb: hay
+        ? ('El signo de $f\'\'$ pasa de $' + sigGlyph(v.sL) + '$ a $' + sigGlyph(v.sR) + '$. ' +
+           (esInfl
+             ? 'Como <strong>cambia</strong>, la concavidad se invierte: eso <em>es</em> una inflexión. ' +
+               'Ojo con la tercera opción: un extremo lo detecta $f\'$, no $f\'\'$.'
+             : 'Como <strong>no cambia</strong>, la concavidad se mantiene. ' +
+               'La curvatura se anula un instante sin invertirse: <strong>no hay inflexión</strong>. ' +
+               'Es el análogo exacto de $x^{3}$ para los extremos.'))
+        : 'Sin raíz de $f\'\'$, no hay dónde cambiar de signo. La curva conserva la misma ' +
+          'concavidad en todo su dominio.'
+    },
+    {
+      q: '¿Basta con que $f\'\'(a) = 0$ para asegurar que hay inflexión en $a$?',
+      opts: [
+        'Sí: anular la segunda derivada es la definición de inflexión.',
+        'No: además $f\'\'$ debe <strong>cambiar de signo</strong> al pasar por $a$.',
+        'Solo si además $f\'(a) = 0$.'
+      ],
+      ok: 1,
+      fb: 'El contraejemplo es $f(x) = x^{4}$ en $a = 0$: allí $f\'\'(0) = 12 \\cdot 0^{2} = 0$, ' +
+          'pero $f\'\'(x) = 12x^{2} \\geq 0$ <em>a ambos lados</em>. La curva es cóncava hacia arriba ' +
+          'antes y después: <strong>no hay inflexión</strong>. Pruébalo con el preset «x⁴». ' +
+          'La tercera opción también falla: una inflexión <em>no</em> exige tangente horizontal ' +
+          '(en $x^{3}-3x$ la inflexión está en $x=0$, donde $f\' = -3 \\neq 0$).'
+    },
+    {
+      q: 'c) ¿Qué distingue lo que mide $f\'$ de lo que mide $f\'\'$?',
+      opts: [
+        'Son lo mismo, solo que $f\'\'$ es más precisa.',
+        '$f\'$ mide la <strong>dirección</strong> (sube o baja); $f\'\'$ mide la <strong>curvatura</strong> (se abre ∪ o ∩).',
+        '$f\'$ mide la altura y $f\'\'$ la pendiente.'
+      ],
+      ok: 1,
+      fb: 'Son preguntas <strong>independientes</strong>. Una curva puede subir siendo cóncava hacia ' +
+          'arriba (acelera) o subir siendo cóncava hacia abajo (frena). Por eso $f\'&gt;0$ y $f\'\'&lt;0$ ' +
+          'coexisten sin contradicción. En el gráfico apilado: la curva roja ($f\'$) dice ' +
+          '<em>hacia dónde va</em>; la morada ($f\'\'$) dice <em>cómo se dobla</em>.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TEORÍA
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$f\'\'(x) &gt; 0 \\;\\text{ en } (a,b) \\;\\Longrightarrow\\; f \\text{ es } \\textbf{cóncava hacia arriba} \\;(\\cup) \\text{ en } (a,b)$$' +
+    '$$f\'\'(x) &lt; 0 \\;\\text{ en } (a,b) \\;\\Longrightarrow\\; f \\text{ es } \\textbf{cóncava hacia abajo} \\;(\\cap) \\text{ en } (a,b)$$' +
+    '$$a \\text{ es } \\textbf{punto de inflexión} \\iff f\'\' \\textbf{ cambia de signo } \\text{ al pasar por } a$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const v = verdict();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Qué significa f″</span>' +
+    'La segunda derivada es la <strong>derivada de la pendiente</strong>: $f\'\' = (f\')\'$. ' +
+    'Mide <em>cómo cambia la inclinación</em>. ' +
+    'Si $f\'\' &gt; 0$, la pendiente <strong>crece</strong>: la curva se va enderezando hacia arriba, ' +
+    'gira en sentido antihorario — es cóncava hacia arriba ($\\cup$). ' +
+    'Si $f\'\' &lt; 0$, la pendiente <strong>decrece</strong> y la curva se dobla hacia abajo ($\\cap$).</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 2 · La caracterización por la tangente</span>' +
+    'Hay una lectura equivalente, más geométrica: en una zona cóncava hacia arriba, ' +
+    'la curva queda <strong>por encima</strong> de todas sus tangentes; en una zona cóncava hacia abajo, ' +
+    'queda <strong>por debajo</strong>. ' +
+    'Un <strong>punto de inflexión</strong> es entonces el único lugar donde la tangente ' +
+    '<strong>atraviesa</strong> la curva en vez de quedarse a un lado. ' +
+    'La lupa de esta actividad muestra exactamente eso.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 3 · Por qué f″=0 no basta</span>' +
+    'La condición $f\'\'(a) = 0$ es <strong>necesaria</strong> pero <strong>no suficiente</strong>. ' +
+    'Contraejemplo: $f(x) = x^{4}$. Aquí $f\'\'(x) = 12x^{2}$, que se anula en $x=0$ ' +
+    'pero es $\\geq 0$ <em>en todo punto</em>. La curva es cóncava hacia arriba a ambos lados: ' +
+    'la curvatura se debilita hasta cero y <strong>vuelve a crecer sin invertirse</strong>. ' +
+    'No hay inflexión. ' +
+    'Es la misma estructura lógica que $f\'(0)=0$ en $x^{3}$ sin que haya extremo.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Inflexión y extremo son independientes</span>' +
+    'Un error frecuente es creer que la inflexión ocurre donde la tangente es horizontal. ' +
+    'No: en $f(x) = x^{3}-3x$, la inflexión está en $x=0$, donde $f\'(0) = -3 \\neq 0$ ' +
+    '(la tangente está <em>inclinada</em>). ' +
+    'Y en $f(x)=x^{3}$, el punto $x=0$ es simultáneamente crítico ($f\'=0$) e inflexión ($f\'\'$ cambia) ' +
+    '— pero <strong>no</strong> es extremo. Las tres nociones son distintas.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 5 · Caso actual</span>';
+  if (!ZEROS.length){
+    steps += 'Aquí $f\'\'$ no se anula, luego no puede cambiar de signo: ' +
+      '<strong>no hay puntos de inflexión</strong>.';
+  } else {
+    steps += 'En $x = ' + fmt(v.x,3) + '$ verificamos $f\'\'(' + fmt(v.x,3) + ') = 0$. ' +
+      'Los puntos de prueba dan $f\'\'(' + fmt(TESTS[0].x,3) + ') = ' + fmt(TESTS[0].val,3) + '$ ' +
+      '(signo $' + sigGlyph(v.sL) + '$) y $f\'\'(' + fmt(TESTS[1].x,3) + ') = ' + fmt(TESTS[1].val,3) + '$ ' +
+      '(signo $' + sigGlyph(v.sR) + '$). ' +
+      (v.kind === 'infl'
+        ? 'Como el signo <strong>cambia</strong>, hay <strong>inflexión</strong> en ' +
+          '$\\left(' + fmt(v.x,3) + ',\\; ' + fmt(v.y,3) + '\\right)$.'
+        : 'Como el signo <strong>no cambia</strong>, <strong>no hay inflexión</strong>.');
+  }
+  steps += '</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    '$f\'$ responde «¿sube o baja?». $f\'\'$ responde «¿se abre hacia arriba o hacia abajo?». ' +
+    'La inflexión es donde <em>la segunda respuesta cambia</em>.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const v = verdict();
+  let html = '';
+
+  html += '<p><strong>a)</strong> Con $f\'\'(x) = ' + fppTex() + '$, resolvemos $f\'\'(x) = 0$:</p>';
+  if (!ZEROS.length){
+    html += '<p style="text-align:center;">$$\\text{sin solución real}$$</p>';
+    html += '<p>No hay candidatos a inflexión.</p>';
+  } else {
+    html += '<p style="text-align:center;">$$x = ' + ZEROS.map(x => fmt(x,4)).join(', \\qquad x = ') + '$$</p>';
+  }
+
+  html += '<p><strong>b)</strong> ';
+  if (!ZEROS.length){
+    html += '$f\'\'$ nunca se anula, luego <strong>nunca cambia de signo</strong>. ' +
+      'La concavidad es constante y <strong>no hay puntos de inflexión</strong>.</p>';
+  } else {
+    html += 'Evaluando $f\'\'$ a ambos lados de $x = ' + fmt(v.x,3) + '$:</p>';
+    html += '<p style="text-align:center;">$$\\begin{aligned}' +
+      "f''(" + fmt(TESTS[0].x,3) + ') &amp;= ' + fmt(TESTS[0].val,3) +
+        ' \\quad\\Longrightarrow\\quad (' + sigGlyph(v.sL) + ') \\;\\Rightarrow\\; \\text{cóncava hacia ' +
+        (v.sL > 0 ? 'arriba} \\;\\cup' : 'abajo} \\;\\cap') + ' \\\\ ' +
+      "f''(" + fmt(TESTS[1].x,3) + ') &amp;= ' + fmt(TESTS[1].val,3) +
+        ' \\quad\\Longrightarrow\\quad (' + sigGlyph(v.sR) + ') \\;\\Rightarrow\\; \\text{cóncava hacia ' +
+        (v.sR > 0 ? 'arriba} \\;\\cup' : 'abajo} \\;\\cap') +
+      '\\end{aligned}$$</p>';
+
+    if (v.kind === 'infl'){
+      html += '<p>El signo <strong>cambia</strong>. La concavidad se invierte, luego ' +
+        '$x = ' + fmt(v.x,3) + '$ <strong>sí es un punto de inflexión</strong>. ' +
+        'El punto de la curva es $\\left(' + fmt(v.x,3) + ',\\; ' + fmt(v.y,3) + '\\right)$, ' +
+        'y la tangente allí tiene pendiente $' + fmt(v.m,3) + '$' +
+        (Math.abs(v.m) < 1e-7 ? ' (horizontal).' : ' — <em>no</em> horizontal, lo cual es perfectamente normal.') +
+        '</p>';
+    } else {
+      html += '<p>El signo <strong>no cambia</strong>: es $' + sigGlyph(v.sL) + '$ a ambos lados. ' +
+        'Aunque $f\'\'(' + fmt(v.x,3) + ')=0$, la concavidad se mantiene, así que ' +
+        '<strong>NO es un punto de inflexión</strong>. La curvatura se anula un instante ' +
+        'sin invertirse.</p>';
+    }
+  }
+
+  html += '<p><strong>c)</strong> ';
+  if (!ZEROS.length){
+    html += 'En la gráfica, la curva conserva un solo color (una sola concavidad) en toda la ventana, ' +
+      'y la curva de $f\'\'$ <strong>nunca toca el eje horizontal</strong>.</p>';
+  } else if (v.kind === 'none'){
+    html += 'La gráfica lo confirma: el color de la curva <strong>no cambia</strong> al pasar por ' +
+      '$x = ' + fmt(v.x,3) + '$. Y en el panel de $f\'\'$, la curva <strong>toca el eje sin cruzarlo</strong> ' +
+      'y vuelve por el mismo lado. Esa es la firma visual de un cero de $f\'\'$ que <em>no</em> es inflexión.</p>';
+  } else {
+    html += 'Los tres paneles cuentan la misma historia en la misma abscisa $x = ' + fmt(v.x,3) + '$: ' +
+      'en <strong>$f$</strong> el color cambia (la concavidad se invierte) y la tangente dorada ' +
+      '<strong>atraviesa</strong> la curva; en <strong>$f\'$</strong> la pendiente alcanza un ' +
+      '<strong>extremo</strong> (deja de crecer y empieza a decrecer, o al revés); ' +
+      'y en <strong>$f\'\'$</strong> la curva <strong>cruza el cero</strong>. ' +
+      'El punto de inflexión es $\\left(' + fmt(v.x,3) + ',\\; ' + fmt(v.y,3) + '\\right)$.</p>';
+  }
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', () => { FOCUS = 0; refreshAll(); });
+  document.getElementById('p-fam').addEventListener('change', () => { FOCUS = 0; refreshAll(); });
+  ['p-a','p-b','p-c','p-d'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter'){ FOCUS = 0; refreshAll(); }
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-fam').value = 'cubic';
+    document.getElementById('p-a').value = 1;
+    document.getElementById('p-b').value = 0;
+    document.getElementById('p-c').value = -3;
+    document.getElementById('p-d').value = 0;
+    document.getElementById('opt-zoom').value = 3;
+    document.getElementById('zoom-val').textContent = '3';
+    document.getElementById('lens-slider').value = 1;
+    document.getElementById('lens-val').textContent = '1';
+    FOCUS = 0;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-fam').value = p[0].trim();
+      document.getElementById('p-a').value   = p[1].trim();
+      document.getElementById('p-b').value   = p[2].trim();
+      document.getElementById('p-c').value   = p[3].trim();
+      document.getElementById('p-d').value   = p[4] !== undefined ? p[4].trim() : 0;
+      FOCUS = 0;
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-a').addEventListener('click', verifyA);
+  document.getElementById('btn-fill-a').addEventListener('click', fillA);
+  document.getElementById('btn-hint-a').addEventListener('click', toggleHintA);
+
+  document.getElementById('btn-verify-b').addEventListener('click', verifyB);
+  document.getElementById('btn-fill-b').addEventListener('click', fillB);
+  document.getElementById('btn-clear-b').addEventListener('click', clearB);
+
+  ['opt-grid','opt-color','opt-bands','opt-itan','opt-probe'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawAll);
+  });
+
+  document.getElementById('opt-zoom').addEventListener('input', ev => {
+    ZOOM = parseFloat(ev.target.value);
+    document.getElementById('zoom-val').textContent = ZOOM;
+    /* El zoom puede revelar ceros nuevos (caso seno): recalcular */
+    ZEROS = secondZeros();
+    FOCUS = Math.min(FOCUS, Math.max(0, ZEROS.length - 1));
+    TESTS = buildTests();
+    const ps = document.getElementById('probe-slider');
+    const c = center();
+    const lo = c - ZOOM, hi = c + ZOOM;
+    ps.min = lo; ps.max = hi; ps.step = (hi - lo)/800;
+    PROBE = Math.max(lo, Math.min(hi, PROBE));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    renderSolve(); buildTable(); renderVerdict();
+    updateLive(); drawAll(); renderConclusion();
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  document.getElementById('lens-slider').addEventListener('input', ev => {
+    LENS = parseFloat(ev.target.value);
+    document.getElementById('lens-val').textContent = fmt(LENS, 2);
+    drawZoom();
+  });
+
+  document.getElementById('probe-slider').addEventListener('input', ev => {
+    stopAnim();
+    PROBE = parseFloat(ev.target.value);
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive();
+    drawMain(); drawD1(); drawD2();
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(drawAll, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading' && window.d3 && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

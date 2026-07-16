@@ -1,0 +1,2386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 11 — Análisis de crecimiento · Cursillo de Actualización Docente</title>
+
+<!-- ── FUENTES ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ── KaTeX (CSS) ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ═══════════ IDENTIDAD VISUAL ═══════════ */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --up:#2e7d52; --down:#9b1845;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28);
+  padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{
+  height:52px; width:auto; object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));
+}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem; letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:5px;
+}
+.header-title{
+  font-family:'Playfair Display',serif; font-weight:700;
+  font-size:1.5rem; color:#fff; line-height:1.25;
+}
+.header-sub{
+  font-size:.86rem; color:rgba(255,255,255,.72);
+  font-style:italic; margin-top:3px;
+}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem; letter-spacing:.17em;
+  color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{
+  font-family:'Playfair Display',serif;
+  font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;
+}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+/* ── TARJETA ── */
+.activity-card{
+  background:var(--white); border:1px solid var(--border);
+  border-radius:3px; box-shadow:0 4px 28px rgba(0,59,117,.09);
+  margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{
+  background:var(--navy); color:#fff;
+  padding:15px 24px; display:flex; align-items:center; gap:15px;
+}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1.16rem; letter-spacing:.01em;
+}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson);
+  background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px 20px; text-align:center;
+  margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:10px;
+}
+
+/* ── PARÁMETROS ── */
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{
+  font-size:.85rem; color:var(--muted); margin-bottom:14px;
+}
+.param-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+  gap:14px; align-items:end;
+}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text], select{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border);
+  border-radius:3px; background:#fff; color:var(--text); width:100%;
+}
+input:focus, select:focus{
+  outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);
+}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem;
+  letter-spacing:.06em; padding:9px 15px; border-radius:3px;
+  border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0;
+  font-size:.9rem;
+}
+
+/* ── TABLA DE SIGNOS ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:560px;}
+th, td{
+  border:1px solid var(--border); padding:9px 8px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+thead th{
+  background:var(--navy); color:#fff; font-weight:500;
+  letter-spacing:.05em; font-size:.78rem;
+}
+tbody td.rowlbl{
+  background:#f4f2ec; font-weight:700; color:var(--navy);
+  text-align:left; padding-left:12px; white-space:nowrap;
+}
+tbody tr:hover td:not(.rowlbl){background:#f7f5f0;}
+td.crit{background:#fdf7e3 !important; font-weight:700; color:#8a6f1e;}
+select.cell{
+  width:100%; min-width:96px; border:1px solid var(--border);
+  background:#fff; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.83rem;
+  padding:5px 3px; border-radius:2px; color:var(--text); cursor:pointer;
+}
+select.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+select.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── RECTA DE SIGNOS ── */
+.signline-box{
+  position:relative; width:100%; height:130px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  margin-top:6px; overflow:hidden;
+}
+
+/* ── GRÁFICOS ── */
+.chart-box{
+  position:relative; width:100%; height:430px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; margin-top:6px; overflow:hidden;
+}
+.chart-box.small{height:300px;}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer;
+  color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+.range-field{display:flex; align-items:center; gap:9px; flex:1; min-width:240px;}
+.range-field span{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+  white-space:nowrap;
+}
+input[type=range]{flex:1; accent-color:var(--navy); cursor:pointer; min-width:90px;}
+.probe-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.probe-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:9px;
+}
+.probe-wrap .hval{color:var(--crimson); font-weight:700;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke-width:2.6;}
+.curve-up{stroke:var(--up);}
+.curve-down{stroke:var(--down);}
+.curve-plain{stroke:var(--navy);}
+.dcurve{fill:none; stroke:var(--crimson); stroke-width:2.2;}
+.band-up{fill:var(--up); opacity:.09;}
+.band-down{fill:var(--down); opacity:.08;}
+.crit-line{stroke:var(--gold); stroke-width:2; stroke-dasharray:6,4;}
+.probe-tan{stroke:var(--crimson); stroke-width:2.4;}
+.closed-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.4;}
+.open-dot{fill:#fff; stroke:var(--navy); stroke-width:2.2;}
+.crit-dot{fill:var(--gold); stroke:var(--navy); stroke-width:1.8;}
+.axis-label{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  fill:var(--muted); font-weight:500;
+}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.sign-glyph{
+  font-family:'JetBrains Mono',monospace; font-size:22px; font-weight:700;
+}
+.arrow-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px;
+  transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+/* ── PANELES ── */
+.int-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:12px; margin-top:16px;
+}
+.int-card{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--muted); border-radius:3px;
+  padding:13px 15px;
+}
+.int-card.up{border-top-color:var(--up); background:#f2f8f4;}
+.int-card.down{border-top-color:var(--down); background:#fdf3f6;}
+.int-card .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:7px;
+}
+.int-card .iv{
+  font-family:'JetBrains Mono',monospace; font-size:1.05rem;
+  font-weight:700; color:var(--navy); margin-bottom:5px;
+}
+.int-card .st{font-size:.88rem;}
+.int-card.up .st{color:var(--up); font-weight:600;}
+.int-card.down .st{color:var(--down); font-weight:600;}
+.int-card .sub{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  color:var(--muted); margin-top:5px;
+}
+
+.live-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px; margin-top:16px;
+}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--navy); border-radius:3px;
+  padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem;
+  font-weight:700; color:var(--navy); word-break:break-all;
+}
+.live-cell.crim .v{color:var(--crimson);}
+.live-cell.gold .v{color:#8a6f1e;}
+.live-cell .v.up{color:var(--up);}
+.live-cell .v.down{color:var(--down);}
+
+/* ── DESPLEGABLE ── */
+.ed-section{
+  border:1px solid var(--border); border-radius:3px;
+  margin-top:26px; overflow:hidden; background:#fff;
+}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem; letter-spacing:0;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  color:var(--gold); transition:transform .25s ease;
+}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0;
+  font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy);
+  border-radius:3px; padding:14px 18px; margin-top:14px;
+  font-size:.93rem; display:flex; justify-content:space-between;
+  align-items:center; gap:14px;
+}
+.qed-box .qed{
+  font-family:'JetBrains Mono',monospace; font-size:1.25rem;
+  color:var(--navy); font-weight:700;
+}
+
+/* ── REFLEXIÓN ── */
+.reflect-q{
+  border:1px solid var(--border); border-radius:3px;
+  padding:15px 18px; margin-bottom:12px; background:#fff;
+}
+.reflect-q .qt{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:10px; color:var(--navy);
+}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px;
+  padding:9px 12px; border:1px solid var(--border); border-radius:3px;
+  cursor:pointer; font-size:.9rem; transition:background .14s, border-color .14s;
+  background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px;
+  padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{
+  border-top:1px solid var(--border); background:#efece5;
+  padding:24px 22px; text-align:center;
+}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .chart-box.small{height:260px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 11 — Análisis de crecimiento</div>
+      <div class="header-sub">El signo de $f'$ determina la monotonía de $f$</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">11</div>
+      <h2>Análisis de crecimiento</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Determinar los intervalos donde $f'(x) &gt; 0$ y $f'(x) &lt; 0$, traducirlos a
+        intervalos de <strong>crecimiento</strong> y <strong>decrecimiento</strong> de $f$,
+        y verificar la correspondencia con la gráfica. Comprender que el <strong>signo</strong>
+        de la derivada —no su valor— es lo que gobierna la monotonía.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función y su derivada</span>
+        <div id="func-katex">$$f(x)=-x^{2}+4x \qquad\Longrightarrow\qquad f'(x)=-2x+4$$</div>
+      </div>
+
+      <!-- ── PARÁMETROS ── -->
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Elige la familia y sus coeficientes. Los <strong>puntos críticos</strong>
+          (donde $f'=0$) y los intervalos de monotonía se recalculan solos: no están escritos a mano.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-fam">familia</label>
+            <select id="p-fam">
+              <option value="quad" selected>cuadrática · ax² + bx + c</option>
+              <option value="cubic">cúbica · ax³ + bx² + cx + d</option>
+              <option value="quartic">cuártica · ax⁴ + bx² + c</option>
+              <option value="sin">seno · a·sen(bx) + c</option>
+              <option value="recip">recíproca · a/x + c</option>
+              <option value="expq">gaussiana · a·e^(−bx²) + c</option>
+            </select>
+          </div>
+          <div class="param-field">
+            <label for="p-a">a</label>
+            <input type="number" id="p-a" value="-1" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-b">b</label>
+            <input type="number" id="p-b" value="4" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-c">c</label>
+            <input type="number" id="p-c" value="0" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-d">d</label>
+            <input type="number" id="p-d" value="0" step="any">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="quad,-1,4,0,0">Original · −x²+4x</button>
+          <button class="btn-ghost" data-preset="quad,1,-6,5,0">x²−6x+5 · mínimo</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,-3,0">x³−3x · máx y mín</button>
+          <button class="btn-ghost" data-preset="cubic,2,-3,5,-3">2x³−3x²+5x−3 · sin extremos</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,0,0">x³ · f′(0)=0 sin extremo</button>
+          <button class="btn-ghost" data-preset="quartic,1,-2,0,0">x⁴−2x² · dos mínimos</button>
+          <button class="btn-ghost" data-preset="sin,1,1,0,0">sen x · alterna</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) TABLA DE SIGNOS ── -->
+      <div class="sec-title">a) Determine los intervalos donde $f'(x) &gt; 0$ y $f'(x) &lt; 0$</div>
+      <p style="font-size:.93rem;margin-bottom:6px;">
+        Primero resolvemos $f'(x) = 0$ para hallar los <strong>puntos críticos</strong>.
+        Ellos parten la recta real en intervalos; dentro de cada uno el signo de $f'$
+        <em>no cambia</em>. Elige el signo correcto en cada intervalo.
+      </p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-test"></tr>
+            <tr id="row-val"></tr>
+            <tr id="row-sign"></tr>
+            <tr id="row-mono"></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify">Verificar</button>
+        <button class="btn-primary" id="btn-fill">Rellenar solución</button>
+        <button class="btn-ghost" id="btn-clear">Limpiar</button>
+        <button class="btn-ghost" id="btn-hint">Pista</button>
+        <span class="score-badge" id="score"></span>
+      </div>
+
+      <div class="hint-box" id="hint"></div>
+
+      <!-- ── RECTA DE SIGNOS ── -->
+      <div class="sec-title">Recta de signos de $f'$</div>
+      <div class="signline-box" id="signline"></div>
+      <p class="note">
+        Los puntos críticos (dorados) son las <strong>fronteras</strong>. En ellos $f'=0$:
+        no son ni positivos ni negativos, y por eso se excluyen de los intervalos abiertos.
+      </p>
+
+      <!-- ── b) INTERVALOS ── -->
+      <div class="sec-title">b) ¿En qué intervalo crece y en cuál decrece?</div>
+      <div id="int-panel" class="int-panel"></div>
+      <div id="extremos" style="margin-top:14px;"></div>
+
+      <!-- ── c) VERIFICACIÓN GRÁFICA ── -->
+      <div class="sec-title">c) Verifique los resultados con la gráfica</div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-color" checked> colorear por monotonía</label>
+        <label><input type="checkbox" id="opt-bands" checked> bandas de intervalo</label>
+        <label><input type="checkbox" id="opt-crit" checked> puntos críticos</label>
+        <label><input type="checkbox" id="opt-probe" checked> tangente móvil</label>
+        <div class="range-field">
+          <span>zoom</span>
+          <input type="range" id="opt-zoom" min="1" max="12" step="0.5" value="5">
+          <span id="zoom-val">5</span>
+        </div>
+      </div>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="probe-wrap">
+        <span class="hlbl">Tangente móvil en x = <span class="hval" id="probe-val">0</span></span>
+        <input type="range" id="probe-slider" min="-5" max="5" step="0.01" value="0">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Recorrer y observar el giro de la tangente</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">f(x)</span><span class="v" id="lv-fx">—</span></div>
+        <div class="live-cell crim"><span class="k">f ′(x)</span><span class="v" id="lv-fp">—</span></div>
+        <div class="live-cell gold"><span class="k">signo de f ′</span><span class="v" id="lv-sig">—</span></div>
+        <div class="live-cell"><span class="k">f es…</span><span class="v" id="lv-mono" style="font-size:.86rem;">—</span></div>
+      </div>
+
+      <!-- ── GRÁFICO DE f' ── -->
+      <div class="sec-title">La gráfica de $f'$: donde cruza el eje, $f$ cambia de dirección</div>
+      <div class="chart-box small" id="chart-d">
+        <div class="tooltip" id="tooltip-d"></div>
+      </div>
+      <p class="note">
+        Compara las dos gráficas verticalmente: donde la curva roja está <strong>por encima</strong>
+        del eje, la curva de arriba <strong>sube</strong>; donde está por debajo, <strong>baja</strong>.
+        Los cruces por cero son exactamente los puntos críticos.
+      </p>
+
+      <!-- ── d) EXISTENCIA DE EXTREMOS ── -->
+      <div class="sec-title">d) ¿Existe algún posible valor máximo o algún valor mínimo?</div>
+      <p style="font-size:.93rem;margin-bottom:10px;">
+        Cuidado con la pregunta: no basta con que $f'$ se <em>anule</em>. Hay que verificar que
+        $f'$ <strong>cambie de signo</strong> al pasar por el punto. Y hay una segunda pregunta
+        escondida: si el extremo existe, ¿es solo <strong>local</strong> o es <strong>global</strong>
+        (absoluto) en todo el dominio?
+      </p>
+
+      <div id="extremos-quiz"></div>
+      <div id="extremos-detail" style="margin-top:14px;"></div>
+      <div id="extremos-global" style="margin-top:14px;"></div>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Teorema de monotonía y su demostración (vía Valor Medio)</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box">
+            <span class="lbl">Teorema</span>
+            <div id="def-katex"></div>
+          </div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div id="conclusion"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 11 · Dr. Eligio Colmenares</p>
+</footer>
+
+<!-- ═══════════ CDN (sin onload) ═══════════ -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL (única fuente de verdad)
+   ═══════════════════════════════════════════════ */
+let FAM = 'quad';
+let A = -1, B = 4, C = 0, D = 0;
+let ZOOM = 5;
+let PROBE = 0;
+let ANIM = null;
+let CRITS = [];      // puntos críticos, ordenados
+let INTERVALS = [];  // [{lo, hi, test, val, sign}]
+
+const TOL = 1e-9;
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — FUNCIONES PURAS
+   ═══════════════════════════════════════════════ */
+function f(x){
+  switch(FAM){
+    case 'quad':    return A*x*x + B*x + C;
+    case 'cubic':   return A*x*x*x + B*x*x + C*x + D;
+    case 'quartic': return A*x*x*x*x + B*x*x + C;
+    case 'sin':     return A*Math.sin(B*x) + C;
+    case 'recip':   return Math.abs(x) < 1e-12 ? NaN : A/x + C;
+    case 'expq':    return A*Math.exp(-B*x*x) + C;
+    default:        return NaN;
+  }
+}
+function fp(x){
+  switch(FAM){
+    case 'quad':    return 2*A*x + B;
+    case 'cubic':   return 3*A*x*x + 2*B*x + C;
+    case 'quartic': return 4*A*x*x*x + 2*B*x;
+    case 'sin':     return A*B*Math.cos(B*x);
+    case 'recip':   return Math.abs(x) < 1e-12 ? NaN : -A/(x*x);
+    case 'expq':    return -2*A*B*x*Math.exp(-B*x*x);
+    default:        return NaN;
+  }
+}
+function domainOK(x){
+  if (FAM === 'recip') return Math.abs(x) > 1e-9;
+  return true;
+}
+
+/* ── PUNTOS CRÍTICOS: resueltos analíticamente, no adivinados ── */
+function criticalPoints(){
+  const out = [];
+  const lo = centerX() - ZOOM, hi = centerX() + ZOOM;
+
+  switch(FAM){
+    case 'quad':
+      /* 2Ax + B = 0 */
+      if (Math.abs(A) > TOL) out.push(-B / (2*A));
+      break;
+
+    case 'cubic': {
+      /* 3Ax² + 2Bx + C = 0 */
+      if (Math.abs(A) < TOL){
+        if (Math.abs(B) > TOL) out.push(-C / (2*B));
+      } else {
+        const aa = 3*A, bb = 2*B, cc = C;
+        const disc = bb*bb - 4*aa*cc;
+        if (disc > TOL){
+          const s = Math.sqrt(disc);
+          out.push((-bb - s) / (2*aa), (-bb + s) / (2*aa));
+        } else if (Math.abs(disc) <= TOL){
+          out.push(-bb / (2*aa));   // raíz doble: f'=0 pero SIN cambio de signo
+        }
+        /* disc < 0 → sin raíces reales → f' no cambia de signo nunca */
+      }
+      break;
+    }
+
+    case 'quartic': {
+      /* 4Ax³ + 2Bx = 0  ⟺  2x(2Ax² + B) = 0 */
+      out.push(0);
+      if (Math.abs(A) > TOL){
+        const r2 = -B / (2*A);
+        if (r2 > TOL){
+          out.push(-Math.sqrt(r2), Math.sqrt(r2));
+        }
+      }
+      break;
+    }
+
+    case 'sin': {
+      /* A·B·cos(Bx) = 0 ⟺ Bx = π/2 + kπ */
+      if (Math.abs(A) > TOL && Math.abs(B) > TOL){
+        const kLo = Math.floor((B*lo / Math.PI) - 0.5) - 1;
+        const kHi = Math.ceil((B*hi / Math.PI) - 0.5) + 1;
+        for (let k = kLo; k <= kHi; k++){
+          const x = (Math.PI/2 + k*Math.PI) / B;
+          if (x >= lo - 1e-6 && x <= hi + 1e-6) out.push(x);
+        }
+      }
+      break;
+    }
+
+    case 'recip':
+      /* f' = -A/x² nunca se anula. No hay puntos críticos.
+         x = 0 NO es crítico: está fuera del dominio. */
+      break;
+
+    case 'expq':
+      /* -2ABx·e^(-Bx²) = 0 ⟺ x = 0 */
+      if (Math.abs(A) > TOL && Math.abs(B) > TOL) out.push(0);
+      break;
+  }
+
+  /* Ordena, deduplica y filtra los que caen fuera del dominio */
+  return out
+    .filter(x => isFinite(x) && domainOK(x))
+    .sort((u, v) => u - v)
+    .filter((x, i, arr) => i === 0 || Math.abs(x - arr[i-1]) > 1e-7);
+}
+
+/* ── INTERVALOS: derivados de los críticos + discontinuidades del dominio ── */
+function buildIntervals(){
+  const lo = centerX() - ZOOM, hi = centerX() + ZOOM;
+  /* Las fronteras incluyen críticos Y los puntos fuera del dominio (polo) */
+  const breaks = CRITS.slice();
+  if (FAM === 'recip') breaks.push(0);
+  breaks.sort((u, v) => u - v);
+
+  const edges = [-Infinity, ...breaks, Infinity];
+  const out = [];
+
+  for (let i = 0; i < edges.length - 1; i++){
+    const a = edges[i], b = edges[i+1];
+    /* Punto de prueba dentro del intervalo, siempre en el dominio */
+    let t;
+    if (!isFinite(a) && !isFinite(b)) t = 0;
+    else if (!isFinite(a))            t = b - 1;
+    else if (!isFinite(b))            t = a + 1;
+    else                              t = (a + b) / 2;
+
+    /* Si el intervalo es degenerado o el test cae fuera del dominio, lo descarta */
+    if (!domainOK(t)) continue;
+    const v = fp(t);
+    if (!isFinite(v)) continue;
+
+    out.push({
+      lo: a, hi: b, test: t, val: v,
+      sign: Math.abs(v) < 1e-9 ? 0 : (v > 0 ? 1 : -1)
+    });
+  }
+  return out;
+}
+
+function centerX(){
+  if (!CRITS.length) return 0;
+  const s = CRITS.reduce((acc, v) => acc + v, 0);
+  return s / CRITS.length;
+}
+
+function r6(v){ return Math.round(v * 1e6) / 1e6; }
+function fmt(v, d){
+  if (v === Infinity)  return '∞';
+  if (v === -Infinity) return '−∞';
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 4 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+
+/* Intervalo en notación LaTeX: SIEMPRE abierto en los críticos */
+function ivTex(iv){
+  const l = iv.lo === -Infinity ? '-\\infty' : fmt(iv.lo, 3);
+  const r = iv.hi ===  Infinity ? '\\infty'  : fmt(iv.hi, 3);
+  return '\\left(' + l + ',\\; ' + r + '\\right)';
+}
+function ivPlain(iv){
+  const l = iv.lo === -Infinity ? '−∞' : fmt(iv.lo, 3);
+  const r = iv.hi ===  Infinity ? '∞'  : fmt(iv.hi, 3);
+  return '(' + l + ', ' + r + ')';
+}
+
+/* ── LaTeX ── */
+function fTex(){
+  switch(FAM){
+    case 'quad': {
+      let s = (Math.abs(A-1)<TOL ? '' : (Math.abs(A+1)<TOL ? '-' : fmt(A))) + 'x^{2}';
+      if (Math.abs(B) > TOL) s += ' ' + signTerm(B) + 'x';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'cubic': {
+      let s = (Math.abs(A-1)<TOL ? '' : (Math.abs(A+1)<TOL ? '-' : fmt(A))) + 'x^{3}';
+      if (Math.abs(B) > TOL) s += ' ' + signTerm(B) + 'x^{2}';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C) + 'x';
+      if (Math.abs(D) > TOL) s += ' ' + signTerm(D);
+      return s;
+    }
+    case 'quartic': {
+      let s = (Math.abs(A-1)<TOL ? '' : (Math.abs(A+1)<TOL ? '-' : fmt(A))) + 'x^{4}';
+      if (Math.abs(B) > TOL) s += ' ' + signTerm(B) + 'x^{2}';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'sin': {
+      let s = (Math.abs(A-1)<TOL ? '' : fmt(A)) + '\\operatorname{sen}(' +
+              (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'recip': {
+      let s = '\\dfrac{' + fmt(A) + '}{x}';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'expq': {
+      let s = (Math.abs(A-1)<TOL ? '' : fmt(A)) + 'e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+      if (Math.abs(C) > TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    default: return 'x';
+  }
+}
+function fpTex(){
+  switch(FAM){
+    case 'quad': {
+      let s = fmt(2*A) + 'x';
+      if (Math.abs(B) > TOL) s += ' ' + signTerm(B);
+      return s;
+    }
+    case 'cubic': {
+      let s = fmt(3*A) + 'x^{2}';
+      if (Math.abs(2*B) > TOL) s += ' ' + signTerm(2*B) + 'x';
+      if (Math.abs(C) > TOL)   s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'quartic': {
+      let s = fmt(4*A) + 'x^{3}';
+      if (Math.abs(2*B) > TOL) s += ' ' + signTerm(2*B) + 'x';
+      return s;
+    }
+    case 'sin':
+      return fmt(A*B) + '\\cos(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+    case 'recip':
+      return '-\\dfrac{' + fmt(A) + '}{x^{2}}';
+    case 'expq':
+      return fmt(-2*A*B) + 'x\\,e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+    default: return '';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* degrada sin romper */ }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — LECTURA DE PARÁMETROS
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  FAM = document.getElementById('p-fam').value;
+  const a = parseFloat(document.getElementById('p-a').value);
+  const b = parseFloat(document.getElementById('p-b').value);
+  const c = parseFloat(document.getElementById('p-c').value);
+  const d = parseFloat(document.getElementById('p-d').value);
+  A = isFinite(a) ? a : 1;
+  B = isFinite(b) ? b : 0;
+  C = isFinite(c) ? c : 0;
+  D = isFinite(d) ? d : 0;
+  ZOOM = parseFloat(document.getElementById('opt-zoom').value) || 5;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  /* Orden importa: críticos primero, luego intervalos derivados de ellos */
+  CRITS = criticalPoints();
+  INTERVALS = buildIntervals();
+
+  const ps = document.getElementById('probe-slider');
+  const c  = centerX();
+  const lo = c - ZOOM, hi = c + ZOOM;
+  ps.min = lo; ps.max = hi; ps.step = (hi - lo) / 800;
+  PROBE = Math.max(lo, Math.min(hi, c));
+  if (!domainOK(PROBE)) PROBE = c + ZOOM*0.3;
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+
+  renderFuncDisplay();
+  renderPreview();
+  buildTable();
+  drawSignLine();
+  renderIntPanel();
+  renderExtremos();
+  drawChart();
+  drawDeriv();
+  renderExtremosQuiz();
+  renderExtremosDetail();
+  renderExtremosGlobal();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY Y PREVIEW
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + ' \\qquad\\Longrightarrow\\qquad f\'(x)=' + fpTex() + '$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  let html = 'Caso actual: $f\'(x) = ' + fpTex() + '$. ';
+
+  if (!CRITS.length){
+    const s = INTERVALS.length ? INTERVALS[0].sign : 0;
+    html += 'La ecuación $f\'(x)=0$ <strong>no tiene solución</strong> en el dominio: ' +
+      'no hay puntos críticos. Por tanto $f\'$ <strong>no cambia de signo</strong> y ' +
+      'la función es ' + (s > 0 ? '<strong>siempre creciente</strong>' : '<strong>siempre decreciente</strong>') +
+      ' en cada rama de su dominio.';
+  } else {
+    html += 'Resolviendo $f\'(x)=0$ obtenemos ' +
+      (CRITS.length === 1 ? 'el punto crítico ' : 'los puntos críticos ') +
+      '$x = ' + CRITS.map(x => fmt(x, 3)).join(',\\; ') + '$. ' +
+      'Estos parten la recta en <strong>' + INTERVALS.length + ' intervalos</strong>, ' +
+      'y dentro de cada uno el signo de $f\'$ es constante.';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TABLA DE SIGNOS AUTOVERIFICABLE
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-test');
+  const r2 = document.getElementById('row-val');
+  const r3 = document.getElementById('row-sign');
+  const r4 = document.getElementById('row-mono');
+
+  let head = '<th style="background:var(--navy)">intervalo</th>';
+  INTERVALS.forEach(iv => { head += '<th>' + ivPlain(iv) + '</th>'; });
+  th.innerHTML = head;
+
+  let h1 = '<td class="rowlbl">punto de prueba</td>';
+  INTERVALS.forEach(iv => { h1 += '<td>x = ' + fmt(iv.test, 3) + '</td>'; });
+  r1.innerHTML = h1;
+
+  let h2 = '<td class="rowlbl">f ′(punto)</td>';
+  INTERVALS.forEach(iv => { h2 += '<td>' + fmt(iv.val, 4) + '</td>'; });
+  r2.innerHTML = h2;
+
+  let h3 = '<td class="rowlbl">signo de f ′</td>';
+  INTERVALS.forEach((iv, i) => {
+    h3 += '<td><select class="cell" data-row="sign" data-i="' + i + '">' +
+          '<option value="">— elegir —</option>' +
+          '<option value="1">f ′ &gt; 0  (positivo)</option>' +
+          '<option value="-1">f ′ &lt; 0  (negativo)</option>' +
+          '</select></td>';
+  });
+  r3.innerHTML = h3;
+
+  let h4 = '<td class="rowlbl">f es…</td>';
+  INTERVALS.forEach((iv, i) => {
+    h4 += '<td><select class="cell" data-row="mono" data-i="' + i + '">' +
+          '<option value="">— elegir —</option>' +
+          '<option value="1">creciente</option>' +
+          '<option value="-1">decreciente</option>' +
+          '</select></td>';
+  });
+  r4.innerHTML = h4;
+
+  document.getElementById('score').className = 'score-badge';
+  document.getElementById('hint').className = 'hint-box';
+}
+
+function verifyTable(){
+  const cells = document.querySelectorAll('#tabla select.cell');
+  let ok = 0, total = 0, tried = 0;
+
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    const truth = INTERVALS[i].sign;   // el mismo signo gobierna ambas filas
+    total++;
+    cell.classList.remove('correct','wrong');
+    if (cell.value === '') return;
+    tried++;
+    if (parseInt(cell.value, 10) === truth){ cell.classList.add('correct'); ok++; }
+    else { cell.classList.add('wrong'); }
+  });
+
+  const badge = document.getElementById('score');
+  badge.textContent = tried === 0
+    ? 'Elige al menos una opción'
+    : ok + ' / ' + total + ' correctas';
+  badge.className = 'score-badge show' + (ok === total && total > 0 ? ' perfect' : '');
+}
+
+function fillTable(){
+  document.querySelectorAll('#tabla select.cell').forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.value = String(INTERVALS[i].sign);
+    cell.classList.remove('wrong');
+    cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function clearTable(){
+  document.querySelectorAll('#tabla select.cell').forEach(cell => {
+    cell.value = '';
+    cell.classList.remove('correct','wrong');
+  });
+  document.getElementById('score').className = 'score-badge';
+}
+
+function toggleHint(){
+  const box = document.getElementById('hint');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+
+  let html = '<strong>Pista.</strong> El método tiene tres pasos:';
+  html += '<p style="margin-top:8px;"><strong>1.</strong> Resuelve $f\'(x) = 0$:</p>';
+
+  if (FAM === 'quad'){
+    html += '$$' + fpTex() + ' = 0 \\quad\\Longleftrightarrow\\quad x = ' +
+      (Math.abs(A) > TOL ? '\\dfrac{' + fmt(-B) + '}{' + fmt(2*A) + '} = ' + fmt(-B/(2*A), 3) : '\\text{sin solución}') + '.$$';
+  } else if (FAM === 'cubic' && Math.abs(A) > TOL){
+    const disc = 4*B*B - 12*A*C;
+    html += '$$' + fpTex() + ' = 0.$$' +
+      '<p>Es una <strong>cuadrática</strong>. Su discriminante es $\\Delta = ' + fmt(disc, 3) + '$' +
+      (disc > TOL
+        ? ', <strong>positivo</strong>: hay dos raíces reales distintas.</p>'
+        : (Math.abs(disc) <= TOL
+            ? ', <strong>nulo</strong>: hay una raíz doble. Ojo: allí $f\'=0$ pero <em>no</em> hay cambio de signo.</p>'
+            : ', <strong>negativo</strong>: no hay raíces reales. $f\'$ nunca se anula, luego nunca cambia de signo.</p>'));
+  } else {
+    html += '$$' + fpTex() + ' = 0.$$';
+  }
+
+  html += '<p><strong>2.</strong> Los críticos parten la recta. Toma <strong>un punto de prueba</strong> ' +
+    'dentro de cada intervalo y evalúa $f\'$ ahí. El signo que obtengas vale para <em>todo</em> el intervalo ' +
+    '(porque $f\'$ es continua y no se anula dentro).</p>';
+  html += '<p><strong>3.</strong> Traduce: $f\'&gt;0 \\Rightarrow f$ <strong>crece</strong>; ' +
+    '$f\'&lt;0 \\Rightarrow f$ <strong>decrece</strong>. La fila «f es…» es la lectura directa de la fila de signos.</p>';
+
+  box.innerHTML = html;
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — RECTA DE SIGNOS
+   ═══════════════════════════════════════════════ */
+function drawSignLine(){
+  const box = document.getElementById('signline');
+  d3.select('#signline').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800;
+  const H = box.clientHeight || 130;
+  const m = {left:40, right:40};
+  const iw = Math.max(60, W - m.left - m.right);
+  const yLine = 62;
+
+  const svg = d3.select('#signline').append('svg')
+    .attr('width', W).attr('height', H);
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',0)');
+
+  const c  = centerX();
+  const lo = c - ZOOM, hi = c + ZOOM;
+  const xs = d3.scaleLinear().domain([lo, hi]).range([0, iw]);
+
+  /* Eje */
+  g.append('line')
+    .attr('x1', 0).attr('x2', iw).attr('y1', yLine).attr('y2', yLine)
+    .attr('stroke', 'var(--navy)').attr('stroke-width', 2);
+  /* Flechas de infinito */
+  g.append('path').attr('d', 'M' + (iw) + ',' + yLine + ' l-9,-5 l0,10 Z')
+    .attr('fill', 'var(--navy)');
+  g.append('path').attr('d', 'M0,' + yLine + ' l9,-5 l0,10 Z')
+    .attr('fill', 'var(--navy)');
+
+  /* Signos por intervalo */
+  INTERVALS.forEach(iv => {
+    const a = Math.max(iv.lo === -Infinity ? lo : iv.lo, lo);
+    const b = Math.min(iv.hi ===  Infinity ? hi : iv.hi, hi);
+    if (b <= a) return;
+    const mid = (a + b) / 2;
+    const col = iv.sign > 0 ? 'var(--up)' : 'var(--down)';
+
+    g.append('text').attr('class','sign-glyph')
+      .attr('x', xs(mid)).attr('y', yLine - 14)
+      .attr('text-anchor','middle').attr('fill', col)
+      .text(iv.sign > 0 ? '+ + + +' : '− − − −');
+
+    g.append('text').attr('class','arrow-lbl')
+      .attr('x', xs(mid)).attr('y', yLine + 26)
+      .attr('text-anchor','middle').attr('fill', col)
+      .text(iv.sign > 0 ? '↗ f crece' : '↘ f decrece');
+  });
+
+  /* Puntos críticos: marcados como CERO, no como positivo ni negativo */
+  CRITS.forEach(x => {
+    if (x < lo || x > hi) return;
+    g.append('line')
+      .attr('x1', xs(x)).attr('x2', xs(x))
+      .attr('y1', yLine - 34).attr('y2', yLine + 34)
+      .attr('stroke', 'var(--gold)').attr('stroke-width', 1.6)
+      .attr('stroke-dasharray', '4,3');
+    g.append('circle').attr('class','crit-dot')
+      .attr('cx', xs(x)).attr('cy', yLine).attr('r', 6);
+    g.append('text').attr('class','curve-lbl')
+      .attr('x', xs(x)).attr('y', yLine + 52)
+      .attr('text-anchor','middle').attr('fill','#8a6f1e')
+      .text('x = ' + fmt(x, 3));
+    g.append('text').attr('class','curve-lbl')
+      .attr('x', xs(x)).attr('y', yLine - 42)
+      .attr('text-anchor','middle').attr('fill','#8a6f1e')
+      .text("f ' = 0");
+  });
+
+  /* Polo del dominio (recíproca): NO es punto crítico, es exclusión */
+  if (FAM === 'recip' && 0 >= lo && 0 <= hi){
+    g.append('line')
+      .attr('x1', xs(0)).attr('x2', xs(0))
+      .attr('y1', yLine - 34).attr('y2', yLine + 34)
+      .attr('stroke','var(--muted)').attr('stroke-width',1.6)
+      .attr('stroke-dasharray','2,3');
+    g.append('circle').attr('class','open-dot')
+      .attr('cx', xs(0)).attr('cy', yLine).attr('r', 6);
+    g.append('text').attr('class','curve-lbl')
+      .attr('x', xs(0)).attr('y', yLine + 52)
+      .attr('text-anchor','middle').attr('fill','var(--muted)')
+      .text('x = 0 · fuera del dominio');
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL DE INTERVALOS (parte b)
+   ═══════════════════════════════════════════════ */
+function renderIntPanel(){
+  const panel = document.getElementById('int-panel');
+  let html = '';
+  INTERVALS.forEach(iv => {
+    const up = iv.sign > 0;
+    html += '<div class="int-card ' + (up ? 'up' : 'down') + '">' +
+      '<span class="k">' + (up ? "f ' > 0" : "f ' < 0") + '</span>' +
+      '<div class="iv">' + ivPlain(iv) + '</div>' +
+      '<div class="st">' + (up ? '↗ f es creciente' : '↘ f es decreciente') + '</div>' +
+      '<div class="sub">prueba: f ′(' + fmt(iv.test, 2) + ') = ' + fmt(iv.val, 3) + '</div>' +
+      '</div>';
+  });
+  panel.innerHTML = html;
+}
+
+/* Resumen breve en la parte b). El análisis completo vive en la parte d). */
+function renderExtremos(){
+  const el = document.getElementById('extremos');
+  if (!CRITS.length){
+    el.innerHTML = '<div class="proof-step"><span class="sn">Nota</span>' +
+      'No hay puntos críticos: la monotonía <strong>nunca se interrumpe</strong>. ' +
+      'Las consecuencias sobre máximos y mínimos se analizan en la parte (d).</div>';
+    renderMath(el);
+    return;
+  }
+  const ext = classifyExtrema();
+  const n = ext.filter(e => e.kind !== 'none').length;
+  el.innerHTML = '<div class="proof-step"><span class="sn">Nota</span>' +
+    'La monotonía cambia en los puntos críticos $x = ' + CRITS.map(x => fmt(x,3)).join(',\\; ') + '$. ' +
+    (n
+      ? 'Allí la curva cambia de dirección, lo que anuncia <strong>' + n + ' extremo(s)</strong>. '
+      : 'Sin embargo, en ninguno de ellos $f\'$ <strong>cambia de signo</strong>. ') +
+    'El análisis detallado —y la distinción entre extremo local y global— está en la parte (d).</div>';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CLASIFICACIÓN DE EXTREMOS (parte d)
+   Fuente única de verdad: el CAMBIO DE SIGNO de f'.
+   ═══════════════════════════════════════════════ */
+function classifyExtrema(){
+  const eps = Math.min(0.05, ZOOM * 0.02);
+  const out = [];
+  CRITS.forEach(x => {
+    const sL = Math.sign(fp(x - eps));
+    const sR = Math.sign(fp(x + eps));
+    let kind;
+    if      (sL > 0 && sR < 0) kind = 'max';
+    else if (sL < 0 && sR > 0) kind = 'min';
+    else                       kind = 'none';   // f'=0 pero SIN cambio de signo
+    out.push({x, y: f(x), sL, sR, kind});
+  });
+  return out;
+}
+
+/* ¿La función está acotada? Decide si un extremo local es además GLOBAL.
+   Se razona por familia, no por muestreo: el muestreo solo ve la ventana. */
+function boundedness(){
+  switch(FAM){
+    case 'quad':
+      if (Math.abs(A) < TOL) return {up:false, down:false, why:'es una recta'};
+      /* Parábola: A<0 abre hacia abajo → acotada SUPERIORMENTE (hay máx global) */
+      return A < 0
+        ? {up:true,  down:false, why:'la parábola abre hacia abajo, luego $f(x)\\to-\\infty$ en ambos extremos'}
+        : {up:false, down:true,  why:'la parábola abre hacia arriba, luego $f(x)\\to+\\infty$ en ambos extremos'};
+
+    case 'cubic':
+      /* Polinomio de grado impar: no acotado ni arriba ni abajo */
+      if (Math.abs(A) < TOL) return {up:false, down:false, why:'degenera en cuadrática'};
+      return {up:false, down:false,
+              why:'todo polinomio de <strong>grado impar</strong> recorre $(-\\infty, +\\infty)$: no está acotado por ningún lado'};
+
+    case 'quartic':
+      if (Math.abs(A) < TOL) return {up:false, down:false, why:'degenera'};
+      return A > 0
+        ? {up:false, down:true,  why:'grado par con $a&gt;0$: $f(x)\\to+\\infty$ en ambos extremos'}
+        : {up:true,  down:false, why:'grado par con $a&lt;0$: $f(x)\\to-\\infty$ en ambos extremos'};
+
+    case 'sin':
+      /* Acotada por ambos lados: |sen| ≤ 1 */
+      return {up:true, down:true,
+              why:'$|\\operatorname{sen}(bx)| \\leq 1$, luego $f$ está acotada por ambos lados'};
+
+    case 'recip':
+      /* Cada rama diverge: no acotada */
+      return {up:false, down:false,
+              why:'cerca de $x=0$ la función diverge a $\\pm\\infty$'};
+
+    case 'expq':
+      /* a·e^(-bx²)+c : acotada; el signo de a decide qué lado */
+      if (Math.abs(A) < TOL) return {up:true, down:true, why:'es constante'};
+      return A > 0
+        ? {up:true,  down:false, why:'$e^{-bx^{2}}$ decae a $0$: la función tiende a $' + fmt(C) + '$ sin alcanzarlo'}
+        : {up:false, down:true,  why:'$e^{-bx^{2}}$ decae a $0$: la función tiende a $' + fmt(C) + '$ sin alcanzarlo'};
+
+    default:
+      return {up:false, down:false, why:''};
+  }
+}
+
+/* ── d) Quiz autoverificable ── */
+function renderExtremosQuiz(){
+  const ext  = classifyExtrema();
+  const maxs = ext.filter(e => e.kind === 'max');
+  const mins = ext.filter(e => e.kind === 'min');
+  const box  = document.getElementById('extremos-quiz');
+
+  /* La respuesta correcta se DERIVA del análisis, no está escrita a mano */
+  let ok;
+  if (maxs.length && mins.length) ok = 3;
+  else if (maxs.length)           ok = 0;
+  else if (mins.length)           ok = 1;
+  else                            ok = 2;
+
+  const opts = [
+    'Sí: hay <strong>máximo</strong>, pero no mínimo.',
+    'Sí: hay <strong>mínimo</strong>, pero no máximo.',
+    'No: <strong>no hay ni máximo ni mínimo</strong>.',
+    'Sí: hay <strong>máximo y mínimo</strong> (ambos).'
+  ];
+
+  let html = '<div class="reflect-q" data-ok="' + ok + '">';
+  html += '<div class="qt">¿Existe algún valor máximo o mínimo?</div><div class="opt-row">';
+  opts.forEach((o, oi) => {
+    html += '<label class="opt" data-o="' + oi + '">' +
+            '<input type="radio" name="dq" value="' + oi + '"><span>' + o + '</span></label>';
+  });
+  html += '</div><div class="fb" id="d-fb"></div></div>';
+  box.innerHTML = html;
+
+  /* Retroalimentación construida a partir del caso real */
+  let fb = '';
+  if (!CRITS.length){
+    fb = 'No hay <strong>ningún punto crítico</strong>: la ecuación $f\'(x)=0$ no tiene solución. ' +
+         'Sin crítico no puede haber extremo, porque en un extremo interior la tangente ' +
+         'es necesariamente horizontal (Teorema de Fermat). La función es monótona y no ' +
+         'alcanza valor máximo ni mínimo.';
+  } else if (ok === 2){
+    fb = 'Hay crítico(s) en $x = ' + CRITS.map(x => fmt(x,3)).join(',\\; ') + '$, ' +
+         'pero <strong>$f\'$ no cambia de signo</strong> allí. ' +
+         'Una tangente horizontal <em>no basta</em>: sin cambio de signo la curva sigue en la misma ' +
+         'dirección y el punto es de inflexión, no un extremo. Es el error clásico de responder ' +
+         '«sí» apenas se ve $f\'(a)=0$.';
+  } else {
+    const partes = [];
+    maxs.forEach(e => {
+      partes.push('en $x = ' + fmt(e.x, 3) + '$ hay un <strong>máximo</strong> ' +
+        '(de $+$ a $-$), con valor $f(' + fmt(e.x, 3) + ') = ' + fmt(e.y, 3) + '$');
+    });
+    mins.forEach(e => {
+      partes.push('en $x = ' + fmt(e.x, 3) + '$ hay un <strong>mínimo</strong> ' +
+        '(de $-$ a $+$), con valor $f(' + fmt(e.x, 3) + ') = ' + fmt(e.y, 3) + '$');
+    });
+    fb = 'Aplicando el criterio de la primera derivada: ' + partes.join('; ') + '. ' +
+         'Lo que decide no es que $f\'$ se anule, sino que <strong>cambie de signo</strong> al hacerlo.';
+  }
+
+  box.querySelector('#d-fb').innerHTML = fb;
+
+  const card = box.querySelector('.reflect-q');
+  card.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const oi = parseInt(opt.dataset.o, 10);
+      card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+      opt.classList.add(oi === ok ? 'ok' : 'no');
+      if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+      card.querySelector('.fb').classList.add('show');
+    });
+  });
+
+  renderMath(box);
+}
+
+/* ── d) Detalle: cada crítico, con su cambio de signo explícito ── */
+function renderExtremosDetail(){
+  const el  = document.getElementById('extremos-detail');
+  const ext = classifyExtrema();
+
+  if (!ext.length){
+    el.innerHTML = '<div class="proof-step"><span class="sn">Sin puntos críticos</span>' +
+      'La ecuación $f\'(x) = 0$ no tiene solución, luego <strong>no hay candidatos</strong> a extremo. ' +
+      'Por el <strong>Teorema de Fermat</strong>, si $f$ tuviera un extremo local en un punto interior $a$ ' +
+      'donde es derivable, forzosamente $f\'(a)=0$. Como eso nunca ocurre, no hay extremos.</div>';
+    renderMath(el);
+    return;
+  }
+
+  let html = '';
+  ext.forEach(e => {
+    const sgn = s => s > 0 ? '+' : (s < 0 ? '-' : '0');
+    let titulo, cuerpo;
+
+    if (e.kind === 'max'){
+      titulo = 'x = ' + fmt(e.x, 3) + ' · MÁXIMO local';
+      cuerpo = 'El signo de $f\'$ pasa de <strong>$+$ a $-$</strong>: la curva sube, se detiene y baja. ' +
+               'Valor máximo local: $f(' + fmt(e.x, 3) + ') = ' + fmt(e.y, 3) + '$.';
+    } else if (e.kind === 'min'){
+      titulo = 'x = ' + fmt(e.x, 3) + ' · MÍNIMO local';
+      cuerpo = 'El signo de $f\'$ pasa de <strong>$-$ a $+$</strong>: la curva baja, se detiene y sube. ' +
+               'Valor mínimo local: $f(' + fmt(e.x, 3) + ') = ' + fmt(e.y, 3) + '$.';
+    } else {
+      titulo = 'x = ' + fmt(e.x, 3) + ' · NO es extremo';
+      cuerpo = 'El signo <strong>no cambia</strong> ($' + sgn(e.sL) + '$ antes, $' + sgn(e.sR) + '$ después). ' +
+               'La tangente es horizontal, pero la curva <em>no cambia de dirección</em>: ' +
+               'es un <strong>punto de inflexión con tangente horizontal</strong>, no un extremo.';
+    }
+
+    html += '<div class="proof-step"><span class="sn">' + titulo + '</span>' +
+      'Signo de $f\'$ a la izquierda: $' + sgn(e.sL) + '$ &nbsp;·&nbsp; a la derecha: $' + sgn(e.sR) + '$. ' +
+      cuerpo + '</div>';
+  });
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ── d) Local vs. global: la pregunta que el enunciado deja implícita ── */
+function renderExtremosGlobal(){
+  const el   = document.getElementById('extremos-global');
+  const ext  = classifyExtrema();
+  const maxs = ext.filter(e => e.kind === 'max');
+  const mins = ext.filter(e => e.kind === 'min');
+  const bd   = boundedness();
+
+  if (!maxs.length && !mins.length){ el.innerHTML = ''; return; }
+
+  let html = '<div class="qed-box"><div>';
+
+  /* Un máximo LOCAL es GLOBAL solo si la función está acotada superiormente
+     y ese máximo es el único (o el mayor de todos). */
+  if (maxs.length){
+    const mejor = maxs.reduce((a, b) => (b.y > a.y ? b : a));
+    if (bd.up && maxs.length === 1){
+      html += '<strong>Máximo global.</strong> El máximo en $x = ' + fmt(mejor.x, 3) +
+        '$ no es solo local: como ' + bd.why + ', ningún otro punto supera ' +
+        '$f(' + fmt(mejor.x, 3) + ') = ' + fmt(mejor.y, 3) + '$. ' +
+        'Es el <strong>valor máximo absoluto</strong> de la función. ';
+    } else if (bd.up){
+      html += '<strong>Máximo global.</strong> De los máximos locales, el mayor está en ' +
+        '$x = ' + fmt(mejor.x, 3) + '$ con valor $' + fmt(mejor.y, 3) + '$; como ' + bd.why +
+        ', ese es el máximo absoluto. ';
+    } else {
+      html += '<strong>Máximo solo local.</strong> En $x = ' + fmt(mejor.x, 3) +
+        '$ hay un máximo <em>local</em>, pero <strong>no global</strong>: ' + bd.why +
+        ', de modo que $f$ toma valores arbitrariamente grandes en otras zonas. ' +
+        'No existe un valor máximo absoluto. ';
+    }
+  }
+
+  if (mins.length){
+    const peor = mins.reduce((a, b) => (b.y < a.y ? b : a));
+    if (bd.down && mins.length === 1){
+      html += '<strong>Mínimo global.</strong> El mínimo en $x = ' + fmt(peor.x, 3) +
+        '$ es absoluto: como ' + bd.why + ', ningún punto queda por debajo de ' +
+        '$f(' + fmt(peor.x, 3) + ') = ' + fmt(peor.y, 3) + '$.';
+    } else if (bd.down){
+      html += '<strong>Mínimo global.</strong> El menor de los mínimos locales está en ' +
+        '$x = ' + fmt(peor.x, 3) + '$ con valor $' + fmt(peor.y, 3) + '$, y es el mínimo absoluto.';
+    } else {
+      html += '<strong>Mínimo solo local.</strong> En $x = ' + fmt(peor.x, 3) +
+        '$ hay un mínimo <em>local</em>, pero <strong>no global</strong>: ' + bd.why +
+        ', luego $f$ desciende sin cota en otras zonas. No existe valor mínimo absoluto.';
+    }
+  }
+
+  html += '</div><span class="qed">∎</span></div>';
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL
+   ═══════════════════════════════════════════════ */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 430;
+  const m = {top:22, right:26, bottom:42, left:62};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const showGrid  = document.getElementById('opt-grid').checked;
+  const showColor = document.getElementById('opt-color').checked;
+  const showBands = document.getElementById('opt-bands').checked;
+  const showCrit  = document.getElementById('opt-crit').checked;
+  const showProbe = document.getElementById('opt-probe').checked;
+
+  const c = centerX();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+
+  /* Muestreo: segmentos separados POR SIGNO de f' y por dominio.
+     Esto permite colorear cada tramo según su monotonía. */
+  const N = 800, step = (xMax - xMin) / N;
+  const segs = [];   // [{sign, pts:[]}]
+  let cur = null;
+
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (!domainOK(x) || (FAM === 'recip' && Math.abs(x) < step*0.8)){
+      cur = null;   // corta el segmento: NUNCA cruza el polo
+      continue;
+    }
+    const y = f(x);
+    if (!isFinite(y)){ cur = null; continue; }
+    const d = fp(x);
+    const s = (!isFinite(d) || Math.abs(d) < 1e-12) ? 0 : (d > 0 ? 1 : -1);
+
+    if (!cur || cur.sign !== s){
+      /* Nuevo segmento; enlaza con el anterior para que no queden huecos */
+      if (cur && cur.pts.length) cur.pts.push([x, y]);
+      cur = {sign: s, pts: []};
+      segs.push(cur);
+    }
+    cur.pts.push([x, y]);
+  }
+
+  /* Dominio y */
+  const allPts = segs.flatMap(s => s.pts);
+  const curveY = allPts.map(d => d[1]).filter(isFinite);
+  let refLo, refHi;
+  if (curveY.length){
+    const sorted = curveY.slice().sort(d3.ascending);
+    refLo = d3.quantile(sorted, 0.02);
+    refHi = d3.quantile(sorted, 0.98);
+  } else { refLo = -1; refHi = 1; }
+  const spanRef = Math.max(refHi - refLo, 1);
+  const clipped = curveY.filter(v => v > refLo - spanRef*1.3 && v < refHi + spanRef*1.3);
+
+  const extraY = [];
+  CRITS.forEach(x => { const v = f(x); if (isFinite(v)) extraY.push(v); });
+  if (showProbe && domainOK(PROBE)){
+    const y0 = f(PROBE), mS = fp(PROBE);
+    if (isFinite(y0) && isFinite(mS)){
+      extraY.push(y0, y0 + mS*(xMin - PROBE), y0 + mS*(xMax - PROBE));
+    }
+  }
+
+  const allY = [...clipped, ...extraY].filter(isFinite);
+  let yMin = allY.length ? Math.min(...allY) : -1;
+  let yMax = allY.length ? Math.max(...allY) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.12;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-box').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-main-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  /* Bandas de intervalo */
+  if (showBands){
+    INTERVALS.forEach(iv => {
+      const a = Math.max(iv.lo === -Infinity ? xMin : iv.lo, xMin);
+      const b = Math.min(iv.hi ===  Infinity ? xMax : iv.hi, xMax);
+      if (b <= a) return;
+      plot.append('rect')
+        .attr('class', iv.sign > 0 ? 'band-up' : 'band-down')
+        .attr('x', xs(a)).attr('y', 0)
+        .attr('width', Math.max(0, xs(b) - xs(a))).attr('height', ih);
+    });
+  }
+
+  if (showGrid){
+    g.append('g').attr('class','grid')
+      .attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(6));
+
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  /* Líneas verticales en los críticos */
+  if (showCrit){
+    CRITS.forEach(x => {
+      if (x < xMin || x > xMax) return;
+      plot.append('line').attr('class','crit-line')
+        .attr('x1', xs(x)).attr('x2', xs(x)).attr('y1', 0).attr('y2', ih);
+    });
+  }
+
+  /* Curva, segmento por segmento, coloreada según el signo de f' */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+
+  segs.forEach(s => {
+    if (s.pts.length < 2) return;
+    let cls = 'curve curve-plain';
+    if (showColor) cls = 'curve ' + (s.sign > 0 ? 'curve-up' : (s.sign < 0 ? 'curve-down' : 'curve-plain'));
+    plot.append('path').datum(s.pts).attr('class', cls).attr('d', line);
+  });
+
+  /* Puntos críticos sobre la curva — CERRADOS: f SÍ toma ese valor allí */
+  if (showCrit){
+    CRITS.forEach(x => {
+      const y = f(x);
+      if (!isFinite(y) || x < xMin || x > xMax) return;
+      /* Tangente horizontal en el crítico */
+      const dx = ZOOM * 0.18;
+      plot.append('line')
+        .attr('x1', xs(x - dx)).attr('x2', xs(x + dx))
+        .attr('y1', ys(y)).attr('y2', ys(y))
+        .attr('stroke','var(--gold)').attr('stroke-width',2.2);
+      plot.append('circle').attr('class','crit-dot')
+        .attr('cx', xs(x)).attr('cy', ys(y)).attr('r', 6.5);
+      plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+        .attr('x', xs(x) + 9).attr('y', ys(y) - 10)
+        .text("f ' = 0");
+    });
+  }
+
+  /* Tangente móvil: su INCLINACIÓN es la lectura visual del signo */
+  if (showProbe && domainOK(PROBE)){
+    const y0 = f(PROBE), mS = fp(PROBE);
+    if (isFinite(y0) && isFinite(mS)){
+      const col = mS > 1e-9 ? 'var(--up)' : (mS < -1e-9 ? 'var(--down)' : 'var(--gold)');
+      plot.append('line').attr('class','probe-tan')
+        .attr('stroke', col)
+        .attr('x1', xs(xMin)).attr('y1', ys(y0 + mS*(xMin - PROBE)))
+        .attr('x2', xs(xMax)).attr('y2', ys(y0 + mS*(xMax - PROBE)));
+      plot.append('circle').attr('class','closed-dot')
+        .attr('fill', col)
+        .attr('cx', xs(PROBE)).attr('cy', ys(y0)).attr('r', 6);
+      plot.append('text').attr('class','curve-lbl').attr('fill', col)
+        .attr('x', iw - 6).attr('y', ih - 10).attr('text-anchor','end')
+        .text("f '(" + fmt(PROBE, 2) + ') = ' + fmt(mS, 3) + ' · ' +
+              (mS > 1e-9 ? 'sube' : (mS < -1e-9 ? 'baja' : 'horizontal')));
+    }
+  }
+
+  /* Tooltip */
+  const tip = document.getElementById('tooltip');
+  const hover = plot.append('line')
+    .attr('stroke','var(--navy)').attr('stroke-width',1)
+    .attr('stroke-dasharray','3,3').attr('opacity',0)
+    .attr('y1',0).attr('y2',ih);
+
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (!domainOK(x)){ tip.classList.remove('show'); hover.attr('opacity',0); return; }
+      const y = f(x), d = fp(x);
+      if (!isFinite(y) || y < yMin || y > yMax){
+        tip.classList.remove('show'); hover.attr('opacity',0); return;
+      }
+      hover.attr('opacity',.5).attr('x1', xs(x)).attr('x2', xs(x));
+      tip.innerHTML = 'x = ' + fmt(x, 3) + '<br>f(x) = ' + fmt(y, 3) +
+        "<br>f '(x) = " + fmt(d, 3) +
+        '<br>' + (d > 1e-9 ? '↗ crece' : (d < -1e-9 ? '↘ decrece' : '→ horizontal'));
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top  = (m.top  + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', function(){
+      tip.classList.remove('show'); hover.attr('opacity',0);
+    })
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (domainOK(x)) setProbe(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO DE f' (con relleno por signo)
+   ═══════════════════════════════════════════════ */
+function drawDeriv(){
+  const box = document.getElementById('chart-d');
+  d3.select('#chart-d').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 300;
+  const m = {top:20, right:26, bottom:40, left:62};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const c = centerX();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+
+  const N = 700, step = (xMax - xMin) / N;
+  const brs = [];   // ramas separadas por el dominio
+  let cur = null;
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (!domainOK(x) || (FAM === 'recip' && Math.abs(x) < step*0.8)){ cur = null; continue; }
+    const v = fp(x);
+    if (!isFinite(v)){ cur = null; continue; }
+    if (!cur){ cur = []; brs.push(cur); }
+    cur.push([x, v]);
+  }
+
+  const vals = brs.flat().map(d => d[1]).filter(isFinite);
+  let refLo, refHi;
+  if (vals.length){
+    const sorted = vals.slice().sort(d3.ascending);
+    refLo = d3.quantile(sorted, 0.02);
+    refHi = d3.quantile(sorted, 0.98);
+  } else { refLo = -1; refHi = 1; }
+  const spanRef = Math.max(refHi - refLo, 1);
+  const clipped = vals.filter(v => v > refLo - spanRef*1.3 && v < refHi + spanRef*1.3);
+
+  const allV = [...clipped, 0].filter(isFinite);
+  let yMin = allV.length ? Math.min(...allV) : -1;
+  let yMax = allV.length ? Math.max(...allV) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.15;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-d').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-d-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  /* Bandas de intervalo (mismas que arriba: alineación visual) */
+  INTERVALS.forEach(iv => {
+    const a = Math.max(iv.lo === -Infinity ? xMin : iv.lo, xMin);
+    const b = Math.min(iv.hi ===  Infinity ? xMax : iv.hi, xMax);
+    if (b <= a) return;
+    plot.append('rect')
+      .attr('class', iv.sign > 0 ? 'band-up' : 'band-down')
+      .attr('x', xs(a)).attr('y', 0)
+      .attr('width', Math.max(0, xs(b) - xs(a))).attr('height', ih);
+  });
+
+  g.append('g').attr('class','grid')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 32).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -7).attr('text-anchor','end').text("f '(x)");
+
+  /* Eje y = 0: la frontera que decide todo */
+  if (0 >= yMin && 0 <= yMax){
+    plot.append('line')
+      .attr('x1', 0).attr('x2', iw).attr('y1', ys(0)).attr('y2', ys(0))
+      .attr('stroke','var(--muted)').attr('stroke-width',1.6);
+  }
+
+  /* Curva de f' */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  brs.forEach(br => {
+    if (br.length > 1) plot.append('path').datum(br).attr('class','dcurve').attr('d', line);
+  });
+
+  /* Cruces por cero — CERRADOS: f' SÍ vale 0 exactamente ahí */
+  CRITS.forEach(x => {
+    if (x < xMin || x > xMax) return;
+    plot.append('circle').attr('class','crit-dot')
+      .attr('cx', xs(x)).attr('cy', ys(0)).attr('r', 6);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', xs(x)).attr('y', ys(0) + 20)
+      .attr('text-anchor','middle')
+      .text('x = ' + fmt(x, 2));
+  });
+
+  /* Punto móvil */
+  if (domainOK(PROBE)){
+    const v = fp(PROBE);
+    if (isFinite(v) && PROBE >= xMin && PROBE <= xMax){
+      const col = v > 1e-9 ? 'var(--up)' : (v < -1e-9 ? 'var(--down)' : 'var(--gold)');
+      plot.append('line')
+        .attr('x1', xs(PROBE)).attr('x2', xs(PROBE))
+        .attr('y1', ys(v)).attr('y2', ys(0))
+        .attr('stroke', col).attr('stroke-width',1.6)
+        .attr('stroke-dasharray','3,3').attr('opacity',.75);
+      plot.append('circle').attr('class','closed-dot')
+        .attr('fill', col)
+        .attr('cx', xs(PROBE)).attr('cy', ys(v)).attr('r', 5.8);
+    }
+  }
+
+  const tipd = document.getElementById('tooltip-d');
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (!domainOK(x)){ tipd.classList.remove('show'); return; }
+      const v = fp(x);
+      if (!isFinite(v) || v < yMin || v > yMax){ tipd.classList.remove('show'); return; }
+      tipd.innerHTML = 'x = ' + fmt(x, 3) + "<br>f '(x) = " + fmt(v, 4) +
+        '<br>' + (v > 1e-9 ? 'positivo → f crece' : (v < -1e-9 ? 'negativo → f decrece' : 'cero → crítico'));
+      tipd.style.left = (m.left + xs(x)) + 'px';
+      tipd.style.top  = (m.top  + ys(v)) + 'px';
+      tipd.classList.add('show');
+    })
+    .on('mouseleave', () => tipd.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (domainOK(x)) setProbe(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const y = f(PROBE), d = fp(PROBE);
+  document.getElementById('lv-x').textContent  = fmt(PROBE, 4);
+  document.getElementById('lv-fx').textContent = fmt(y, 4);
+  document.getElementById('lv-fp').textContent = fmt(d, 4);
+
+  const sigEl  = document.getElementById('lv-sig');
+  const monoEl = document.getElementById('lv-mono');
+
+  if (!isFinite(d)){
+    sigEl.textContent = '—'; sigEl.className = 'v';
+    monoEl.textContent = 'no derivable'; monoEl.className = 'v';
+  } else if (d > 1e-9){
+    sigEl.textContent = 'POSITIVO';  sigEl.className = 'v up';
+    monoEl.textContent = '↗ creciente'; monoEl.className = 'v up';
+  } else if (d < -1e-9){
+    sigEl.textContent = 'NEGATIVO';  sigEl.className = 'v down';
+    monoEl.textContent = '↘ decreciente'; monoEl.className = 'v down';
+  } else {
+    sigEl.textContent = 'CERO';      sigEl.className = 'v';
+    monoEl.textContent = '→ punto crítico'; monoEl.className = 'v';
+  }
+  monoEl.style.fontSize = '.86rem';
+}
+
+function setProbe(x){
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  PROBE = Math.max(lo, Math.min(hi, x));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+  updateLive();
+  drawChart();
+  drawDeriv();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Recorrer y observar el giro de la tangente';
+}
+
+function startAnim(){
+  stopAnim();
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  const steps = 170;
+  let t = 0;
+
+  document.getElementById('btn-anim').textContent = '● Recorriendo…';
+
+  ANIM = setInterval(() => {
+    t++;
+    let x = lo + (hi - lo) * (t / steps);
+    if (!domainOK(x)) x += (hi - lo) * 0.015;   // salta el polo sin romper
+
+    PROBE = Math.max(lo, Math.min(hi, x));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive();
+    drawChart();
+    drawDeriv();
+
+    if (t >= steps){
+      stopAnim();
+      /* Estado final coherente: la sonda queda en un punto del dominio */
+      let end = hi - (hi - lo) * 0.02;
+      if (!domainOK(end)) end = lo + (hi - lo) * 0.75;
+      setProbe(end);
+    }
+  }, 30);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const up   = INTERVALS.filter(iv => iv.sign > 0);
+  const down = INTERVALS.filter(iv => iv.sign < 0);
+  const upTex   = up.length   ? up.map(ivTex).join(' \\cup ')   : '\\varnothing';
+  const downTex = down.length ? down.map(ivTex).join(' \\cup ') : '\\varnothing';
+
+  /* ¿Existe un crítico SIN cambio de signo? (x³ es el caso canónico) */
+  const eps = Math.min(0.05, ZOOM * 0.02);
+  const flat = CRITS.filter(x => Math.sign(fp(x - eps)) === Math.sign(fp(x + eps)));
+
+  const qs = [
+    {
+      q: 'a) ¿Dónde es $f\'(x) &gt; 0$?',
+      opts: [
+        'En $' + downTex + '$.',
+        'En $' + upTex + '$.',
+        'En todo $\\mathbb{R}$, porque la derivada siempre existe.'
+      ],
+      ok: 1,
+      fb: 'Basta evaluar $f\'$ en un punto de prueba de cada intervalo: el signo obtenido vale para ' +
+          '<em>todo</em> el intervalo, porque $f\'$ es continua y no se anula dentro. ' +
+          'Que $f\'$ <strong>exista</strong> en todas partes no significa que sea <strong>positiva</strong> en todas partes: ' +
+          'son afirmaciones distintas.'
+    },
+    {
+      q: 'b) ¿Por qué los intervalos se escriben <em>abiertos</em>, excluyendo los puntos críticos?',
+      opts: [
+        'Por convención tipográfica; da igual usar corchetes.',
+        'Porque en un punto crítico $f\'=0$: no es ni positivo ni negativo, así que no pertenece a ninguno de los dos conjuntos.',
+        'Porque la función no está definida en los puntos críticos.'
+      ],
+      ok: 1,
+      fb: 'En un crítico la derivada vale exactamente <strong>cero</strong>. Cero no es positivo ni negativo, ' +
+          'de modo que el punto no cumple $f\'&gt;0$ ni $f\'&lt;0$. ' +
+          'La función <em>sí</em> está definida ahí (la curva pasa por ese punto, con tangente horizontal): ' +
+          'lo que se excluye es del conjunto de signo, no del dominio.'
+    },
+    {
+      q: 'Si $f\'(a) = 0$, ¿necesariamente hay un máximo o un mínimo en $a$?',
+      opts: [
+        'Sí: pendiente cero siempre significa extremo.',
+        'No: hace falta que $f\'$ <strong>cambie de signo</strong> al pasar por $a$. Si no cambia, no hay extremo.',
+        'Solo si $f(a) = 0$ también.'
+      ],
+      ok: 1,
+      fb: 'El contraejemplo canónico es $f(x)=x^{3}$ en $a=0$: allí $f\'(0)=0$, pero $f\'(x)=3x^{2} \\geq 0$ ' +
+          'a ambos lados. La tangente es horizontal y aun así la función <strong>sigue creciendo</strong>. ' +
+          (flat.length
+            ? 'En tu caso actual esto ocurre en $x = ' + flat.map(x => fmt(x,3)).join(',\\; ') + '$. '
+            : 'Prueba el preset «x³» para verlo en vivo. ') +
+          'Lo que clasifica un crítico es el <strong>cambio de signo</strong> de $f\'$, no el hecho de anularse.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '">';
+    html += '<div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="r' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TEOREMA Y DEMOSTRACIÓN
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\text{Si } f\'(x) &gt; 0 \\;\\text{ para todo } x \\in (a,b), \\text{ entonces } f ' +
+    '\\text{ es estrictamente creciente en } (a,b).$$' +
+    '$$\\text{Si } f\'(x) &lt; 0 \\;\\text{ para todo } x \\in (a,b), \\text{ entonces } f ' +
+    '\\text{ es estrictamente decreciente en } (a,b).$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Qué hay que probar</span>' +
+    '«$f$ es estrictamente creciente en $(a,b)$» significa: para cualesquiera ' +
+    '$x_{1} &lt; x_{2}$ en $(a,b)$, se cumple $f(x_{1}) &lt; f(x_{2})$. ' +
+    'Nótese que esto es una afirmación sobre <em>pares de puntos</em>, mientras que la hipótesis ' +
+    '$f\'&gt;0$ es una afirmación <em>puntual</em>. El puente entre ambas es el Teorema del Valor Medio.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 2 · Teorema del Valor Medio</span>' +
+    'Tomemos $x_{1} &lt; x_{2}$ arbitrarios en $(a,b)$. Como $f$ es continua en $[x_{1},x_{2}]$ ' +
+    'y derivable en $(x_{1},x_{2})$, el TVM garantiza que <strong>existe</strong> algún ' +
+    '$\\xi \\in (x_{1},x_{2})$ tal que' +
+    '$$f(x_{2}) - f(x_{1}) \\;=\\; f\'(\\xi)\\,(x_{2} - x_{1}).$$</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 3 · Leer el signo</span>' +
+    'Analicemos los dos factores del lado derecho:' +
+    '<ul style="margin:8px 0 0 20px;">' +
+    '<li>$x_{2} - x_{1} &gt; 0$, porque supusimos $x_{1} &lt; x_{2}$.</li>' +
+    '<li>$f\'(\\xi) &gt; 0$, por hipótesis, ya que $\\xi \\in (a,b)$.</li>' +
+    '</ul>' +
+    '<p style="margin-top:8px;">El producto de dos cantidades positivas es positivo, luego</p>' +
+    '$$f(x_{2}) - f(x_{1}) &gt; 0 \\quad\\Longleftrightarrow\\quad f(x_{1}) &lt; f(x_{2}).$$</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Conclusión y caso simétrico</span>' +
+    'Como $x_{1} &lt; x_{2}$ eran <strong>arbitrarios</strong>, la desigualdad vale para todo par: ' +
+    '$f$ es estrictamente creciente en $(a,b)$. ' +
+    'El caso $f\' &lt; 0$ es idéntico invirtiendo el signo: allí $f\'(\\xi) &lt; 0$ y ' +
+    '$x_{2}-x_{1} &gt; 0$ dan producto negativo, luego $f(x_{2}) &lt; f(x_{1})$.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 5 · Aplicación al caso actual</span>' +
+    'Con $f\'(x) = ' + fpTex() + '$:' +
+    (CRITS.length
+      ? '<p style="margin-top:6px;">Los críticos $x = ' + CRITS.map(x => fmt(x,3)).join(',\\; ') +
+        '$ dividen la recta. Evaluando $f\'$ en un punto de prueba de cada intervalo obtenemos ' +
+        'su signo, y el teorema traduce ese signo en monotonía.</p>'
+      : '<p style="margin-top:6px;">No hay críticos, así que $f\'$ conserva el signo en cada rama ' +
+        'del dominio y la monotonía nunca se interrumpe.</p>') +
+    '</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'El <strong>signo</strong> de $f\'$ —no su magnitud— determina si $f$ sube o baja. ' +
+    'Una pendiente de $0{,}01$ y una de $1000$ son ambas positivas: ambas significan «crece».' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN DINÁMICA
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const up   = INTERVALS.filter(iv => iv.sign > 0);
+  const down = INTERVALS.filter(iv => iv.sign < 0);
+
+  let html = '';
+
+  html += '<p><strong>a)</strong> Resolviendo $f\'(x) = 0$ con $f\'(x) = ' + fpTex() + '$:</p>';
+  if (CRITS.length){
+    html += '<p style="text-align:center;">$$x = ' + CRITS.map(x => fmt(x, 3)).join(', \\qquad x = ') + '$$</p>';
+    html += '<p>Y evaluando en puntos de prueba:</p>';
+  } else {
+    html += '<p style="text-align:center;">$$\\text{sin solución real}$$</p>';
+  }
+
+  html += '<p style="text-align:center;">$$\\begin{aligned}' +
+    "f'(x) &amp;&gt; 0 \\quad\\text{en}\\quad " +
+      (up.length ? up.map(ivTex).join(' \\cup ') : '\\varnothing') + ' \\\\ ' +
+    "f'(x) &amp;&lt; 0 \\quad\\text{en}\\quad " +
+      (down.length ? down.map(ivTex).join(' \\cup ') : '\\varnothing') +
+    '\\end{aligned}$$</p>';
+
+  html += '<p><strong>b)</strong> Traduciendo el signo a monotonía:</p>';
+  html += '<p style="text-align:center;">$$\\begin{aligned}' +
+    'f \\text{ es creciente} \\;&amp;\\text{ en } ' +
+      (up.length ? up.map(ivTex).join(' \\cup ') : '\\varnothing') + ' \\\\ ' +
+    'f \\text{ es decreciente} \\;&amp;\\text{ en } ' +
+      (down.length ? down.map(ivTex).join(' \\cup ') : '\\varnothing') +
+    '\\end{aligned}$$</p>';
+
+  /* Extremos, clasificados por cambio de signo */
+  const eps = Math.min(0.05, ZOOM * 0.02);
+  const maxs = [], mins = [], flats = [];
+  CRITS.forEach(x => {
+    const sL = Math.sign(fp(x - eps)), sR = Math.sign(fp(x + eps));
+    if (sL > 0 && sR < 0) maxs.push(x);
+    else if (sL < 0 && sR > 0) mins.push(x);
+    else flats.push(x);
+  });
+
+  if (maxs.length || mins.length || flats.length){
+    html += '<p>Por el <strong>criterio de la primera derivada</strong>:</p><ul style="margin:0 0 10px 20px;font-size:.95rem;">';
+    maxs.forEach(x => {
+      html += '<li>$x = ' + fmt(x,3) + '$ &rarr; <strong>máximo local</strong>, con $f(' + fmt(x,3) + ') = ' + fmt(f(x),3) + '$ (de $+$ a $-$).</li>';
+    });
+    mins.forEach(x => {
+      html += '<li>$x = ' + fmt(x,3) + '$ &rarr; <strong>mínimo local</strong>, con $f(' + fmt(x,3) + ') = ' + fmt(f(x),3) + '$ (de $-$ a $+$).</li>';
+    });
+    flats.forEach(x => {
+      html += '<li>$x = ' + fmt(x,3) + '$ &rarr; <strong>no es extremo</strong>: $f\'$ se anula pero <em>no cambia de signo</em>.</li>';
+    });
+    html += '</ul>';
+  } else {
+    html += '<p>No hay puntos críticos, luego <strong>no hay extremos locales</strong>.</p>';
+  }
+
+  html += '<p><strong>c)</strong> La gráfica confirma la lectura: los tramos coloreados en ' +
+    '<span style="color:var(--up);font-weight:700;">verde</span> son exactamente aquellos donde ' +
+    '$f\' &gt; 0$ (la tangente móvil sube), y los tramos en ' +
+    '<span style="color:var(--down);font-weight:700;">granate</span> aquellos donde $f\' &lt; 0$ ' +
+    '(la tangente baja). Los cruces por cero de la curva roja inferior coinciden, ' +
+    'abscisa por abscisa, con los puntos de tangente horizontal de la curva superior.</p>';
+
+  /* ── d) Existencia de máximo / mínimo ── */
+  const bd = boundedness();
+  html += '<p><strong>d)</strong> ';
+
+  if (!CRITS.length){
+    html += 'No hay puntos críticos, luego <strong>no existe ni máximo ni mínimo</strong>. ' +
+      'Por el Teorema de Fermat, todo extremo interior de una función derivable exige $f\'=0$; ' +
+      'como esa ecuación no tiene solución, la función es monótona y no alcanza extremo alguno.</p>';
+  } else if (!maxs.length && !mins.length){
+    html += 'Aunque $f\'$ se anula en $x = ' + flats.map(x => fmt(x,3)).join(',\\; ') + '$, ' +
+      'allí <strong>no cambia de signo</strong>. Por tanto <strong>no hay ni máximo ni mínimo</strong>: ' +
+      'la tangente es horizontal, pero la curva no cambia de dirección. Anular la derivada es ' +
+      '<em>necesario</em> para tener un extremo, pero no <em>suficiente</em>.</p>';
+  } else {
+    const trozos = [];
+    maxs.forEach(x => {
+      const global = bd.up && maxs.length === 1;
+      trozos.push('un <strong>máximo' + (global ? ' global' : ' local') + '</strong> en $x = ' + fmt(x,3) +
+        '$, de valor $f(' + fmt(x,3) + ') = ' + fmt(f(x),3) + '$');
+    });
+    mins.forEach(x => {
+      const global = bd.down && mins.length === 1;
+      trozos.push('un <strong>mínimo' + (global ? ' global' : ' local') + '</strong> en $x = ' + fmt(x,3) +
+        '$, de valor $f(' + fmt(x,3) + ') = ' + fmt(f(x),3) + '$');
+    });
+    html += 'Sí: existe ' + trozos.join(' y ') + '. ';
+
+    /* La distinción local/global es la parte que el enunciado no pide pero exige la respuesta honesta */
+    if (maxs.length && !bd.up){
+      html += 'Ahora bien, ese máximo es <strong>solo local</strong>: ' + bd.why +
+        ', de modo que <em>no existe un valor máximo absoluto</em>. ';
+    }
+    if (mins.length && !bd.down){
+      html += 'Análogamente, el mínimo es <strong>solo local</strong>: ' + bd.why +
+        ', luego <em>no existe un valor mínimo absoluto</em>. ';
+    }
+    if ((maxs.length && bd.up) || (mins.length && bd.down)){
+      html += 'Y es además <strong>absoluto</strong>, porque ' + bd.why + '.';
+    }
+    html += '</p>';
+  }
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  document.getElementById('p-fam').addEventListener('change', refreshAll);
+  ['p-a','p-b','p-c','p-d'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') refreshAll();
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-fam').value = 'quad';
+    document.getElementById('p-a').value = -1;
+    document.getElementById('p-b').value = 4;
+    document.getElementById('p-c').value = 0;
+    document.getElementById('p-d').value = 0;
+    document.getElementById('opt-zoom').value = 5;
+    document.getElementById('zoom-val').textContent = '5';
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-fam').value = p[0].trim();
+      document.getElementById('p-a').value   = p[1].trim();
+      document.getElementById('p-b').value   = p[2].trim();
+      document.getElementById('p-c').value   = p[3].trim();
+      document.getElementById('p-d').value   = p[4] !== undefined ? p[4].trim() : 0;
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify').addEventListener('click', verifyTable);
+  document.getElementById('btn-fill').addEventListener('click', fillTable);
+  document.getElementById('btn-clear').addEventListener('click', clearTable);
+  document.getElementById('btn-hint').addEventListener('click', toggleHint);
+
+  ['opt-grid','opt-color','opt-bands','opt-crit','opt-probe'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawChart);
+  });
+
+  document.getElementById('opt-zoom').addEventListener('input', ev => {
+    ZOOM = parseFloat(ev.target.value);
+    document.getElementById('zoom-val').textContent = ZOOM;
+    /* El zoom puede revelar u ocultar críticos (caso seno): recalcular */
+    CRITS = criticalPoints();
+    INTERVALS = buildIntervals();
+    const ps = document.getElementById('probe-slider');
+    const c  = centerX();
+    const lo = c - ZOOM, hi = c + ZOOM;
+    ps.min = lo; ps.max = hi; ps.step = (hi - lo) / 800;
+    PROBE = Math.max(lo, Math.min(hi, PROBE));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    buildTable(); drawSignLine(); renderIntPanel(); renderExtremos();
+    updateLive(); drawChart(); drawDeriv();
+    renderExtremosQuiz(); renderExtremosDetail(); renderExtremosGlobal();
+    renderConclusion();
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  document.getElementById('probe-slider').addEventListener('input', ev => {
+    stopAnim();
+    PROBE = parseFloat(ev.target.value);
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive(); drawChart(); drawDeriv();
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { drawSignLine(); drawChart(); drawDeriv(); }, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

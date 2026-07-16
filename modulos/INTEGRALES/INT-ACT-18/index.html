@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 18 — Regla del punto medio · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --area:#5b8fc9; --rect:#7fb2e0; --trap:#c8a951; --midcol:#5b3d8f;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.btn-ghost.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:64px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── TABLA DE PUNTOS MEDIOS ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:520px;}
+th, td{
+  border:1px solid var(--border); padding:8px 7px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.82rem;
+}
+thead th{background:var(--navy); color:#fff; font-weight:500; letter-spacing:.04em; font-size:.75rem;}
+tbody td.rowlbl{
+  background:#f4f2ec; font-weight:700; color:var(--navy);
+  text-align:left; padding-left:11px; white-space:nowrap;
+}
+input.cell{
+  width:100%; min-width:74px; border:1px solid var(--border);
+  background:#fff; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.8rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+
+/* ── GRÁFICO ── */
+.chart-box{
+  position:relative; width:100%; height:460px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.chart-box.small{height:300px;}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+
+.method-ctrl{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:16px 18px; margin-top:14px;
+}
+.method-ctrl .rlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+.method-ctrl .rval{color:var(--crimson); font-weight:700;}
+.rule-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+input[type=range]{width:100%; accent-color:var(--navy); cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.8;}
+.area-fill{fill:var(--area); opacity:.16;}
+.rrect{stroke:#fff; stroke-width:.7; fill:var(--rect); opacity:.5;}
+.trap-poly{fill:var(--trap); opacity:.32; stroke:var(--trap); stroke-width:1;}
+.mid-line{stroke:var(--midcol); stroke-width:1.3; stroke-dasharray:3,2; opacity:.7;}
+.mid-dot{fill:var(--midcol); stroke:#fff; stroke-width:1.2;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.pur{border-top-color:var(--midcol);}
+.live-cell.succ{border-top-color:var(--success);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.56rem; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.gold .v{color:#8a6f1e;}
+.live-cell.pur .v{color:var(--midcol);}
+.live-cell.succ .v{color:var(--success);}
+.live-cell .sub{font-size:.66rem; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace;}
+
+/* ── COMPARADOR DE MÉTODOS ── */
+.compare-box{
+  border:1px solid var(--border); border-radius:3px; margin-top:16px; overflow:hidden;
+}
+.compare-row{
+  display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; align-items:center;
+  padding:11px 16px; border-bottom:1px solid var(--border); font-size:.9rem;
+}
+.compare-row:last-child{border-bottom:none;}
+.compare-row.head{background:var(--navy); color:#fff; font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;}
+.compare-row .mname{font-weight:600;}
+.compare-row .mval{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--navy);}
+.compare-row .merr{font-family:'JetBrains Mono',monospace; font-size:.85rem;}
+.compare-row .mtag{font-size:.76rem; padding:3px 8px; border-radius:12px; display:inline-block;}
+.mtag.over{background:#fbe9ee; color:#7d1338;}
+.mtag.under{background:#eef4ff; color:#234d80;}
+.mtag.best{background:#e5f3ec; color:#1d5c3b; font-weight:700;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--midcol); background:#f4f1f9;
+}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--midcol); margin-bottom:8px;}
+.verdict .vb{font-size:.94rem;}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+.legend{
+  display:flex; flex-wrap:wrap; gap:16px; margin-top:10px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+}
+.legend .lg{display:flex; align-items:center; gap:7px;}
+.legend .sw{width:20px; height:12px; border-radius:2px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .compare-row{grid-template-columns:1.3fr 1fr; row-gap:4px;}
+  .compare-row .merr,.compare-row .mtag{grid-column:span 1;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 18 — Regla del punto medio</div>
+      <div class="header-sub">Aproximar el área de una curva con rectángulos centrados</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">18</div>
+      <h2>Aproximación de área con la regla del punto medio</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Aproximar $\displaystyle\int_{-2}^{2}(4-x^{2})\,dx$ con la <strong>regla del punto medio</strong>
+        usando $n$ subintervalos. A diferencia de una recta, aquí la frontera es una <strong>curva</strong>:
+        la aproximación ya no es exacta, y comparar el punto medio con el trapecio revela cómo cada regla
+        se equivoca. El error cae al aumentar $n$.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Integral a estimar</span>
+        <div id="func-katex">$$\int_{-2}^{2}\left(4-x^{2}\right)dx$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Parábola $f(x) = ax^{2} + bx + c$ sobre $[a,b]$. El motor calcula la integral exacta y las
+          aproximaciones por punto medio, trapecio y Riemann (izquierda/derecha) para comparar.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-a2">a (x²)</label><input type="number" id="p-a2" value="-1" step="any"></div>
+          <div class="param-field"><label for="p-b1">b (x)</label><input type="number" id="p-b1" value="0" step="any"></div>
+          <div class="param-field"><label for="p-c0">c</label><input type="number" id="p-c0" value="4" step="any"></div>
+          <div class="param-field"><label for="p-lo">desde</label><input type="number" id="p-lo" value="-2" step="any"></div>
+          <div class="param-field"><label for="p-hi">hasta</label><input type="number" id="p-hi" value="2" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="-1,0,4,-2,2">Original · 4−x²</button>
+          <button class="btn-ghost" data-preset="1,0,0,0,3">x² en [0,3]</button>
+          <button class="btn-ghost" data-preset="-1,4,0,0,4">4x−x² · arco</button>
+          <button class="btn-ghost" data-preset="1,-2,3,0,4">x²−2x+3</button>
+          <button class="btn-ghost" data-preset="-0.5,0,8,-4,4">8−½x² · ancha</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── PASO 1: Δx ── -->
+      <div class="sec-title">Paso 1 — El ancho de cada subintervalo</div>
+      <div class="solve-box" id="solve-dx"></div>
+
+      <!-- ── PASO 2: puntos medios ── -->
+      <div class="sec-title">Paso 2 — Los puntos medios</div>
+      <div class="solve-box" id="solve-mid"></div>
+
+      <!-- ── PASO 3: evaluar f ── -->
+      <div class="sec-title">Paso 3 — Evaluar $f$ en cada punto medio</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">Completa la tabla. La altura de cada rectángulo es $f$ en su punto medio.</p>
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-mid"></tr>
+            <tr id="row-fx"></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-t">Verificar tabla</button>
+        <button class="btn-primary" id="btn-fill-t">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-clear-t">Limpiar</button>
+        <span class="score-badge" id="score-t"></span>
+      </div>
+
+      <!-- ── PASO 4: área ── -->
+      <div class="sec-title">Paso 4 — El área aproximada</div>
+      <div class="solve-box" id="solve-area"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-a">Verificar mi área</button>
+        <button class="btn-primary" id="btn-fill-a">Mostrar solución</button>
+        <span class="score-badge" id="score-a"></span>
+      </div>
+
+      <!-- ── REPRESENTACIÓN GRÁFICA ── -->
+      <div class="sec-title">Representación gráfica</div>
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-area" checked> área exacta</label>
+        <label><input type="checkbox" id="opt-rect" checked> rectángulos (punto medio)</label>
+        <label><input type="checkbox" id="opt-mid" checked> puntos medios</label>
+        <label><input type="checkbox" id="opt-trap"> trapecios</label>
+      </div>
+
+      <div class="chart-box" id="chart-main"><div class="tooltip" id="tip-main"></div></div>
+
+      <div class="legend">
+        <div class="lg"><span class="sw" style="background:var(--area);opacity:.4"></span> área exacta ∫</div>
+        <div class="lg"><span class="sw" style="background:var(--rect);opacity:.6"></span> rectángulos · punto medio</div>
+        <div class="lg"><span class="sw" style="background:var(--trap);opacity:.5"></span> trapecios</div>
+      </div>
+
+      <div class="method-ctrl">
+        <span class="rlbl">número de subintervalos n = <span class="rval" id="n-val">4</span></span>
+        <input type="range" id="n-slider" min="1" max="500" step="1" value="4">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Aumentar n y ver caer el error</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell succ"><span class="k">valor exacto ∫</span><span class="v" id="lv-exact">—</span><div class="sub" id="lv-exact-frac"></div></div>
+        <div class="live-cell pur"><span class="k">punto medio Mₙ</span><span class="v" id="lv-mid">—</span></div>
+        <div class="live-cell gold"><span class="k">trapecio Tₙ</span><span class="v" id="lv-trap">—</span></div>
+        <div class="live-cell crim"><span class="k">error del punto medio</span><span class="v" id="lv-err">—</span></div>
+      </div>
+
+      <!-- ── COMPARADOR ── -->
+      <div class="sec-title">Las cuatro reglas, comparadas</div>
+      <div class="compare-box" id="compare-box"></div>
+      <p class="note">
+        La regla del punto medio y la del trapecio se equivocan en <strong>sentidos opuestos</strong>:
+        en una zona cóncava hacia abajo, el punto medio sobreestima y el trapecio subestima (y al revés
+        si es cóncava hacia arriba). Por eso el <strong>promedio</strong> de ambas es mucho mejor — esa es
+        la idea detrás de la regla de Simpson.
+      </p>
+
+      <!-- ── PREGUNTAS DE ANÁLISIS ── -->
+      <div class="sec-title">Preguntas de análisis</div>
+      <div id="reflect"></div>
+
+      <!-- ── OBSERVACIÓN: TRAPECIO ── -->
+      <div class="sec-title">Observación — La regla del trapecio</div>
+      <div class="verdict"><span class="vk">Fórmula del trapecio</span>
+        <div class="vt" id="trap-verdict-title">Uniendo los extremos con rectas</div>
+        <div class="vb" id="trap-verdict-body"></div>
+      </div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Por qué el punto medio es sorprendentemente bueno</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">Las reglas de aproximación</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 18 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   f(x) = A2 x² + B1 x + C0  sobre  [Lo, Hi].
+   Exacta = ∫ = [A2 x³/3 + B1 x²/2 + C0 x] de Lo a Hi.
+   ═══════════════════════════════════════════════ */
+let A2 = -1, B1 = 0, C0 = 4, Lo = -2, Hi = 2;
+let NN = 4;
+let ANIM = null;
+
+const TOL = 1e-9;
+
+/* ── Funciones puras ── */
+function f(x){ return A2*x*x + B1*x + C0; }
+function Fanti(x){ return A2*x*x*x/3 + B1*x*x/2 + C0*x; }
+function exactArea(){ return Fanti(Hi) - Fanti(Lo); }
+
+/* Reglas de aproximación */
+function midpoint(n){
+  const dx = (Hi - Lo)/n; let s = 0;
+  for (let i = 0; i < n; i++) s += f(Lo + (i+0.5)*dx);
+  return s * dx;
+}
+function trapezoid(n){
+  const dx = (Hi - Lo)/n; let s = (f(Lo) + f(Hi))/2;
+  for (let i = 1; i < n; i++) s += f(Lo + i*dx);
+  return s * dx;
+}
+function leftSum(n){
+  const dx = (Hi - Lo)/n; let s = 0;
+  for (let i = 0; i < n; i++) s += f(Lo + i*dx);
+  return s * dx;
+}
+function rightSum(n){
+  const dx = (Hi - Lo)/n; let s = 0;
+  for (let i = 0; i < n; i++) s += f(Lo + (i+1)*dx);
+  return s * dx;
+}
+
+/* Puntos medios como lista */
+function midpoints(n){
+  const dx = (Hi - Lo)/n; const out = [];
+  for (let i = 0; i < n; i++) out.push(Lo + (i+0.5)*dx);
+  return out;
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 3 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+
+/* Racional simple para el valor exacto (si sale bonito tipo 32/3) */
+function fracString(v){
+  for (let den = 1; den <= 12; den++){
+    const num = v*den;
+    if (Math.abs(num - Math.round(num)) < 1e-7 && den !== 1){
+      return '= ' + Math.round(num) + '/' + den;
+    }
+  }
+  return '';
+}
+
+/* ── LaTeX ── */
+function fTex(){
+  let s = '';
+  if (Math.abs(A2) > TOL) s += (Math.abs(A2-1)<TOL ? '' : (Math.abs(A2+1)<TOL ? '-' : fmt(A2))) + 'x^{2}';
+  if (Math.abs(B1) > TOL) s += (s ? ' ' + signTerm(B1) : fmt(B1)) + 'x';
+  if (Math.abs(C0) > TOL) s += (s ? ' ' + signTerm(C0) : fmt(C0));
+  return s || '0';
+}
+function FantiTex(){
+  let s = '';
+  if (Math.abs(A2) > TOL) s += fmt(A2/3) + 'x^{3}';
+  if (Math.abs(B1) > TOL) s += (s ? ' ' + signTerm(B1/2) : fmt(B1/2)) + 'x^{2}';
+  if (Math.abs(C0) > TOL) s += (s ? ' ' + signTerm(C0) : fmt(C0)) + 'x';
+  return s || '0';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const a = parseFloat(document.getElementById('p-a2').value);
+  const b = parseFloat(document.getElementById('p-b1').value);
+  const c = parseFloat(document.getElementById('p-c0').value);
+  const lo = parseFloat(document.getElementById('p-lo').value);
+  const hi = parseFloat(document.getElementById('p-hi').value);
+  A2 = isFinite(a) ? a : -1;
+  B1 = isFinite(b) ? b : 0;
+  C0 = isFinite(c) ? c : 4;
+  Lo = isFinite(lo) ? lo : -2;
+  Hi = isFinite(hi) ? hi : 2;
+  if (Hi <= Lo) Hi = Lo + 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+  NN = parseInt(document.getElementById('n-slider').value, 10) || 4;
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolveDx();
+  renderSolveMid();
+  buildTable();
+  renderSolveArea();
+  drawMain();
+  renderCompare();
+  renderReflect();
+  renderTrapVerdict();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}\\left(' + fTex() + '\\right)dx$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const ex = exactArea();
+  const m = midpoint(NN);
+  const dir = m > ex + 1e-6 ? 'sobreestima' : (m < ex - 1e-6 ? 'subestima' : 'acierta');
+  el.innerHTML =
+    'Caso actual: el valor exacto es $' + fmt(ex) + '$' + (fracString(ex) ? ' ($' + fracString(ex).slice(2) + '$)' : '') + '. ' +
+    'Con $n=' + NN + '$, la regla del punto medio da $' + fmt(m) + '$ y ' +
+    '<strong>' + dir + '</strong>' + (dir === 'acierta' ? '' : ' el área verdadera') + '. ' +
+    'La curvatura de la parábola explica por qué.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 1: Δx
+   ═══════════════════════════════════════════════ */
+function renderSolveDx(){
+  const box = document.getElementById('solve-dx');
+  const dx = (Hi - Lo)/NN;
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Fórmula</span><span class="b">' +
+    'El intervalo $[' + fmt(Lo) + ',' + fmt(Hi) + ']$ se divide en $n = ' + NN + '$ partes iguales:' +
+    '$$\\Delta x = \\dfrac{b - a}{n} = \\dfrac{' + fmt(Hi) + ' - (' + fmt(Lo) + ')}{' + NN + '} = \\dfrac{' + fmt(Hi-Lo) + '}{' + NN + '} = ' + fmt(dx) + '$$</span></div>';
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 2: puntos medios
+   ═══════════════════════════════════════════════ */
+function renderSolveMid(){
+  const box = document.getElementById('solve-mid');
+  const dx = (Hi - Lo)/NN;
+  const mids = midpoints(NN);
+  const showN = Math.min(NN, 12);
+
+  /* Lista de subintervalos (hasta 12 para no saturar) */
+  let subs = '';
+  for (let i = 0; i < showN; i++){
+    const a = Lo + i*dx, b = Lo + (i+1)*dx;
+    subs += '[' + fmt(a) + ',\\, ' + fmt(b) + ']' + (i < showN-1 ? ',\\; ' : '');
+  }
+  if (NN > showN) subs += ',\\; \\ldots';
+
+  let midStr = mids.slice(0, showN).map(x => fmt(x)).join(',\\; ');
+  if (NN > showN) midStr += ',\\; \\ldots';
+
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Subint.</span><span class="b">' +
+    'Los $' + NN + '$ subintervalos son: $$' + subs + '$$</span></div>' +
+    '<div class="solve-step"><span class="n">Medios</span><span class="b">' +
+    'El punto medio de cada uno (promedio de sus extremos): $$x_i^{*} = ' + midStr + '$$</span></div>';
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 3: TABLA
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-mid');
+  const r2 = document.getElementById('row-fx');
+  const mids = midpoints(NN);
+  const showN = Math.min(NN, 8);   // tabla editable solo si n es manejable
+
+  let head = '<th style="background:var(--navy)">i</th>';
+  let rowM = '<td class="rowlbl">punto medio xᵢ*</td>';
+  let rowF = '<td class="rowlbl">f(xᵢ*)</td>';
+
+  for (let i = 0; i < showN; i++){
+    head += '<th>' + (i+1) + '</th>';
+    rowM += '<td>' + fmt(mids[i]) + '</td>';
+    rowF += '<td><input class="cell" data-i="' + i + '" inputmode="decimal" placeholder="?"></td>';
+  }
+  if (NN > showN){
+    head += '<th>…</th>'; rowM += '<td>…</td>'; rowF += '<td>…</td>';
+  }
+
+  th.innerHTML = head;
+  r1.innerHTML = rowM;
+  r2.innerHTML = rowF;
+  document.getElementById('score-t').className = 'score-badge';
+
+  /* Aviso si n es grande */
+  if (NN > showN){
+    document.getElementById('score-t').textContent = 'Tabla editable hasta n=8; con n=' + NN + ' usa el gráfico';
+    document.getElementById('score-t').className = 'score-badge show';
+  }
+}
+
+function verifyTable(){
+  const cells = document.querySelectorAll('#row-fx input.cell');
+  const badge = document.getElementById('score-t');
+  const mids = midpoints(NN);
+  let ok = 0, tried = 0, total = cells.length;
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.classList.remove('correct','wrong');
+    const raw = cell.value.trim().replace(',', '.');
+    if (raw === '') return;
+    tried++;
+    const val = parseFloat(raw);
+    const truth = f(mids[i]);
+    if (isFinite(val) && Math.abs(val - truth) <= Math.max(Math.abs(truth)*3e-3, 3e-3)){
+      cell.classList.add('correct'); ok++;
+    } else cell.classList.add('wrong');
+  });
+  badge.textContent = tried === 0 ? 'Completa la fila f(xᵢ*)' : ok + ' / ' + total + ' correctas';
+  badge.className = 'score-badge show' + (ok === total ? ' perfect' : '');
+}
+function fillTable(){
+  const cells = document.querySelectorAll('#row-fx input.cell');
+  const mids = midpoints(NN);
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.value = fmt(f(mids[i]));
+    cell.classList.remove('wrong'); cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score-t');
+  badge.textContent = 'Solución mostrada'; badge.className = 'score-badge show perfect';
+}
+function clearTable(){
+  document.querySelectorAll('#row-fx input.cell').forEach(cell => {
+    cell.value = ''; cell.classList.remove('correct','wrong');
+  });
+  document.getElementById('score-t').className = 'score-badge';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PASO 4: ÁREA
+   ═══════════════════════════════════════════════ */
+function renderSolveArea(){
+  const box = document.getElementById('solve-area');
+  const dx = (Hi - Lo)/NN;
+  const mids = midpoints(NN);
+  const m = midpoint(NN);
+  const showN = Math.min(NN, 8);
+
+  let sumStr = mids.slice(0, showN).map(x => fmt(f(x))).join(' + ');
+  if (NN > showN) sumStr += ' + \\ldots';
+
+  box.innerHTML =
+    '<div class="solve-step"><span class="n">Fórmula</span><span class="b">' +
+    'Área $\\approx \\Delta x \\cdot \\displaystyle\\sum_{i=1}^{' + NN + '} f(x_i^{*})$: cada rectángulo aporta ' +
+    'ancho × altura, y sumamos.</span></div>' +
+    '<div class="solve-step"><span class="n">Sumar</span><span class="b">' +
+    '$$\\text{Área} \\approx ' + fmt(dx) + ' \\cdot \\left(' + sumStr + '\\right) = ' + fmt(m) + '$$</span></div>' +
+    '<div class="answer-check"><label for="ans-a">tu área ≈</label>' +
+    '<input type="text" id="ans-a" inputmode="decimal" placeholder="?"></div>';
+
+  document.getElementById('score-a').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyA(){
+  const inp = document.getElementById('ans-a');
+  const badge = document.getElementById('score-a');
+  const raw = inp.value.trim().replace(',', '.');
+  inp.style.borderColor = '';
+  if (raw === ''){ badge.textContent = 'Escribe un valor'; badge.className = 'score-badge show'; return; }
+  const val = parseFloat(raw);
+  const truth = midpoint(NN);
+  if (isFinite(val) && Math.abs(val - truth) <= Math.max(Math.abs(truth)*3e-3, 3e-3)){
+    inp.style.borderColor = 'var(--success)';
+    badge.textContent = '✓ Correcto'; badge.className = 'score-badge show perfect';
+  } else {
+    inp.style.borderColor = 'var(--crimson)';
+    badge.textContent = '✗ Revisa la suma'; badge.className = 'score-badge show';
+  }
+}
+function fillA(){
+  const inp = document.getElementById('ans-a');
+  inp.value = fmt(midpoint(NN));
+  inp.style.borderColor = 'var(--success)';
+  const badge = document.getElementById('score-a');
+  badge.textContent = 'Área (punto medio) mostrada'; badge.className = 'score-badge show perfect';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL
+   ═══════════════════════════════════════════════ */
+function drawMain(){
+  const box = document.getElementById('chart-main');
+  d3.select('#chart-main').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 460;
+  const m = {top:24, right:26, bottom:42, left:56};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const padX = (Hi - Lo) * 0.1;
+  const xMin = Lo - padX, xMax = Hi + padX;
+
+  /* Rango y: muestreo de la curva en el intervalo + 0 */
+  const samp = [];
+  const NS = 100;
+  for (let i = 0; i <= NS; i++) samp.push(f(xMin + (xMax-xMin)*i/NS));
+  let yMin = Math.min(0, ...samp), yMax = Math.max(0, ...samp);
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const yp = (yMax - yMin)*0.12; yMin -= yp; yMax += yp;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-main').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-m-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid).append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  const gridOn = document.getElementById('opt-grid').checked;
+  const areaOn = document.getElementById('opt-area').checked;
+  const rectOn = document.getElementById('opt-rect').checked;
+  const midOn  = document.getElementById('opt-mid').checked;
+  const trapOn = document.getElementById('opt-trap').checked;
+
+  if (gridOn){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')').call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(6));
+  g.append('text').attr('class','axis-label').attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label').attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0)).attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih).attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  const dx = (Hi - Lo)/NN;
+
+  /* Área exacta sombreada */
+  if (areaOn){
+    const area = d3.area().x(d => xs(d)).y0(ys(0)).y1(d => ys(f(d)));
+    const steps = 120, dd = (Hi - Lo)/steps; const pts = [];
+    for (let i = 0; i <= steps; i++) pts.push(Lo + i*dd);
+    plot.append('path').datum(pts).attr('class','area-fill').attr('d', area);
+  }
+
+  /* Rectángulos del punto medio */
+  if (rectOn){
+    for (let i = 0; i < NN; i++){
+      const xm = Lo + (i+0.5)*dx;
+      const h = f(xm);
+      const xL = Lo + i*dx;
+      const y0 = ys(0), yh = ys(h);
+      plot.append('rect').attr('class','rrect')
+        .attr('x', xs(xL)).attr('y', Math.min(y0,yh))
+        .attr('width', Math.max(0, xs(xL+dx)-xs(xL))).attr('height', Math.abs(yh-y0))
+        .attr('stroke-width', NN > 120 ? 0 : (NN > 40 ? 0.3 : 0.7));
+    }
+  }
+
+  /* Trapecios */
+  if (trapOn){
+    for (let i = 0; i < NN; i++){
+      const xa = Lo + i*dx, xb = Lo + (i+1)*dx;
+      const pts = [[xs(xa),ys(0)],[xs(xa),ys(f(xa))],[xs(xb),ys(f(xb))],[xs(xb),ys(0)]];
+      plot.append('polygon').attr('class','trap-poly')
+        .attr('points', pts.map(p=>p.join(',')).join(' '))
+        .attr('stroke-width', NN > 60 ? 0.4 : 1);
+    }
+  }
+
+  /* Puntos medios: línea vertical + punto sobre la curva */
+  if (midOn && NN <= 60){
+    for (let i = 0; i < NN; i++){
+      const xm = Lo + (i+0.5)*dx;
+      const h = f(xm);
+      plot.append('line').attr('class','mid-line')
+        .attr('x1', xs(xm)).attr('x2', xs(xm)).attr('y1', ys(0)).attr('y2', ys(h));
+      plot.append('circle').attr('class','mid-dot')
+        .attr('cx', xs(xm)).attr('cy', ys(h)).attr('r', NN > 20 ? 2.5 : 4);
+    }
+  }
+
+  /* La curva */
+  const line = d3.line().x(d => xs(d)).y(d => ys(f(d))).curve(d3.curveCatmullRom.alpha(.5));
+  const cpts = []; const CN = 200;
+  for (let i = 0; i <= CN; i++) cpts.push(xMin + (xMax-xMin)*i/CN);
+  plot.append('path').datum(cpts).attr('class','curve').attr('d', line);
+
+  /* Bordes del intervalo */
+  [Lo, Hi].forEach(xb => {
+    plot.append('line').attr('stroke','var(--navy)').attr('stroke-width',1).attr('stroke-dasharray','3,2').attr('opacity',.4)
+      .attr('x1', xs(xb)).attr('x2', xs(xb)).attr('y1', 0).attr('y2', ih);
+  });
+
+  const tip = document.getElementById('tip-main');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih).attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      tip.innerHTML = 'x = ' + fmt(x,2) + '<br>f(x) = ' + fmt(y,2);
+      tip.style.left = (m.left + xs(x)) + 'px'; tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'));
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const ex = exactArea();
+  const mn = midpoint(NN);
+  const tn = trapezoid(NN);
+  document.getElementById('lv-exact').textContent = fmt(ex);
+  document.getElementById('lv-exact-frac').textContent = fracString(ex);
+  document.getElementById('lv-mid').textContent = fmt(mn);
+  document.getElementById('lv-trap').textContent = fmt(tn);
+  document.getElementById('lv-err').textContent = fmt(Math.abs(ex - mn), 4);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — COMPARADOR
+   ═══════════════════════════════════════════════ */
+function renderCompare(){
+  const el = document.getElementById('compare-box');
+  const ex = exactArea();
+  const methods = [
+    {name:'Izquierda', val:leftSum(NN)},
+    {name:'Derecha', val:rightSum(NN)},
+    {name:'Trapecio', val:trapezoid(NN)},
+    {name:'Punto medio', val:midpoint(NN)}
+  ];
+  /* mejor = menor error */
+  let best = 0, bestErr = Infinity;
+  methods.forEach((m,i) => { const e = Math.abs(m.val-ex); if (e < bestErr){ bestErr = e; best = i; } });
+
+  let html = '<div class="compare-row head"><div>método</div><div>valor</div><div>error</div><div>sesgo</div></div>';
+  methods.forEach((m,i) => {
+    const err = Math.abs(m.val - ex);
+    const over = m.val > ex + 1e-6, under = m.val < ex - 1e-6;
+    const tag = i === best ? '<span class="mtag best">más preciso</span>' :
+                (over ? '<span class="mtag over">sobreestima</span>' :
+                 under ? '<span class="mtag under">subestima</span>' : '<span class="mtag best">exacto</span>');
+    html += '<div class="compare-row">' +
+      '<div class="mname">' + m.name + '</div>' +
+      '<div class="mval">' + fmt(m.val) + '</div>' +
+      '<div class="merr">' + fmt(err, 4) + '</div>' +
+      '<div>' + tag + '</div></div>';
+  });
+  el.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Aumentar n y ver caer el error';
+}
+function startAnim(){
+  stopAnim();
+  const seq = [1,2,3,4,6,8,12,16,24,36,52,80,120,180,260,360,500];
+  let i = 0;
+  document.getElementById('btn-anim').textContent = '● Convergiendo…';
+  ANIM = setInterval(() => {
+    NN = seq[i];
+    document.getElementById('n-slider').value = NN;
+    document.getElementById('n-val').textContent = NN;
+    /* Redibuja lo dependiente de n, pero NO la tabla editable (se volvería un estorbo) */
+    renderSolveDx(); renderSolveMid(); renderSolveArea();
+    drawMain(); renderCompare(); updateLive(); renderPreview();
+    setTimeout(() => renderMath(document.getElementById('solve-area')), 0);
+    i++;
+    if (i >= seq.length) stopAnim();
+  }, 440);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PREGUNTAS DE ANÁLISIS
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const ex = exactArea();
+  const m4 = midpoint(4);
+  const concaveDown = A2 < 0;   // parábola ∩
+  const midOver = concaveDown;  // en ∩, el punto medio sobreestima
+
+  const qs = [
+    {
+      q: '1. ¿Qué representa el área aproximada que obtuviste?',
+      opts: [
+        'El valor exacto de la integral.',
+        'Una <strong>estimación</strong> del área bajo la curva (≈ el valor de la integral).',
+        'La pendiente de la curva en el punto medio.'
+      ],
+      ok: 1,
+      fb: 'Los rectángulos aproximan el área verdadera. La suma de sus áreas se acerca a ' +
+          '$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '} f\\,dx = ' + fmt(ex) + '$, pero con un número finito de ' +
+          'rectángulos es solo una <em>estimación</em>.'
+    },
+    {
+      q: '2. ¿El resultado será exacto o una estimación? ¿Por qué?',
+      opts: [
+        'Exacto, porque usamos la fórmula correcta.',
+        'Una estimación: los rectángulos <strong>no encajan perfectamente</strong> bajo una curva.',
+        'Exacto solo si n es par.'
+      ],
+      ok: 1,
+      fb: 'La cima de cada rectángulo es <em>horizontal</em>, pero la curva no lo es: sobresale o falta ' +
+          'un pequeño «casquete» en cada tramo. ' +
+          (midOver
+            ? 'Como la parábola es cóncava hacia abajo (∩), el rectángulo del punto medio sobresale por los lados y <strong>sobreestima</strong>. '
+            : 'Como la parábola es cóncava hacia arriba (∪), el rectángulo del punto medio queda corto y <strong>subestima</strong>. ') +
+          'Por eso, con $n=4$, el punto medio da $' + fmt(m4) + '$ y no exactamente $' + fmt(ex) + '$.'
+    },
+    {
+      q: '3. ¿Qué ventaja tiene usar los puntos medios frente a los extremos?',
+      opts: [
+        'Es más fácil de calcular.',
+        'Los errores por exceso y por defecto <strong>se compensan</strong> dentro de cada rectángulo.',
+        'Usa menos rectángulos.'
+      ],
+      ok: 1,
+      fb: 'En un rectángulo centrado, la curva queda por encima en una mitad y por debajo en la otra: ' +
+          'los dos errores se <strong>cancelan parcialmente</strong>. Por eso el punto medio suele ser ' +
+          '<em>dos veces</em> más preciso que izquierda o derecha, y mejor que el trapecio. ' +
+          'Míralo en la tabla comparativa: su error es el menor.'
+    },
+    {
+      q: '4. ¿Qué ocurriría si se usan más subintervalos?',
+      opts: [
+        'El error crece.',
+        'El error <strong>disminuye</strong>: la aproximación converge al valor exacto.',
+        'El resultado no cambia.'
+      ],
+      ok: 1,
+      fb: 'Más subintervalos ⟹ rectángulos más finos ⟹ casquetes más pequeños ⟹ menos error. ' +
+          'En el límite $n\\to\\infty$, la suma converge <strong>exactamente</strong> a la integral. ' +
+          'Sube $n$ con el deslizador (¡hasta 500!) y observa caer el error del punto medio.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — OBSERVACIÓN TRAPECIO
+   ═══════════════════════════════════════════════ */
+function renderTrapVerdict(){
+  const el = document.getElementById('trap-verdict-body');
+  const tn = trapezoid(NN);
+  const ex = exactArea();
+  el.innerHTML =
+    'En vez de rectángulos, unimos los extremos de cada subintervalo con una recta: cada tramo se ' +
+    'convierte en un <strong>trapecio</strong>. La fórmula pesa doble los puntos interiores (cada uno ' +
+    'es compartido por dos trapecios) y simple los extremos:' +
+    '<p style="text-align:center;margin:10px 0;">$$\\int_{a}^{b} f\\,dx \\approx \\dfrac{\\Delta x}{2}\\left[f(x_0) + 2f(x_1) + \\cdots + 2f(x_{n-1}) + f(x_n)\\right]$$</p>' +
+    'Con $n = ' + NN + '$ da $T_{' + NN + '} = ' + fmt(tn) + '$ (exacto: $' + fmt(ex) + '$). ' +
+    'Curiosamente, para esta parábola el trapecio se equivoca <strong>el doble</strong> que el punto medio, ' +
+    'y en sentido contrario.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÓDULO FORMAL
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$M_n = \\Delta x\\sum_{i=1}^{n} f\\!\\left(\\tfrac{x_{i-1}+x_i}{2}\\right) \\qquad T_n = \\dfrac{\\Delta x}{2}\\left[f(x_0)+2f(x_1)+\\cdots+f(x_n)\\right]$$' +
+    '$$\\text{Simpson: } S_n = \\dfrac{2M_n + T_n}{3}$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const ex = exactArea();
+  const mn = midpoint(NN), tn = trapezoid(NN);
+  const simp = (2*mn + tn)/3;
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Punto medio · por qué acierta tanto</span>' +
+    'En cada subintervalo, el rectángulo del punto medio comete dos errores que se <strong>cancelan</strong>: ' +
+    'la recta horizontal por $f$ del centro deja fuera un triangulito de un lado y mete uno del otro. ' +
+    'Para una función suave, esos triángulos son casi idénticos. Se puede probar que el error del punto medio ' +
+    'es aproximadamente $-\\tfrac{(b-a)}{24}f\'\'(\\xi)\\,\\Delta x^{2}$: proporcional a $\\Delta x^{2}$, ' +
+    'no a $\\Delta x$. Duplicar $n$ divide el error por <strong>cuatro</strong>.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Trapecio · el error opuesto</span>' +
+    'El trapecio conecta los extremos con una cuerda. En una zona cóncava hacia abajo ($f\'\'&lt;0$), ' +
+    'la cuerda va por debajo de la curva: <strong>subestima</strong>. Su error es ' +
+    '$+\\tfrac{(b-a)}{12}f\'\'(\\xi)\\,\\Delta x^{2}$ — el <strong>doble</strong> que el del punto medio ' +
+    'y de signo opuesto. Por eso, en esta parábola ($f\'\' = ' + fmt(2*A2) + '$), uno sobra tanto como el otro falta la mitad.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Simpson · combinar lo mejor de ambos</span>' +
+    'Si el error del punto medio es $\\approx -E$ y el del trapecio $\\approx +2E$, entonces la combinación ' +
+    '$\\tfrac{2M_n + T_n}{3}$ los cancela casi por completo. Eso es la <strong>regla de Simpson</strong>. ' +
+    'Con $n = ' + NN + '$: $M_n = ' + fmt(mn) + '$, $T_n = ' + fmt(tn) + '$, y ' +
+    'Simpson $= ' + fmt(simp) + '$ — ' +
+    (Math.abs(simp - ex) < 1e-6
+      ? '<strong>exacto</strong>. (Simpson integra sin error cualquier polinomio de grado ≤ 3.)'
+      : 'error $' + fmt(Math.abs(simp-ex), 5) + '$, mucho menor que cualquiera de los dos por separado.') +
+    '</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'Tres reglas, un patrón: cuanto mejor imita la «tapa» del rectángulo a la curva —plana, inclinada, ' +
+    'o parabólica—, menor es el error. El punto medio gana a los extremos porque compensa; Simpson gana a ambos porque los combina.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const ex = exactArea();
+  const m4 = midpoint(4);
+  const dx4 = (Hi - Lo)/4;
+  const mids4 = midpoints(4);
+  let html = '';
+
+  html += '<p><strong>Paso 1.</strong> $\\Delta x = \\dfrac{' + fmt(Hi) + '-(' + fmt(Lo) + ')}{4} = ' + fmt(dx4) + '$.</p>';
+  html += '<p><strong>Paso 2.</strong> Puntos medios: $' + mids4.map(x => fmt(x)).join(',\\; ') + '$.</p>';
+  html += '<p><strong>Paso 3.</strong> Alturas: $' + mids4.map(x => fmt(f(x))).join(',\\; ') + '$.</p>';
+  html += '<p><strong>Paso 4.</strong> Área $\\approx ' + fmt(dx4) + '\\cdot(' + mids4.map(x=>fmt(f(x))).join(' + ') + ') = ' + fmt(m4) + '$.</p>';
+
+  html += '<p><strong>Análisis.</strong> Esta es una <strong>estimación</strong>, no el valor exacto: ' +
+    'los rectángulos no encajan perfectamente bajo la parábola. El valor exacto es ' +
+    '$\\int_{' + fmt(Lo) + '}^{' + fmt(Hi) + '}\\left(' + fTex() + '\\right)dx = ' + fmt(ex) + '$' +
+    (fracString(ex) ? ' ($' + fracString(ex).slice(2) + '$)' : '') + '. ' +
+    'El punto medio ' + (m4 > ex ? 'sobreestima' : (m4 < ex ? 'subestima' : 'acierta')) +
+    ' por su curvatura, pero es más preciso que usar los extremos porque los errores se compensan dentro ' +
+    'de cada rectángulo. Al aumentar $n$, la estimación converge al valor exacto.</p>';
+
+  html += '<p><strong>Observación.</strong> Uniendo los extremos con rectas se obtiene la regla del ' +
+    '<strong>trapecio</strong>, que aquí se equivoca en sentido opuesto. Promediar punto medio y trapecio ' +
+    '(regla de Simpson) da una precisión notablemente mayor.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-a2','p-b1','p-c0','p-lo','p-hi'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') refreshAll(); });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-a2').value = -1;
+    document.getElementById('p-b1').value = 0;
+    document.getElementById('p-c0').value = 4;
+    document.getElementById('p-lo').value = -2;
+    document.getElementById('p-hi').value = 2;
+    document.getElementById('n-slider').value = 4;
+    document.getElementById('n-val').textContent = 4;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-a2').value = p[0].trim();
+      document.getElementById('p-b1').value = p[1].trim();
+      document.getElementById('p-c0').value = p[2].trim();
+      document.getElementById('p-lo').value = p[3].trim();
+      document.getElementById('p-hi').value = p[4].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-t').addEventListener('click', verifyTable);
+  document.getElementById('btn-fill-t').addEventListener('click', fillTable);
+  document.getElementById('btn-clear-t').addEventListener('click', clearTable);
+  document.getElementById('btn-verify-a').addEventListener('click', verifyA);
+  document.getElementById('btn-fill-a').addEventListener('click', fillA);
+
+  ['opt-grid','opt-area','opt-rect','opt-mid','opt-trap'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawMain);
+  });
+
+  document.getElementById('n-slider').addEventListener('input', ev => {
+    stopAnim();
+    NN = parseInt(ev.target.value, 10);
+    document.getElementById('n-val').textContent = NN;
+    renderSolveDx(); renderSolveMid(); buildTable(); renderSolveArea();
+    drawMain(); renderCompare(); updateLive(); renderPreview(); renderTrapVerdict();
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawMain, 140); });
+
+  refreshAll();
+}
+
+(function boot(){
+  function ready(){ return document.readyState !== 'loading' && window.d3 && window.renderMathInElement; }
+  function attempt(tries){
+    if (ready()){ initPage(); return; }
+    if (tries <= 0){ initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else attempt(40);
+})();
+</script>
+
+</body>
+</html>

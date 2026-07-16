@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SE²∂PEM – Actividad 20: Acumulación de distancia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--navy:#003B75;--crimson:#9b1845;--gold:#c8a951;--light:#f5f3ee;--white:#ffffff;--border:#d6d0c4;--text:#2c2c2c;--muted:#6b6560;--accent-bg:#eef1f8;--success:#2e7d52;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--light);color:var(--text);font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.7;min-height:100vh;}
+
+    /* HEADER */
+    header{background:var(--navy);border-bottom:4px solid var(--crimson);padding:18px 40px;display:grid;grid-template-columns:140px 1fr 140px;align-items:center;gap:16px;position:relative;}
+    header::after{content:'';position:absolute;bottom:-8px;left:0;right:0;height:3px;background:var(--gold);opacity:0.45;}
+    .logo-wrap{display:flex;align-items:center;justify-content:center;}
+    .logo-wrap img{height:80px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.30));}
+    .header-center{text-align:center;color:var(--white);}
+    .seminar-label{font-family:'Playfair Display',serif;font-weight:700;font-size:0.88rem;color:var(--gold);margin-bottom:4px;}
+    .header-center h1{font-family:'Source Serif 4',serif;font-size:0.82rem;font-weight:400;font-style:italic;line-height:1.4;max-width:560px;margin:0 auto 6px;color:rgba(255,255,255,0.85);}
+    .header-subtitle{font-size:0.76rem;color:rgba(255,255,255,0.55);letter-spacing:0.07em;}
+
+    /* MAIN */
+    main{max-width:900px;margin:0 auto;padding:50px 22px 80px;}
+
+    /* CARD */
+    .activity-card{background:var(--white);border:1px solid var(--border);border-radius:3px;box-shadow:0 4px 28px rgba(0,59,117,0.09);overflow:hidden;animation:fadeUp 0.55s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+    .activity-header{background:var(--navy);color:var(--white);padding:13px 26px;display:flex;align-items:center;gap:14px;}
+    .activity-number{background:var(--crimson);color:var(--white);font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .activity-title{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:600;}
+    .activity-body{padding:28px 32px 40px;}
+
+
+    /* Beautiful integral display */
+    .math-display {
+      text-align: center;
+      padding: 18px 16px;
+      margin: 12px 0;
+      background: linear-gradient(135deg, #f8f9fc, #eef1f8);
+      border-left: 3px solid var(--navy);
+      border-radius: 0 4px 4px 0;
+      overflow-x: auto;
+      font-size: 1.18em;
+      line-height: 1;
+    }
+    .math-display .katex { font-size: 1.45em !important; }
+    .math-display .katex-display { margin: 0; }
+    .math-display .katex-display > .katex { font-size: 1.45em !important; }
+
+    /* PARAM SELECTOR */
+    .param-selector{background:linear-gradient(135deg,#001d3d,#003B75);border-radius:4px;padding:20px 24px;margin-bottom:24px;}
+    .param-title{font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:700;color:var(--gold);margin-bottom:14px;}
+    .param-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+    .param-group{display:flex;flex-direction:column;gap:5px;}
+    .param-label{font-size:0.78rem;color:rgba(255,255,255,0.75);line-height:1.4;}
+    .param-input-wrap{display:flex;align-items:center;gap:8px;}
+    .param-input{width:90px;padding:7px 10px;border:2px solid var(--gold);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--navy);text-align:center;background:white;}
+    .param-input:focus{outline:none;border-color:#ffd166;}
+    .param-unit{font-size:0.78rem;color:rgba(255,255,255,0.60);}
+    .param-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+    .param-btn{background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:9px 22px;font-family:'Playfair Display',serif;font-size:0.92rem;font-weight:700;cursor:pointer;transition:all .17s;}
+    .param-btn:hover{background:#ffd166;transform:translateY(-1px);}
+    .param-error{color:#ff8080;font-size:0.84rem;font-weight:600;}
+
+    /* CONTEXT */
+    .context-box{background:#f8f6f0;border:1px solid var(--border);border-radius:3px;padding:18px 22px;margin-bottom:28px;font-size:0.95rem;line-height:1.75;}
+
+    /* SECTION HEADING */
+    .section-heading{font-family:'Playfair Display',serif;font-size:0.97rem;font-weight:600;color:var(--navy);margin-bottom:14px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+
+    /* PARTS */
+    .part{margin-bottom:24px;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+    .part-header{background:var(--accent-bg);padding:10px 20px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--border);}
+    .part-letter{background:var(--navy);color:var(--white);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+    .part-question{font-size:0.93rem;color:var(--text);line-height:1.6;}
+    .part-body{padding:16px 22px;}
+
+    /* ANSWER */
+    .answer-label{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;margin-top:10px;}
+    .answer-input{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:0.9rem;color:var(--text);background:#fafaf7;transition:border-color .18s;margin-bottom:4px;}
+    .answer-input:focus{outline:none;border-color:var(--navy);background:white;}
+    .answer-input.correct{border-color:var(--success);background:#f0faf5;color:var(--success);}
+    .answer-input.wrong{border-color:var(--crimson);background:#fff0f4;}
+
+    /* HINT / SOLUTION */
+    .hint-box{background:#fffbee;border:1px dashed var(--gold);border-radius:3px;padding:11px 16px;margin-top:10px;font-size:0.87rem;color:#5a4a00;display:none;}
+    .hint-box.visible{display:block;}
+    .solution-box{background:#f0f7ff;border:1px solid #99bbee;border-radius:3px;padding:14px 18px;margin-top:10px;font-size:0.90rem;display:none;}
+    .solution-box.visible{display:block;}
+    .sol-label{font-family:'Playfair Display',serif;font-size:0.78rem;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;font-weight:600;}
+
+    /* BUTTONS */
+    .part-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center;}
+    .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 16px;border:none;border-radius:3px;font-family:'Source Serif 4',serif;font-size:0.84rem;cursor:pointer;transition:all .17s;}
+    .btn-check{background:var(--crimson);color:white;} .btn-check:hover{background:#7d1238;transform:translateY(-1px);}
+    .btn-hint{background:var(--navy);color:white;} .btn-hint:hover{background:#005fbb;transform:translateY(-1px);}
+    .btn-reveal{background:transparent;color:var(--navy);border:1.5px solid var(--border);} .btn-reveal:hover{border-color:var(--navy);background:var(--accent-bg);}
+    .feedback-badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;opacity:0;transition:opacity .3s;}
+    .feedback-badge.visible{opacity:1;} .feedback-badge.ok{background:var(--success);color:white;} .feedback-badge.err{background:var(--crimson);color:white;}
+
+    /* CHART */
+    .chart-wrap{border:1px solid var(--border);border-radius:3px;background:white;overflow:hidden;cursor:crosshair;margin-top:10px;}
+    .chart-wrap svg{display:block;width:100%;}
+    .axis-label{font-family:'Source Serif 4',serif;font-size:13px;fill:#003B75;font-weight:600;}
+    .zoom-hint{font-size:0.74rem;color:var(--muted);font-style:italic;margin-top:6px;}
+
+    /* INTEGRAL VISUALIZER */
+    .integral-section{margin-top:32px;}
+    .integral-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 20px;background:var(--accent-bg);border:1px solid var(--border);border-radius:4px 4px 0 0;}
+    .integral-controls label{font-size:0.82rem;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer;}
+    .integral-controls input[type=checkbox]{accent-color:var(--crimson);}
+    .func-toggle{display:flex;gap:8px;}
+    .func-btn{padding:6px 14px;border:1.5px solid var(--border);border-radius:20px;background:white;font-family:'JetBrains Mono',monospace;font-size:0.80rem;cursor:pointer;transition:all .17s;color:var(--navy);}
+    .func-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
+
+    /* RIEMANN */
+    .riemann-type-row{display:none;align-items:center;gap:12px;padding:10px 20px;background:#f0f4ff;border:1px solid var(--border);border-top:none;flex-wrap:wrap;}
+    .riemann-type-row.visible{display:flex;}
+    .riemann-type-label{font-size:0.82rem;color:var(--muted);white-space:nowrap;}
+    .riemann-type-btns{display:flex;gap:6px;flex-wrap:wrap;}
+    .rtype-btn{padding:5px 14px;border:1.5px solid var(--border);border-radius:20px;background:white;font-family:'Source Serif 4',serif;font-size:0.80rem;cursor:pointer;transition:all .17s;color:var(--navy);}
+    .rtype-btn:hover{border-color:var(--navy);background:var(--accent-bg);}
+    .rtype-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
+    .riemann-wrap{padding:12px 20px;background:#fafaf7;border:1px solid var(--border);border-top:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .riemann-n-label{font-size:0.82rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+    .n-display{background:var(--crimson);color:white;padding:3px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:0.88rem;min-width:42px;text-align:center;}
+    #n-slider{accent-color:var(--crimson);width:160px;cursor:pointer;}
+    .riemann-anim-btns{display:flex;gap:5px;}
+    .btn-ranim{width:32px;height:32px;border:1.5px solid var(--border);border-radius:50%;background:white;font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .17s;color:var(--navy);}
+    .btn-ranim:hover{background:var(--navy);color:white;border-color:var(--navy);}
+    .btn-ranim.running{background:var(--crimson);color:white;border-color:var(--crimson);}
+    #ranim-speed{accent-color:var(--navy);width:80px;cursor:pointer;}
+    .n-manual-input{
+      width:62px;padding:4px 8px;
+      border:1.5px solid var(--crimson);border-radius:3px;
+      font-family:'JetBrains Mono',monospace;font-size:0.88rem;
+      color:var(--navy);text-align:center;background:white;
+    }
+    .n-manual-input:focus{outline:none;border-color:var(--navy);}
+    .riemann-results{border-top:none;border-bottom:none;}
+    .riemann-badge{background:var(--crimson);color:white;padding:3px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;}
+
+    /* RESULT CARDS */
+    .result-row{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border);border-top:none;border-radius:0 0 4px 4px;overflow:hidden;}
+    .result-card{padding:12px 16px;text-align:center;border-right:1px solid var(--border);}
+    .result-card:last-child{border-right:none;}
+    .rc-label{font-size:0.72rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+    .rc-val{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:600;color:var(--navy);}
+    .rc-val.highlight{color:var(--success);font-size:1.1rem;}
+
+    /* ANALYTIC DEVELOPMENT */
+    .analytic-toggle-wrap{margin-top:22px;}
+    .btn-analytic{
+      width:100%;background:linear-gradient(135deg,#003B75,#005fbb);
+      color:white;border:none;border-radius:4px;
+      padding:12px 24px;font-family:'Playfair Display',serif;
+      font-size:0.98rem;font-weight:700;cursor:pointer;
+      transition:all .2s;letter-spacing:0.02em;
+      box-shadow:0 2px 8px rgba(0,59,117,0.25);
+      text-align:left;display:flex;align-items:center;gap:12px;
+    }
+    .btn-analytic:hover{background:linear-gradient(135deg,#005fbb,#003B75);transform:translateY(-1px);}
+    .btn-analytic.open{background:linear-gradient(135deg,#1a1a2e,#003B75);border-radius:4px 4px 0 0;}
+
+    .analytic-section{display:none;border:1.5px solid #003B75;border-top:none;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:4px;}
+    .analytic-section.visible{display:block;animation:fadeUp 0.4s ease;}
+
+    .analytic-header{background:linear-gradient(135deg,#001d3d,#003B75);padding:12px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+    .analytic-title{font-family:'Playfair Display',serif;font-size:0.88rem;font-weight:700;color:var(--gold);}
+    .analytic-ctrl{display:flex;gap:8px;}
+    .btn-astep{background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:6px 16px;font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .17s;}
+    .btn-astep:hover{background:#ffd166;}
+    .btn-astep.running{background:#5a6b40;color:white;}
+    .btn-astep-reset{background:transparent;color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.3);border-radius:3px;padding:6px 12px;font-size:0.84rem;cursor:pointer;}
+    .btn-astep-reset:hover{background:rgba(255,255,255,0.1);}
+
+    .analytic-body{padding:20px 28px;background:white;min-height:120px;}
+    .analytic-placeholder{color:var(--muted);font-style:italic;font-size:0.92rem;padding:20px 0;}
+
+    /* Step cards */
+    .step-card{
+      border-left:4px solid var(--navy);background:#fafaf7;
+      border-radius:0 4px 4px 0;padding:14px 18px;
+      margin-bottom:14px;opacity:0;transform:translateY(10px);
+      transition:opacity 0.5s ease, transform 0.5s ease;
+    }
+    .step-card.visible{opacity:1;transform:translateY(0);}
+    .step-card.highlight{border-left-color:var(--crimson);background:#fff8fa;}
+    .step-card.success{border-left-color:var(--success);background:#f0faf5;}
+    .step-num{font-family:'Playfair Display',serif;font-size:0.72rem;letter-spacing:0.1em;
+      text-transform:uppercase;color:var(--navy);font-weight:700;margin-bottom:6px;}
+    .step-title{font-weight:600;color:var(--navy);font-size:0.90rem;margin-bottom:6px;}
+    .step-math{padding:10px 0 4px;text-align:center;}
+    .step-note{font-size:0.82rem;color:var(--muted);margin-top:6px;font-style:italic;}
+
+    /* Partition & summand table */
+    .partition-table{width:100%;border-collapse:collapse;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:0.82rem;}
+    .partition-table th{background:var(--navy);color:white;padding:7px 10px;text-align:center;font-weight:600;font-family:'Source Serif 4',serif;font-size:0.80rem;}
+    .partition-table td{padding:6px 10px;text-align:center;border-bottom:1px solid var(--border);color:var(--text);}
+    .partition-table tr:nth-child(even) td{background:#f5f3ee;}
+    .partition-table tr:last-child td{font-weight:700;color:var(--navy);border-top:2px solid var(--navy);background:#eef1f8;}
+    .partition-table .col-i{color:var(--muted);font-size:0.76rem;}
+    .partition-table .col-sub{color:var(--navy);}
+    .partition-table .col-ti{color:var(--crimson);font-style:italic;}
+    .partition-table .col-fti{color:var(--success);}
+    .partition-table .col-area{color:#6b21a8;font-weight:600;}
+    .table-note{font-size:0.78rem;color:var(--muted);margin-top:6px;font-style:italic;}
+    .table-scroll{overflow-x:auto;}
+
+    /* BIKE ANIMATION */
+    .bike-section{margin-top:28px;border:1.5px solid var(--border);border-radius:6px;overflow:hidden;background:white;}
+    .bike-header{background:linear-gradient(135deg,#001d3d,#003B75);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+    .bike-title{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--gold);}
+    .bike-ctrl{display:flex;gap:8px;align-items:center;}
+    .btn-bike{background:var(--gold);color:var(--navy);border:none;border-radius:3px;padding:7px 18px;font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .17s;}
+    .btn-bike:hover{background:#ffd166;transform:translateY(-1px);}
+    .btn-bike.running{background:#5a6b40;color:white;}
+    .btn-bike-reset{background:transparent;color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.3);border-radius:3px;padding:7px 14px;font-family:'Source Serif 4',serif;font-size:0.84rem;cursor:pointer;}
+    .btn-bike-reset:hover{background:rgba(255,255,255,0.1);}
+    .bike-speed-row{padding:10px 22px 6px;display:flex;align-items:center;gap:12px;font-size:0.80rem;color:var(--muted);border-bottom:1px solid var(--border);}
+    #bike-speed{accent-color:var(--navy);width:120px;cursor:pointer;}
+    .bike-stage{padding:8px 16px 4px;background:#f8f9fc;}
+    #bike-svg{width:100%;display:block;}
+    .bike-info-row{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--border);}
+    .bi-card{padding:12px 14px;text-align:center;border-right:1px solid var(--border);}
+    .bi-card:last-child{border-right:none;}
+    .bi-label{font-size:0.70rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px;}
+    .bi-val{font-family:'JetBrains Mono',monospace;font-size:0.92rem;font-weight:600;color:var(--navy);transition:color .3s;}
+    .bi-val.peak{color:var(--success);}
+    /* func selector for bike */
+    .bike-func-row{padding:8px 22px;display:flex;align-items:center;gap:12px;font-size:0.82rem;color:var(--muted);border-bottom:1px solid var(--border);flex-wrap:wrap;}
+
+    /* FOOTER */
+    footer{text-align:center;padding:22px;font-size:0.76rem;color:var(--muted);border-top:1px solid var(--border);letter-spacing:0.05em;}
+    footer strong{color:var(--navy);}
+    @media(max-width:640px){
+      header{grid-template-columns:70px 1fr 70px;padding:14px;}
+      .header-center h1{font-size:0.78rem;}
+      main{padding:26px 12px 60px;}
+      .activity-body{padding:18px 14px 26px;}
+      .result-row{grid-template-columns:1fr;}
+      .bike-info-row{grid-template-columns:repeat(2,1fr);}
+    }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-wrap"><img src="data:image/png;base64,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" alt="Logo SE²∂PEM"/></div>
+  <div class="header-center">
+    <div class="seminar-label">IV Seminario Estudiantil de Ecuaciones Diferenciales y Educación Matemática</div>
+    <h1>Vinculación con el Medio para el Fortalecimiento de la Enseñanza y las Matemáticas Aplicadas</h1>
+    <div class="header-subtitle">Facultad de Ciencias · Universidad del Bío-Bío · Año 2026</div>
+  </div>
+  <div class="logo-wrap"><img src="data:image/png;base64,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" alt="Escudo UBB"/></div>
+</header>
+
+<main>
+<div class="activity-card">
+  <div class="activity-header">
+    <div class="activity-number">20</div>
+    <div class="activity-title">Acumulación de distancia con velocidad constante</div>
+  </div>
+  <div class="activity-body">
+
+    <!-- PARAMETER SELECTOR -->
+    <div class="param-selector">
+      <div class="param-title">&#9881; Configura los parámetros del problema</div>
+      <div class="param-grid">
+        <div class="param-group">
+          <label class="param-label">Velocidad constante <em>v</em> (m/s)</label>
+          <div class="param-input-wrap">
+            <input type="number" id="param-v" value="6" min="0.1" step="any" class="param-input"/>
+            <span class="param-unit">m/s &nbsp;(<em>v</em> &gt; 0)</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">Aceleración constante <em>a</em> (m/s²) → velocidad <em>v(t) = a·t</em></label>
+          <div class="param-input-wrap">
+            <input type="number" id="param-a" value="2" min="0.1" step="any" class="param-input"/>
+            <span class="param-unit">m/s² &nbsp;(<em>a</em> &gt; 0)</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">Tiempo total <em>t</em> para función constante (s)</label>
+          <div class="param-input-wrap">
+            <input type="number" id="param-t1" value="10" min="0.1" step="any" class="param-input"/>
+            <span class="param-unit">s &nbsp;(<em>t</em> &gt; 0)</span>
+          </div>
+        </div>
+        <div class="param-group">
+          <label class="param-label">Tiempo total <em>t</em> para función acelerada (s)</label>
+          <div class="param-input-wrap">
+            <input type="number" id="param-t2" value="4" min="0.1" step="any" class="param-input"/>
+            <span class="param-unit">s &nbsp;(<em>t</em> &gt; 0)</span>
+          </div>
+        </div>
+      </div>
+      <div class="param-actions">
+        <button class="param-btn" onclick="applyParams()">&#10003; Aplicar parámetros</button>
+        <span class="param-error" id="param-error"></span>
+      </div>
+    </div>
+
+    <div class="context-box" id="ctx-box">
+      <p id="ctx-text">Una bicicleta avanza a velocidad constante de <strong id="ctx-v">6 m/s</strong> durante <strong id="ctx-t1">10 segundos</strong>.
+      A través de esta actividad exploraremos cómo el área bajo la curva de velocidad representa la
+      <em>distancia recorrida</em>, conectando el concepto de integral definida con una situación real.</p>
+      <p style="margin-top:8px" id="ctx-text2">Para la segunda parte, la velocidad variable es <strong id="ctx-vt">v(t) = 2t</strong> y se analiza en el intervalo <strong id="ctx-t2">[0, 4] s</strong>.</p>
+    </div>
+
+    <p class="section-heading">Responde cada parte. Puedes verificar tu respuesta, pedir una pista o revelar la solución.</p>
+
+    <!-- part a -->
+    <div class="part">
+      <div class="part-header">
+        <div class="part-letter">a</div>
+        <div class="part-question" id="qa-text">Grafica la función velocidad constante $f(t) = 6$ en el intervalo $[0, 10]$.
+        Describe qué forma tiene la gráfica y qué tipo de figura geométrica queda bajo la curva.</div>
+      </div>
+      <div class="part-body">
+        <div class="answer-label">Tu descripción</div>
+        <input class="answer-input" id="ans-a" placeholder="La gráfica es … y la figura bajo la curva es …"/>
+        <div class="hint-box" id="hint-a"><span id="hint-a-body">
+          Una función constante $f(t) = 6$ es una línea horizontal. ¿Qué figura geométrica forma
+          una línea horizontal sobre el eje $t$ entre $t=0$ y $t=10$?</span>
+        </div>
+        <div class="solution-box" id="sol-a">
+          <div class="sol-label">Solución</div>
+          <div id="sol-a-body"><p>La gráfica de $f(t) = 6$ es una <strong>línea horizontal</strong> a altura 6.
+          La región entre la curva y el eje $t$ en $[0, 10]$ forma un <strong>rectángulo</strong>
+          de base 10 y altura 6.</p>
+          <p style="text-align:center;padding:6px 0">El gráfico interactivo debajo permite visualizarlo.</p></div>
+        </div>
+        <div class="part-controls">
+          <button class="btn btn-check"  onclick="checkA()">&#10003; Verificar</button>
+          <button class="btn btn-hint"   onclick="tog('hint-a')">&#128161; Pista</button>
+          <button class="btn btn-reveal" onclick="tog('sol-a')">Ver solución</button>
+          <span class="feedback-badge" id="fb-a"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- part b -->
+    <div class="part">
+      <div class="part-header">
+        <div class="part-letter">b</div>
+        <div class="part-question" id="qb-text">Calcula el área bajo la curva $f(t)=6$ en $[0,10]$. ¿Qué representa ese valor?</div>
+      </div>
+      <div class="part-body">
+        <div class="answer-label" id="lb-b1">Área =</div>
+        <input class="answer-input" id="ans-b1" type="number" placeholder="Número …"/>
+        <div class="answer-label">Ese valor representa …</div>
+        <input class="answer-input" id="ans-b2" placeholder="Escribe tu interpretación …"/>
+        <div class="hint-box" id="hint-b"><span id="hint-b-body">Área = base × altura = $10 \cdot 6$. Si la base son segundos y la altura son m/s, ¿qué unidades tiene el área?</span></div>
+        <div class="solution-box" id="sol-b">
+          <div class="sol-label">Solución</div>
+          <div id="sol-b-body">
+          <div class="math-display" data-katex="\int\limits_0^{10} 6\, dt = 6 \cdot 10 = 60 \text{ m}"></div>
+          <p>El área bajo la curva representa la <strong>distancia total recorrida</strong> por la bicicleta: <strong>60 metros</strong>.
+          Las unidades son: $\dfrac{\text{m}}{\text{s}} \cdot \text{s} = \text{m}$.</p>
+          </div>
+        </div>
+        <div class="part-controls">
+          <button class="btn btn-check"  onclick="checkB()">&#10003; Verificar</button>
+          <button class="btn btn-hint"   onclick="tog('hint-b')">&#128161; Pista</button>
+          <button class="btn btn-reveal" onclick="tog('sol-b')">Ver solución</button>
+          <span class="feedback-badge" id="fb-b"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- part c -->
+    <div class="part">
+      <div class="part-header">
+        <div class="part-letter">c</div>
+        <div class="part-question" id="qc-text">¿Qué ocurre si la velocidad cambia a $f(t) = 2t$? Dibuja la gráfica y calcula
+        el área bajo la curva entre $t = 0$ y $t = 4$.</div>
+      </div>
+      <div class="part-body">
+        <div class="answer-label" id="lc-text">Área bajo la curva en $[0, 4]$ =</div>
+        <input class="answer-input" id="ans-c" type="number" placeholder="Número …"/>
+        <div class="hint-box" id="hint-c"><span id="hint-c-body">La gráfica de $f(t) = 2t$ es una línea que pasa por el origen. En $[0, 4]$ forma un triángulo. El área de un triángulo es $\frac{1}{2} \cdot$ base $\cdot$ altura.</span></div>
+        <div class="solution-box" id="sol-c">
+          <div class="sol-label">Solución</div>
+          <div id="sol-c-body">
+          <p>La gráfica de $f(t) = 2t$ es una <strong>recta que pasa por el origen</strong>. En $[0, 4]$
+          forma un triángulo de base 4 y altura 8:</p>
+          <div class="math-display" data-katex="\int\limits_0^4 2t\, dt = \Big[t^2\Big]_0^4 = 16 \text{ m}"></div>
+          <p>O geométricamente: $\dfrac{1}{2} \cdot 4 \cdot 8 = 16$ m.</p>
+          </div>
+        </div>
+        <div class="part-controls">
+          <button class="btn btn-check"  onclick="checkC()">&#10003; Verificar</button>
+          <button class="btn btn-hint"   onclick="tog('hint-c')">&#128161; Pista</button>
+          <button class="btn btn-reveal" onclick="tog('sol-c')">Ver solución</button>
+          <span class="feedback-badge" id="fb-c"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- part d -->
+    <div class="part">
+      <div class="part-header">
+        <div class="part-letter">d</div>
+        <div class="part-question" id="qd-text">Interpreta la integral de $f(t) = 2t$ como una distancia. ¿Qué tipo de movimiento describe?</div>
+      </div>
+      <div class="part-body">
+        <div class="answer-label">Tu interpretación</div>
+        <input class="answer-input" id="ans-d" placeholder="El movimiento es … porque …"/>
+        <div class="hint-box" id="hint-d"><span id="hint-d-body">Si $v(t) = 2t$, la velocidad <em>aumenta con el tiempo</em>. ¿Eso qué tipo de movimiento es? Piensa en la segunda Ley de Newton o en la definición de aceleración.</span></div>
+        <div class="solution-box" id="sol-d">
+          <div class="sol-label">Solución</div>
+          <div id="sol-d-body"><p>Como $v(t) = 2t$ crece linealmente, la aceleración es <strong>constante</strong>: $a = v'(t) = 2$ m/s².</p><p style="margin-top:8px">La distancia recorrida es:</p><div class="math-display" data-katex="d(t) = \int\limits_0^{t} 2s\, ds = t^2"></div><p style="margin-top:8px">Esto describe un <strong>movimiento uniformemente acelerado</strong> (MUA), como una bicicleta que parte del reposo y acelera constantemente a 2 m/s². La distancia crece como $t^2$, no linealmente.</p></div>
+        </div>
+        <div class="part-controls">
+          <button class="btn btn-check"  onclick="checkD()">&#10003; Verificar</button>
+          <button class="btn btn-hint"   onclick="tog('hint-d')">&#128161; Pista</button>
+          <button class="btn btn-reveal" onclick="tog('sol-d')">Ver solución</button>
+          <span class="feedback-badge" id="fb-d"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERACTIVE INTEGRAL SECTION -->
+    <div class="integral-section">
+      <p class="section-heading">Visualizador interactivo de integrales</p>
+
+      <!-- Function selector + area toggle -->
+      <div class="integral-controls">
+        <div class="func-toggle">
+          <button class="func-btn active" id="btn-f1" onclick="setFunc(1)">$f(t) = 6$</button>
+          <button class="func-btn"        id="btn-f2" onclick="setFunc(2)">$f(t) = 2t$</button>
+        </div>
+        <label><input type="checkbox" id="show-area" checked onchange="drawIntegral()"/> Área bajo la curva</label>
+        <label><input type="checkbox" id="show-riemann" onchange="onRiemannToggle()"/> Sumas de Riemann</label>
+      </div>
+
+      <!-- Riemann type selector -->
+      <div class="riemann-type-row" id="riemann-type-row">
+        <span class="riemann-type-label">Tipo de suma:</span>
+        <div class="riemann-type-btns">
+          <button class="rtype-btn active" id="rtype-left"   onclick="setRiemannType('left')">Inferior (izq.)</button>
+          <button class="rtype-btn"        id="rtype-mid"    onclick="setRiemannType('mid')">Punto medio</button>
+          <button class="rtype-btn"        id="rtype-right"  onclick="setRiemannType('right')">Superior (der.)</button>
+        </div>
+      </div>
+
+      <!-- n controls: slider + animation buttons -->
+      <div class="riemann-wrap">
+        <span class="riemann-n-label">$n$ =</span>
+        <span class="n-display" id="n-display">1</span>
+        <input type="range" id="n-slider" min="1" max="500" step="1" value="1"
+               oninput="onNSlider(this.value)"/>
+        <input type="number" id="n-input" min="1" max="500" step="1" value="1"
+               class="n-manual-input" placeholder="n"
+               oninput="onNInput(this.value)"
+               onkeydown="if(event.key==='Enter') onNInput(this.value)"/>
+        <div class="riemann-anim-btns">
+          <button class="btn-ranim" id="btn-ranim-play"  onclick="toggleRiemannAnim()">&#9654;</button>
+          <button class="btn-ranim" id="btn-ranim-reset" onclick="resetRiemannAnim()">&#8635;</button>
+        </div>
+        <span style="font-size:0.76rem;color:var(--muted)">velocidad:</span>
+        <input type="range" id="ranim-speed" min="1" max="5" step="1" value="3"
+               oninput="document.getElementById('ranim-speed-val').textContent=this.value"/>
+        <span id="ranim-speed-val">3</span>
+      </div>
+
+      <!-- Result cards: approx + exact + error -->
+      <div class="result-row riemann-results" id="riemann-results">
+        <div class="result-card">
+          <div class="rc-label">Suma Riemann ($n$ rect.)</div>
+          <div class="rc-val" id="rc-approx">—</div>
+        </div>
+        <div class="result-card">
+          <div class="rc-label">Integral exacta</div>
+          <div class="rc-val highlight" id="rc-exact2">—</div>
+        </div>
+        <div class="result-card">
+          <div class="rc-label">Error absoluto</div>
+          <div class="rc-val" id="rc-error" style="color:var(--crimson)">—</div>
+        </div>
+      </div>
+
+      <div class="zoom-hint" style="padding:4px 0 6px 4px">&#128433; Rueda del mouse para zoom · Arrastrar para mover · Doble clic para restablecer</div>
+      <div class="chart-wrap"><svg id="integral-chart" height="340"></svg></div>
+
+      <!-- Static result cards -->
+      <div class="result-row">
+        <div class="result-card">
+          <div class="rc-label">Función activa</div>
+          <div class="rc-val" id="rc-func">f(t) = 6</div>
+        </div>
+        <div class="result-card">
+          <div class="rc-label">Intervalo</div>
+          <div class="rc-val" id="rc-interval">[0, 10]</div>
+        </div>
+        <div class="result-card">
+          <div class="rc-label">Integral exacta</div>
+          <div class="rc-val highlight" id="rc-exact">60 m</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICAL DEVELOPMENT -->
+    <div class="analytic-toggle-wrap">
+      <button class="btn-analytic" id="btn-analytic" onclick="toggleAnalytic()">
+        &#8721; Desarrollo analítico de la Suma de Riemann
+      </button>
+    </div>
+
+    <div class="analytic-section" id="analytic-section">
+      <div class="analytic-header">
+        <div class="analytic-title">Proceso algebraico — Suma de Riemann</div>
+        <div class="analytic-ctrl">
+          <button class="btn-astep" id="btn-astep-play" onclick="toggleAnalyticAnim()">&#9654; Iniciar</button>
+          <button class="btn-astep-reset" onclick="resetAnalyticAnim()">&#8635; Reiniciar</button>
+        </div>
+      </div>
+      <div class="analytic-body" id="analytic-body">
+        <div class="analytic-placeholder">
+          Presiona <strong>Iniciar</strong> para ver el desarrollo paso a paso.
+        </div>
+      </div>
+    </div>
+
+    <!-- BIKE ANIMATION -->
+    <div class="bike-section">
+      <div class="bike-header">
+        <div class="bike-title">&#128690; Animación: bicicleta en movimiento</div>
+        <div class="bike-ctrl">
+          <button class="btn-bike" id="btn-bike" onclick="toggleBike()">&#9654; Iniciar</button>
+          <button class="btn-bike-reset" onclick="resetBike()">&#8635; Reiniciar</button>
+        </div>
+      </div>
+      <div class="bike-func-row">
+        <span>Función de velocidad:</span>
+        <button class="func-btn active" id="bike-f1" onclick="setBikeFunc(1)">$v(t) = 6$ (constante)</button>
+        <button class="func-btn"        id="bike-f2" onclick="setBikeFunc(2)">$v(t) = 2t$ (acelerada)</button>
+        <span style="font-size:0.80rem;color:var(--muted)">Velocidad:</span>
+        <input type="range" id="bike-speed" min="1" max="5" step="1" value="3"
+               oninput="document.getElementById('bike-speed-val').textContent=this.value"/>
+        <span id="bike-speed-val">3</span>
+      </div>
+      <div class="bike-stage">
+        <svg id="bike-svg" viewBox="0 0 800 170" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="bike-info-row">
+        <div class="bi-card"><div class="bi-label">Tiempo $t$</div><div class="bi-val" id="bi-t">0 s</div></div>
+        <div class="bi-card"><div class="bi-label">Velocidad $v(t)$</div><div class="bi-val" id="bi-v">0 m/s</div></div>
+        <div class="bi-card"><div class="bi-label">Distancia recorrida</div><div class="bi-val" id="bi-d">0 m</div></div>
+        <div class="bi-card"><div class="bi-label">Aceleración $a$</div><div class="bi-val" id="bi-a">0 m/s²</div></div>
+        <div class="bi-card"><div class="bi-label">Distancia total</div><div class="bi-val" id="bi-total">—</div></div>
+      </div>
+    </div>
+
+  </div><!-- /activity-body -->
+</div><!-- /activity-card -->
+</main>
+
+<footer>
+  <strong>SE²∂PEM</strong> · IV Seminario Estudiantil de Ecuaciones Diferenciales y Educación Matemática<br>
+  <span style="display:block;text-align:center;margin-top:4px;">Universidad del Bío-Bío</span>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════
+   PARAMETERS
+════════════════════════════════════════════ */
+
+function renderKatexBlocks(root) {
+  if (!window.katex) return;
+  var els = (root || document).querySelectorAll('[data-katex]');
+  els.forEach(function(el) {
+    try {
+      el.innerHTML = katex.renderToString(el.getAttribute('data-katex'), {
+        displayMode: true,
+        throwOnError: false,
+        trust: true
+      });
+    } catch(e) { console.warn('KaTeX error:', e); }
+  });
+}
+
+function rerenderMath(el) {
+  renderKatexBlocks(el);
+  if (window.renderMathInElement) {
+    renderMathInElement(el, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+var PARAMS = { v: 6, a: 2, t1: 10, t2: 4 };
+
+function applyParams() {
+  var v  = parseFloat(document.getElementById('param-v').value);
+  var ac = parseFloat(document.getElementById('param-a').value);
+  var t1 = parseFloat(document.getElementById('param-t1').value);
+  var t2 = parseFloat(document.getElementById('param-t2').value);
+  var errEl = document.getElementById('param-error');
+
+  // Validate all > 0
+  var errors = [];
+  if (isNaN(v)  || v  <= 0) errors.push('v > 0');
+  if (isNaN(ac) || ac <= 0) errors.push('a > 0');
+  if (isNaN(t1) || t1 <= 0) errors.push('t₁ > 0');
+  if (isNaN(t2) || t2 <= 0) errors.push('t₂ > 0');
+
+  if (errors.length) {
+    errEl.textContent = '⚠ Los siguientes parámetros deben ser estrictamente positivos: ' + errors.join(', ');
+    return;
+  }
+  errEl.textContent = '';
+
+  PARAMS = { v: r4(v), a: r4(ac), t1: r4(t1), t2: r4(t2) };
+
+  // Update FUNCS and BIKE_FUNCS with new values
+  rebuildFuncs();
+
+  // Clear answers
+  ['ans-a','ans-b1','ans-b2','ans-c','ans-d'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.value = ''; el.className = 'answer-input'; }
+  });
+  ['fb-a','fb-b','fb-c','fb-d'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.className = 'feedback-badge'; el.textContent = ''; }
+  });
+  ['hint-a','hint-b','hint-c','hint-d','sol-a','sol-b','sol-c','sol-d'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('visible');
+  });
+
+  updateDynamicTexts();
+  curTInt = d3.zoomIdentity;
+  initIntegral();
+  resetBike();
+
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]
+    });
+  }
+}
+
+function rebuildFuncs() {
+  var v=PARAMS.v, ac=PARAMS.a, t1=PARAMS.t1, t2=PARAMS.t2;
+  var exact1 = r4(v * t1);
+  var exact2 = r4(ac * t2 * t2 / 2);
+  FUNCS[1] = { fn: function(t){return v;},    label:'f(t) = '+v,     a:0, b:t1, exact:exact1, unit:'m', color:'#003B75' };
+  FUNCS[2] = { fn: function(t){return ac*t;}, label:'f(t) = '+ac+'t', a:0, b:t2, exact:exact2, unit:'m', color:'#9b1845' };
+  BIKE_FUNCS[1] = { fn: function(t){return v;},    dist: function(t){return v*t;},       tMax:t1, label:'v(t) = '+v+' m/s' };
+  BIKE_FUNCS[2] = { fn: function(t){return ac*t;}, dist: function(t){return ac*t*t/2;},  tMax:t2, label:'v(t) = '+ac+'t m/s' };
+  // Update chart selector display
+  document.getElementById('btn-f1').textContent = 'f(t) = ' + v;
+  document.getElementById('btn-f2').textContent = 'f(t) = ' + ac + 't';
+  document.getElementById('bike-f1').textContent = 'v(t) = ' + v + ' (constante)';
+  document.getElementById('bike-f2').textContent = 'v(t) = ' + ac + 't (acelerada)';
+  // Update result cards
+  var F = FUNCS[activeFunc];
+  document.getElementById('rc-func').textContent     = F.label;
+  document.getElementById('rc-interval').textContent = '[' + F.a + ', ' + F.b + ']';
+  document.getElementById('rc-exact').textContent    = F.exact + ' ' + F.unit;
+}
+
+function updateDynamicTexts() {
+  var v=PARAMS.v, ac=PARAMS.a, t1=PARAMS.t1, t2=PARAMS.t2;
+  var exact1 = r4(v * t1);
+  var exact2 = r4(ac * t2 * t2 / 2);
+  var vT2    = r4(ac * t2);
+
+  // Context box
+  document.getElementById('ctx-v').textContent  = v + ' m/s';
+  document.getElementById('ctx-t1').textContent = t1 + ' segundos';
+  document.getElementById('ctx-vt').textContent = 'v(t) = ' + ac + 't';
+  document.getElementById('ctx-t2').textContent = '[0, ' + t2 + '] s';
+
+  // Part questions
+  document.getElementById('qa-text').innerHTML =
+    'Grafica la función velocidad constante $f(t) = ' + v + '$ en el intervalo $[0, ' + t1 + ']$. ' +
+    'Describe qué forma tiene la gráfica y qué tipo de figura geométrica queda bajo la curva.';
+  document.getElementById('qb-text').innerHTML =
+    'Calcula el área bajo la curva $f(t) = ' + v + '$ en $[0, ' + t1 + ']$. ¿Qué representa ese valor?';
+  document.getElementById('qc-text').innerHTML =
+    '¿Qué ocurre si la velocidad cambia a $f(t) = ' + ac + 't$? Dibuja la gráfica y calcula ' +
+    'el área bajo la curva entre $t = 0$ y $t = ' + t2 + '$.';
+  document.getElementById('qd-text').innerHTML =
+    'Interpreta la integral de $f(t) = ' + ac + 't$ como una distancia. ¿Qué tipo de movimiento describe?';
+
+  // Answer labels
+  document.getElementById('lb-b1').textContent = 'Área bajo la curva en [0, ' + t1 + '] =';
+  document.getElementById('lc-text').textContent = 'Área bajo la curva en [0, ' + t2 + '] =';
+
+  // Hints
+  document.getElementById('hint-a-body').innerHTML =
+    'Una función constante $f(t) = ' + v + '$ es una línea horizontal a altura ' + v + '. ' +
+    '¿Qué figura geométrica forma una línea horizontal sobre el eje $t$ entre $t=0$ y $t=' + t1 + '$?';
+  document.getElementById('hint-b-body').innerHTML =
+    'Área = base × altura = $' + t1 + ' \\cdot ' + v + ' = ' + exact1 + '$. ' +
+    'Si la base son segundos y la altura son m/s, ¿qué unidades tiene el área?';
+  document.getElementById('hint-c-body').innerHTML =
+    'La gráfica de $f(t) = ' + ac + 't$ es una línea por el origen. ' +
+    'En $[0, ' + t2 + ']$ forma un triángulo de base $' + t2 + '$ y altura $' + vT2 + '$ (que es $f(' + t2 + ') = ' + ac + ' \\cdot ' + t2 + '$). ' +
+    'Área = $\\frac{1}{2}$ × base × altura.';
+  document.getElementById('hint-d-body').innerHTML =
+    'Si $v(t) = ' + ac + 't$, la velocidad <em>aumenta con el tiempo</em>. ¿Eso qué tipo de movimiento es? ' +
+    'Piensa en la aceleración: $a = v\'(t) = ' + ac + '$ m/s².';
+
+  // Solution a
+  document.getElementById('sol-a-body').innerHTML =
+    '<p>La gráfica de $f(t) = ' + v + '$ es una <strong>línea horizontal</strong> a altura ' + v + '. ' +
+    'La región entre la curva y el eje $t$ en $[0, ' + t1 + ']$ forma un <strong>rectángulo</strong> ' +
+    'de base ' + t1 + ' y altura ' + v + '.</p>' +
+    '<p style="text-align:center;padding:6px 0">El gráfico interactivo debajo permite visualizarlo.</p>';
+
+  // Solution d
+  var distFunc = ac === 1 ? 't^2/2' : (ac + 't^2/2');
+  var solDEl = document.getElementById('sol-d-body');
+  solDEl.innerHTML =
+    '<p>Como $v(t) = ' + ac + 't$ crece linealmente, la aceleración es <strong>constante</strong>: ' +
+    '$a = v\'(t) = ' + ac + '$ m/s².</p>' +
+    '<p style="margin-top:8px">La distancia recorrida es: ' +
+    '</p><div class="math-display" data-katex="d(t) = \\int\\limits_0^{t} ' + ac + '\\,s\\, ds = ' + distFunc + '"></div><p style="display:none">' +
+    '<p style="margin-top:8px">Esto describe un <strong>movimiento uniformemente acelerado</strong> (MUA), ' +
+    'como una bicicleta que parte del reposo y acelera constantemente a ' + ac + ' m/s². ' +
+    'La distancia crece de forma cuadrática en el tiempo.</p>';
+
+  // Solution bodies
+  document.getElementById('sol-b-body').innerHTML =
+    '<div class="math-display" data-katex="\\\int\\limits_0^{' + t1 + '} ' + v + '\\, dt = ' + v + ' \\cdot ' + t1 + ' = ' + exact1 + ' \\text{ m}"></div>' +
+    '<p>El área representa la <strong>distancia total recorrida</strong>: <strong>' + exact1 + ' metros</strong>. ' +
+    'Las unidades son: $\\dfrac{\\text{m}}{\\text{s}} \\cdot \\text{s} = \\text{m}$.</p>';
+
+  document.getElementById('sol-c-body').innerHTML =
+    '<p>La gráfica de $f(t) = ' + ac + 't$ es una <strong>recta por el origen</strong>. ' +
+    'En $[0, ' + t2 + ']$ forma un triángulo de base ' + t2 + ' y altura ' + vT2 + ':</p>' +
+    '<div class="math-display" data-katex="\\\int\\limits_0^{' + t2 + '} ' + ac + 't\\, dt = \\left[\\dfrac{' + ac + 't^2}{2}\\right]_0^{' + t2 + '} = ' + exact2 + ' \\text{ m}"></div>' +
+    '<p>Geométricamente: $\\dfrac{1}{2} \\cdot ' + t2 + ' \\cdot ' + vT2 + ' = ' + exact2 + '$ m.</p>';
+
+  // Re-render KaTeX in updated solution bodies
+  ['sol-a-body','sol-b-body','sol-c-body','sol-d-body',
+   'hint-a-body','hint-b-body','hint-c-body','hint-d-body'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) rerenderMath(el);
+  });
+
+  // Chart title
+  document.getElementById('chart-heading') && (document.getElementById('chart-heading').textContent = '');
+}
+
+/* ════════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════════ */
+function tog(id) { document.getElementById(id).classList.toggle('visible'); }
+function setFB(id, ok, msg) {
+  var el = document.getElementById(id);
+  el.textContent = msg; el.className = 'feedback-badge visible ' + (ok?'ok':'err');
+}
+function r4(v) { return Math.round(v*10000)/10000; }
+
+/* ════════════════════════════════════════════
+   CHECKERS
+════════════════════════════════════════════ */
+function checkA() {
+  var v = document.getElementById('ans-a').value.toLowerCase();
+  var ok = (v.includes('recta') || v.includes('horizontal') || v.includes('linea') || v.includes('línea')) &&
+           (v.includes('rectángulo') || v.includes('rectangulo') || v.includes('rectangular'));
+  document.getElementById('ans-a').className = 'answer-input ' + (ok?'correct':'wrong');
+  setFB('fb-a', ok, ok ? '✓ ¡Correcto!' : '✗ Menciona: línea horizontal y rectángulo');
+}
+function checkB() {
+  var exact1 = r4(PARAMS.v * PARAMS.t1);
+  var v1 = parseFloat(document.getElementById('ans-b1').value);
+  var v2 = document.getElementById('ans-b2').value.toLowerCase();
+  var ok1 = Math.abs(v1 - exact1) < 0.01;
+  var ok2 = v2.includes('distancia') || v2.includes('metros') || v2.includes('recorr');
+  var ok  = ok1 && ok2;
+  document.getElementById('ans-b1').className = 'answer-input ' + (ok1?'correct':'wrong');
+  document.getElementById('ans-b2').className = 'answer-input ' + (ok2?'correct':'wrong');
+  setFB('fb-b', ok, ok ? '✓ ¡Correcto!' : (!ok1 ? '✗ El área es ' + exact1 : '✗ Interpreta en términos de distancia'));
+}
+function checkC() {
+  var exact2 = r4(PARAMS.a * PARAMS.t2 * PARAMS.t2 / 2);
+  var v = parseFloat(document.getElementById('ans-c').value);
+  var ok = Math.abs(v - exact2) < 0.01;
+  var vT2 = r4(PARAMS.a * PARAMS.t2);
+  document.getElementById('ans-c').className = 'answer-input ' + (ok?'correct':'wrong');
+  setFB('fb-c', ok, ok ? '✓ ¡Correcto!' : '✗ Pista: triángulo de base ' + PARAMS.t2 + ' y altura ' + vT2);
+}
+function checkD() {
+  var v = document.getElementById('ans-d').value.toLowerCase();
+  var ok = v.includes('aceler') || v.includes('uniformemente') || v.includes('mua') ||
+           v.includes('constante') || v.includes('cuadrático') || v.includes('t^2') || v.includes('t²');
+  document.getElementById('ans-d').className = 'answer-input ' + (ok?'correct':'wrong');
+  setFB('fb-d', ok, ok ? '✓ ¡Correcto!' : '✗ Piensa: ¿qué tipo de movimiento tiene aceleración constante?');
+}
+
+/* ════════════════════════════════════════════
+   INTEGRAL CHART (D3)
+════════════════════════════════════════════ */
+var MARGIN = {top:30, right:50, bottom:48, left:58};
+var activeFunc = 1;
+var gInt = null, zInt, curTInt = d3.zoomIdentity;
+
+var FUNCS = {
+  1: { fn: function(t){return 6;},   label:'f(t) = 6',  a:0, b:10, exact:60,  unit:'m', color:'#003B75' },
+  2: { fn: function(t){return 2*t;}, label:'f(t) = 2t', a:0, b:4,  exact:16,  unit:'m', color:'#9b1845' }
+};
+
+function setFunc(n) {
+  activeFunc = n;
+  document.getElementById('btn-f1').className = 'func-btn' + (n===1?' active':'');
+  document.getElementById('btn-f2').className = 'func-btn' + (n===2?' active':'');
+  var F = FUNCS[n];
+  document.getElementById('rc-func').textContent     = F.label;
+  document.getElementById('rc-interval').textContent = '[' + F.a + ', ' + F.b + ']';
+  document.getElementById('rc-exact').textContent    = F.exact + ' ' + F.unit;
+  curTInt = d3.zoomIdentity;
+  initIntegral();
+}
+
+function getIntSize() {
+  var box = document.querySelector('.chart-wrap');
+  return {W: box.clientWidth||800, H: 340};
+}
+
+function initIntegral() {
+  var sz=getIntSize(), W=sz.W, H=sz.H;
+  var iW=W-MARGIN.left-MARGIN.right, iH=H-MARGIN.top-MARGIN.bottom;
+  var F=FUNCS[activeFunc];
+
+  var svg = d3.select('#integral-chart').attr('width',W).attr('height',H);
+  svg.selectAll('*').remove();
+  svg.append('defs').append('clipPath').attr('id','int-clip')
+    .append('rect').attr('width',iW).attr('height',iH);
+
+  gInt = svg.append('g').attr('transform','translate('+MARGIN.left+','+MARGIN.top+')');
+  ['i-grid','i-axes','i-area','i-riemann','i-curve','i-labels'].forEach(function(c) {
+    gInt.append('g').attr('class',c)
+      .attr('clip-path', (c==='i-area'||c==='i-riemann'||c==='i-curve') ? 'url(#int-clip)' : null);
+  });
+  gInt.append('rect').attr('width',iW).attr('height',iH).attr('fill','transparent');
+
+  var xs0 = d3.scaleLinear().domain([-0.3, F.b+0.5]).range([0,iW]);
+  var yMax = activeFunc===1 ? 8 : F.fn(F.b)*1.25;
+  var ys0 = d3.scaleLinear().domain([-0.5, yMax]).range([iH,0]);
+
+  zInt = d3.zoom().scaleExtent([0.2,20])
+    .on('zoom', function(ev){ curTInt=ev.transform; drawIntContent(iW,iH,xs0,ys0); });
+  svg.call(zInt).call(zInt.transform, curTInt);
+  svg.on('dblclick.zoom', function(){
+    curTInt=d3.zoomIdentity;
+    svg.transition().duration(350).call(zInt.transform,d3.zoomIdentity);
+  });
+  drawIntContent(iW,iH,xs0,ys0);
+}
+
+function drawIntContent(iW,iH,xs0,ys0) {
+  var F  = FUNCS[activeFunc];
+  var tx = curTInt.rescaleX(xs0);
+  var ty = curTInt.rescaleY(ys0);
+
+  // Grid
+  var gG=gInt.select('.i-grid'); gG.selectAll('*').remove();
+  tx.ticks(8).forEach(function(v){
+    gG.append('line').attr('stroke','#e8e4dd').attr('stroke-dasharray','3,3')
+      .attr('x1',tx(v)).attr('x2',tx(v)).attr('y1',0).attr('y2',iH);
+  });
+  ty.ticks(7).forEach(function(v){
+    gG.append('line').attr('stroke','#e8e4dd').attr('stroke-dasharray','3,3')
+      .attr('x1',0).attr('x2',iW).attr('y1',ty(v)).attr('y2',ty(v));
+  });
+
+  // Axes
+  var gA=gInt.select('.i-axes'); gA.selectAll('*').remove();
+  var axY=Math.max(0,Math.min(iH,ty(0)));
+  var axX=Math.max(0,Math.min(iW,tx(0)));
+  gA.append('line').attr('x1',0).attr('x2',iW).attr('y1',axY).attr('y2',axY)
+    .attr('stroke','#2c2c2c').attr('stroke-width',1.8);
+  gA.append('polygon').attr('points',iW+','+axY+' '+(iW-9)+','+(axY-4)+' '+(iW-9)+','+(axY+4))
+    .attr('fill','#2c2c2c');
+  gA.append('line').attr('x1',axX).attr('x2',axX).attr('y1',0).attr('y2',iH)
+    .attr('stroke','#2c2c2c').attr('stroke-width',1.8);
+  gA.append('polygon').attr('points',axX+',0 '+(axX-4)+',9 '+(axX+4)+',9')
+    .attr('fill','#2c2c2c');
+  gA.append('circle').attr('cx',axX).attr('cy',axY).attr('r',3).attr('fill','#2c2c2c');
+  gA.append('text').attr('x',axX-9).attr('y',axY+15).attr('font-size',10)
+    .attr('fill','#6b6560').attr('font-family','JetBrains Mono,monospace').text('0');
+  tx.ticks(8).filter(function(v){return Math.abs(v)>0.01;}).forEach(function(v){
+    gA.append('line').attr('x1',tx(v)).attr('x2',tx(v)).attr('y1',axY-4).attr('y2',axY+4)
+      .attr('stroke','#555').attr('stroke-width',1);
+    gA.append('text').attr('x',tx(v)).attr('y',axY+16).attr('text-anchor','middle')
+      .attr('font-size',10).attr('fill','#6b6560').attr('font-family','JetBrains Mono,monospace')
+      .text(+v.toFixed(1));
+  });
+  ty.ticks(7).filter(function(v){return Math.abs(v)>0.01;}).forEach(function(v){
+    gA.append('line').attr('x1',axX-4).attr('x2',axX+4).attr('y1',ty(v)).attr('y2',ty(v))
+      .attr('stroke','#555').attr('stroke-width',1);
+    gA.append('text').attr('x',axX-8).attr('y',ty(v)+4).attr('text-anchor','end')
+      .attr('font-size',10).attr('fill','#6b6560').attr('font-family','JetBrains Mono,monospace')
+      .text(+v.toFixed(1));
+  });
+
+  // Axis labels
+  var gL=gInt.select('.i-labels'); gL.selectAll('*').remove();
+  gL.append('text').attr('x',iW+16).attr('y',axY+5).attr('class','axis-label').attr('text-anchor','start').text('t');
+  gL.append('text').attr('x',axX).attr('y',-12).attr('class','axis-label').attr('text-anchor','middle').text('v(t)');
+
+  // Shaded area
+  var gArea=gInt.select('.i-area'); gArea.selectAll('*').remove();
+  if (document.getElementById('show-area').checked) {
+    var pts=[];
+    for(var i=0;i<=300;i++){
+      var t=F.a+(F.b-F.a)*i/300; pts.push({t:t,v:F.fn(t)});
+    }
+    gArea.append('path').datum(pts)
+      .attr('fill',F.color).attr('fill-opacity',0.18)
+      .attr('stroke','none')
+      .attr('d', d3.area().x(function(d){return tx(d.t);}).y0(ty(0)).y1(function(d){return ty(d.v);}));
+    // integral label
+    var tMid=(F.a+F.b)/2, vMid=F.fn(tMid)*0.5;
+    gArea.append('text').attr('x',tx(tMid)).attr('y',ty(vMid))
+      .attr('text-anchor','middle').attr('font-size',12).attr('fill',F.color)
+      .attr('font-family','JetBrains Mono,monospace').attr('font-weight','600')
+      .text('Area = '+F.exact+' '+F.unit);
+  }
+
+  // Riemann rectangles
+  var gR=gInt.select('.i-riemann'); gR.selectAll('*').remove();
+  if (document.getElementById('show-riemann').checked) {
+    var n   = parseInt(document.getElementById('n-slider').value);
+    var dt  = (F.b - F.a) / n;
+    var sum = 0;
+    var rtype = riemannType; // 'left','mid','right'
+
+    // Colors per type
+    var fillCol = rtype==='left' ? '#2563eb' : rtype==='mid' ? '#c8a951' : '#9b1845';
+
+    for (var k=0; k<n; k++) {
+      var tL = F.a + k*dt;
+      var tR = tL + dt;
+      var tSample = rtype==='left' ? tL : rtype==='right' ? tR : tL + dt/2;
+      var h = F.fn(tSample);
+      sum += h * dt;
+
+      var px = tx(tL), pw = Math.max(1, tx(tR)-tx(tL));
+      var py = ty(Math.max(0,h)), ph = Math.abs(ty(0)-ty(Math.max(0,h)));
+
+      gR.append('rect')
+        .attr('x', px).attr('width', pw)
+        .attr('y', py).attr('height', ph)
+        .attr('fill', fillCol).attr('fill-opacity', 0.30)
+        .attr('stroke', fillCol).attr('stroke-width', 1.2);
+
+      // Sample point dot
+      var dotX = tx(tSample), dotY = ty(h);
+      gR.append('circle').attr('cx',dotX).attr('cy',dotY).attr('r',3)
+        .attr('fill', fillCol).attr('stroke','white').attr('stroke-width',1);
+    }
+
+    // Update result cards
+    var exact = F.exact;
+    var err   = r4(Math.abs(sum - exact));
+    document.getElementById('rc-approx').textContent = r4(sum) + ' ' + F.unit;
+    document.getElementById('rc-exact2').textContent = exact + ' ' + F.unit;
+    document.getElementById('rc-error').textContent  = err + ' ' + F.unit;
+    document.getElementById('n-display').textContent = n;
+  } else {
+    document.getElementById('rc-approx').textContent = '—';
+    document.getElementById('rc-exact2').textContent = '—';
+    document.getElementById('rc-error').textContent  = '—';
+  }
+
+  // Curve
+  var gC=gInt.select('.i-curve'); gC.selectAll('*').remove();
+  var dom=tx.domain(), t0=dom[0], t1=dom[1];
+  var cpts=[];
+  for(var ci=0;ci<=400;ci++){ var ct=t0+(t1-t0)*ci/400; cpts.push({t:ct,v:F.fn(ct)}); }
+  gC.append('path').datum(cpts).attr('fill','none')
+    .attr('stroke',F.color).attr('stroke-width',2.5)
+    .attr('d',d3.line().x(function(d){return tx(d.t);}).y(function(d){return ty(d.v);}));
+}
+
+function drawIntegral() {
+  if (!gInt) return;
+  var sz=getIntSize();
+  var iW=sz.W-MARGIN.left-MARGIN.right, iH=sz.H-MARGIN.top-MARGIN.bottom;
+  var F=FUNCS[activeFunc];
+  var yMax=activeFunc===1?8:F.fn(F.b)*1.25;
+  var xs0=d3.scaleLinear().domain([-0.3,F.b+0.5]).range([0,iW]);
+  var ys0=d3.scaleLinear().domain([-0.5,yMax]).range([iH,0]);
+  drawIntContent(iW,iH,xs0,ys0);
+}
+
+/* ════════════════════════════════════════════
+   RIEMANN CONTROLS
+════════════════════════════════════════════ */
+var riemannType  = 'left';
+var riemannTimer = null;
+var riemannRunning = false;
+
+function onRiemannToggle() {
+  var active = document.getElementById('show-riemann').checked;
+  var typeRow = document.getElementById('riemann-type-row');
+  if (active) {
+    typeRow.classList.add('visible');
+    document.getElementById('n-slider').value = 1;
+    document.getElementById('n-display').textContent = 1;
+  } else {
+    typeRow.classList.remove('visible');
+    resetRiemannAnim();
+  }
+  drawIntegral();
+}
+
+function setRiemannType(type) {
+  riemannType = type;
+  document.getElementById('rtype-left').className  = 'rtype-btn' + (type==='left'  ? ' active' : '');
+  document.getElementById('rtype-mid').className   = 'rtype-btn' + (type==='mid'   ? ' active' : '');
+  document.getElementById('rtype-right').className = 'rtype-btn' + (type==='right' ? ' active' : '');
+  drawIntegral();
+}
+
+function onNSlider(val) {
+  val = parseInt(val);
+  document.getElementById('n-display').textContent = val;
+  document.getElementById('n-input').value = val;
+  drawIntegral();
+}
+
+function onNInput(val) {
+  var n = parseInt(val);
+  if (isNaN(n) || n < 1)   n = 1;
+  if (n > 500)              n = 500;
+  document.getElementById('n-input').value  = n;
+  document.getElementById('n-slider').value = n;
+  document.getElementById('n-display').textContent = n;
+  drawIntegral();
+}
+
+function getRiemannAnimSpeed() {
+  var v = parseInt(document.getElementById('ranim-speed').value);
+  return [500, 300, 180, 100, 50][v-1];
+}
+
+function toggleRiemannAnim() {
+  if (riemannRunning) pauseRiemannAnim();
+  else startRiemannAnim();
+}
+
+function startRiemannAnim() {
+  // Make sure Riemann is active
+  document.getElementById('show-riemann').checked = true;
+  document.getElementById('riemann-type-row').classList.add('visible');
+
+  riemannRunning = true;
+  var btn = document.getElementById('btn-ranim-play');
+  btn.innerHTML = '&#9646;&#9646;';
+  btn.classList.add('running');
+  runRiemannStep();
+}
+
+function runRiemannStep() {
+  var slider = document.getElementById('n-slider');
+  var cur    = parseInt(slider.value);
+  var max    = parseInt(slider.max); // 500
+
+  if (cur >= max) {
+    finishRiemannAnim();
+    return;
+  }
+
+  slider.value = cur + 1;
+  document.getElementById('n-display').textContent = cur + 1;
+  document.getElementById('n-input').value = cur + 1;
+  drawIntegral();
+
+  riemannTimer = setTimeout(function() {
+    if (riemannRunning) runRiemannStep();
+  }, getRiemannAnimSpeed());
+}
+
+function pauseRiemannAnim() {
+  riemannRunning = false;
+  clearTimeout(riemannTimer);
+  var btn = document.getElementById('btn-ranim-play');
+  btn.innerHTML = '&#9654;';
+  btn.classList.remove('running');
+}
+
+function finishRiemannAnim() {
+  riemannRunning = false;
+  clearTimeout(riemannTimer);
+  var btn = document.getElementById('btn-ranim-play');
+  btn.innerHTML = '&#10003;';
+  btn.classList.remove('running');
+  btn.style.background = '#2e7d52';
+  btn.style.color = 'white';
+}
+
+function resetRiemannAnim() {
+  riemannRunning = false;
+  clearTimeout(riemannTimer);
+  var btn = document.getElementById('btn-ranim-play');
+  btn.innerHTML = '&#9654;';
+  btn.classList.remove('running');
+  btn.style.background = '';
+  btn.style.color = '';
+  document.getElementById('n-slider').value = 1;
+  document.getElementById('n-input').value = 1;
+  document.getElementById('n-display').textContent = 1;
+  document.getElementById('rc-approx').textContent = '—';
+  document.getElementById('rc-exact2').textContent = '—';
+  document.getElementById('rc-error').textContent  = '—';
+  drawIntegral();
+}
+
+/* ════════════════════════════════════════════
+   ANALYTIC DEVELOPMENT
+════════════════════════════════════════════ */
+var analyticVisible = false;
+var analyticRunning = false;
+var analyticTimer   = null;
+var analyticStep    = 0;
+var analyticSteps   = [];
+
+function toggleAnalytic() {
+  analyticVisible = !analyticVisible;
+  var sec = document.getElementById('analytic-section');
+  var btn = document.getElementById('btn-analytic');
+  if (analyticVisible) {
+    sec.classList.add('visible');
+    btn.classList.add('open');
+    btn.innerHTML = '\u2211 Desarrollo anal\u00edtico de la Suma de Riemann \u00a0&#9660;';
+    buildAnalyticSteps();
+  } else {
+    sec.classList.remove('visible');
+    btn.classList.remove('open');
+    btn.innerHTML = '\u2211 Desarrollo anal\u00edtico de la Suma de Riemann';
+    resetAnalyticAnim();
+  }
+}
+
+function buildAnalyticSteps() {
+  var F     = FUNCS[activeFunc];
+  var type  = riemannType;
+  var n     = parseInt(document.getElementById('n-slider').value);
+  var a     = F.a, b = F.b;
+  var v     = PARAMS.v, ac = PARAMS.a;
+  var exact = F.exact;
+  var dt    = r4((b - a) / n);
+
+  var pointName  = type === 'left'  ? 'extremo izquierdo' :
+                   type === 'right' ? 'extremo derecho' : 'punto medio';
+  var pointLabel = type === 'left'  ?
+    't_i^* = a + (i-1)\\,\\Delta t = ' + a + ' + (i-1) \\cdot \\dfrac{' + (b-a) + '}{n}' :
+    type === 'right' ?
+    't_i^* = a + i\\,\\Delta t = ' + a + ' + i \\cdot \\dfrac{' + (b-a) + '}{n}' :
+    't_i^* = a + \\left(i-\\tfrac{1}{2}\\right)\\Delta t = ' + a + ' + \\left(i-\\tfrac{1}{2}\\right)\\dfrac{' + (b-a) + '}{n}';
+  var iRange  = 'i = 1, 2, \\ldots, n';
+  var sumIdx  = 'i=1}^{n';
+
+  var fExpr  = activeFunc === 1 ? String(v) : ac + 't';
+  var fLabel = activeFunc === 1 ? 'f(t) = ' + v : 'f(t) = ' + ac + 't';
+  var fShort = activeFunc === 1 ? String(v) : ac + 't_i^*';
+
+  var fSub, sumSimplified, limitStep;
+  if (activeFunc === 1) {
+    fSub          = String(v);
+    sumSimplified = v + ' \\cdot n \\cdot \\dfrac{' + (b-a) + '}{n} = ' + v + ' \\cdot ' + (b-a) + ' = ' + exact;
+    limitStep     = '\\lim_{n\\to\\infty} S_n = ' + v + ' \\cdot ' + (b-a) + ' = ' + exact + ' \\text{ m}';
+  } else {
+    if (type === 'left') {
+      fSub          = ac + '\\left(a + (i-1)\\,\\Delta t\\right)';
+      sumSimplified = ac + '\\,\\Delta t\\left(na + \\Delta t\\cdot\\tfrac{n(n-1)}{2}\\right) \\xrightarrow{n\\to\\infty} ' + exact + '\\text{ m}';
+    } else if (type === 'right') {
+      fSub          = ac + '\\left(a+(i+1)\\,\\Delta t\\right)';
+      sumSimplified = ac + '\\,\\Delta t\\left(na + \\Delta t\\cdot\\tfrac{n(n+1)}{2}\\right)\\xrightarrow{n\\to\\infty}' + exact + '\\text{ m}';
+    } else {
+      fSub          = ac + '\\left(a+\\left(i-\\tfrac{1}{2}\\right)\\Delta t\\right)';
+      sumSimplified = ac + '\\,\\Delta t\\left(na + \\Delta t\\cdot\\tfrac{n^2}{2}\\right)\\xrightarrow{n\\to\\infty}' + exact + '\\text{ m}';
+    }
+    limitStep = '\\lim_{n\\to\\infty}S_n = \\int\\limits_{' + a + '}^{' + b + '}' + fExpr + '\\,dt = \\left[\\dfrac{' + (ac>1?ac:'') + 't^2}{2}\\right]_0^{' + b + '} = ' + exact + '\\text{ m}';
+  }
+
+  // ── Partition table ──────────────────────────────────────
+  var displayN = Math.min(n, 20);
+  var showDots = n > 20;
+  var totalSum = 0;
+  var rows = '';
+
+  for (var k = 0; k < n; k++) {
+    var iIdx   = k + 1;  // always 1..n
+    var tLeft  = r4(a + k * dt);
+    var tRight = r4(a + (k+1) * dt);
+    var tSamp  = type === 'left'  ? tLeft :
+                 type === 'right' ? tRight : r4(a + (k+0.5)*dt);
+    var fVal   = r4(F.fn(tSamp));
+    var area   = r4(fVal * dt);
+    totalSum   = r4(totalSum + area);
+
+    if (k < displayN) {
+      rows +=
+        '<tr>' +
+        '<td class="col-i">' + iIdx + '</td>' +
+        '<td class="col-sub">[' + tLeft + ', ' + tRight + ']</td>' +
+        '<td class="col-ti">' + tSamp + '</td>' +
+        '<td class="col-fti">' + fVal + '</td>' +
+        '<td>' + dt + '</td>' +
+        '<td class="col-area">' + area + '</td>' +
+        '</tr>';
+    }
+  }
+  if (showDots) {
+    rows += '<tr><td colspan="6" style="color:var(--muted);font-style:italic;font-size:0.74rem">\u22ef ' + (n - displayN) + ' filas m\u00e1s \u22ef</td></tr>';
+  }
+  rows +=
+    '<tr>' +
+    '<td colspan="5" style="text-align:right;font-family:\'Source Serif 4\',serif;font-weight:600">Total S<sub>' + n + '</sub> =</td>' +
+    '<td class="col-area">' + r4(totalSum) + ' m</td>' +
+    '</tr>';
+
+  var partTable =
+    '<div class="table-scroll"><table class="partition-table"><thead><tr>' +
+    '<th>$i$</th>' +
+    '<th>Subintervalo</th>' +
+    '<th>$t_i^*$ (' + pointName + ')</th>' +
+    '<th>$f(t_i^*)$</th>' +
+    '<th>$\\Delta t$</th>' +
+    '<th>$f(t_i^*)\\cdot\\Delta t$</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+    '<p class="table-note">$\\Delta t = ' + dt + '$ &emsp;|&emsp; $n = ' + n + '$ subintervalos &emsp;|&emsp; Suma $\\approx ' + r4(totalSum) + '$ m &emsp;|&emsp; Exacto $= ' + exact + '$ m &emsp;|&emsp; Error $= ' + r4(Math.abs(totalSum - exact)) + '$ m</p>';
+
+  var err = r4(Math.abs(totalSum - exact));
+
+  analyticSteps = [
+    {
+      num: '\u2460 Definici\u00f3n',
+      title: 'Suma de Riemann \u2014 ' + pointName,
+      math: 'S_n = \\displaystyle\\sum_{i=1}^{n} f(t_i^*)\\,\\Delta t',
+      note: 'Dividimos $[' + a + ', ' + b + ']$ en $n$ subintervalos iguales y evaluamos $f$ en el ' + pointName + ' $t_i^*$ de cada uno.',
+      cls: '', table: null
+    },
+    {
+      num: '\u2461 Tama\u00f1o del subintervalo',
+      title: 'C\u00e1lculo de $\\Delta t$',
+      math: '\\Delta t = \\dfrac{b - a}{n} = \\dfrac{' + b + ' - (' + a + ')}{' + n + '} = \\dfrac{' + (b-a) + '}{' + n + '} = ' + dt,
+      note: 'Cada uno de los ' + n + ' subintervalos tiene la misma longitud $\\Delta t = ' + dt + '$.',
+      cls: '', table: null
+    },
+    (function() {
+      // Build partition nodes x_0=a, x_1, ..., x_n=b
+      var maxShow = 7;  // max nodes to show explicitly
+      var nodes = [];
+      for (var ki = 0; ki <= n; ki++) nodes.push(r4(a + ki * dt));
+
+      var partStr;
+      if (n + 1 <= maxShow) {
+        // Show all nodes explicitly
+        var nodeList = nodes.map(function(xi, idx) {
+          return (idx === 0 ? 'x_0 = ' + xi :
+                  idx === n ? 'x_n = ' + xi :
+                  'x_{' + idx + '} = ' + xi);
+        }).join(',\\;');
+        partStr = 'P = \\{' + nodeList + '\\}';
+      } else {
+        // Show first 3, dots, last 3
+        var head = [
+          'x_0 = ' + nodes[0],
+          'x_1 = ' + nodes[1],
+          'x_2 = ' + nodes[2]
+        ].join(',\\;');
+        var tail = [
+          'x_{n-1} = ' + nodes[n-1],
+          'x_n = ' + nodes[n]
+        ].join(',\\;');
+        partStr = 'P = \\{' + head + ',\\;\\ldots,\\;' + tail + '\\}';
+      }
+      var genStr = 'x_i = a + i\\,\\Delta t = ' + a + ' + i \\cdot ' + dt + ', \\quad i = 0, 1, \\ldots, ' + n;
+
+      return {
+        num: '\u2462 Partici\u00f3n del intervalo',
+        title: 'Nodos equiespaciados: $P = \\{x_0 = a,\\, x_1,\\, \\ldots,\\, x_{n-1},\\, x_n = b\\}$',
+        math: partStr,
+        math2: genStr,
+        note: 'Los nodos dividen $[' + a + ', ' + b + ']$ en ' + n + ' subintervalos iguales de longitud $\\Delta t = ' + dt + '$. El primer nodo es $x_0 = a = ' + a + '$ y el \u00faltimo es $x_n = b = ' + b + '$.',
+        cls: '', table: null
+      };
+    })(),
+    {
+      num: '\u2463 Punto de muestra',
+      title: 'Punto $t_i^*$ para el ' + pointName + ' \u2014 expresi\u00f3n general',
+      math: pointLabel + ', \\quad ' + iRange,
+      note: 'El ' + pointName + ' determina la altura del rect\u00e1ngulo $i$-\u00e9simo.',
+      cls: '', table: null
+    },
+    {
+      num: '\u2464 Tabla de la partici\u00f3n',
+      title: 'Cada subintervalo, su punto de muestra $t_i^*$, $f(t_i^*)$ y su contribuci\u00f3n al \u00e1rea',
+      math: null,
+      note: null,
+      cls: 'highlight', table: partTable
+    },
+    {
+      num: '\u2465 Suma completa',
+      title: 'Sustituci\u00f3n en la f\u00f3rmula general con $n = ' + n + '$',
+      math: 'S_{' + n + '} = \\displaystyle\\sum_{' + sumIdx + '} \\left(' + fSub + '\\right) \\cdot \\dfrac{' + (b-a) + '}{' + n + '}',
+      note: 'Cada t\u00e9rmino es el \u00e1rea de un rect\u00e1ngulo: base $\\Delta t$ por altura $f(t_i^*)$.',
+      cls: 'highlight', table: null
+    },
+    {
+      num: '\u2466 Simplificaci\u00f3n algebraica',
+      title: 'Agrupando t\u00e9rminos (forma general en $n$)',
+      math: 'S_n = ' + sumSimplified,
+      note: activeFunc === 1 ?
+        'Para funci\u00f3n constante: $S_n = ' + v + ' \\cdot n \\cdot \\Delta t = ' + v + ' \\cdot (b-a)$ independiente de $n$.' :
+        'Usamos $\\displaystyle\\sum_{i=1}^{n}(i-1) = \\dfrac{n(n-1)}{2}$ (extremo izq.) o $\\sum_{i=1}^{n}i = \\dfrac{n(n+1)}{2}$ (extremo der.) para simplificar.',
+      cls: '', table: null
+    },
+    {
+      num: '\u2467 Resultado num\u00e9rico ($n = ' + n + '$)',
+      title: 'Valor de la aproximaci\u00f3n con ' + n + ' rect\u00e1ngulos',
+      math: 'S_{' + n + '} \\approx ' + r4(totalSum) + ' \\text{ m} \\qquad \\left|\\varepsilon\\right| = |S_n - I| = ' + err + ' \\text{ m}',
+      note: 'El valor exacto de la integral es ' + exact + ' m. Al aumentar $n$ el error $|\\varepsilon|$ disminuye.',
+      cls: '', table: null
+    },
+    {
+      num: '\u2468 L\u00edmite \u2192 Integral exacta',
+      title: 'La integral es el l\u00edmite de las Sumas de Riemann cuando $n \\to \\infty$',
+      math: limitStep,
+      note: 'Cuando $\\Delta t \\to 0$ la suma se convierte en integral y el error tiende a cero.',
+      cls: 'success', table: null
+    }
+  ];
+}
+function toggleAnalyticAnim() {
+  if (analyticRunning) pauseAnalyticAnim(); else startAnalyticAnim();
+}
+
+function startAnalyticAnim() {
+  if (analyticStep === 0) {
+    buildAnalyticSteps();
+    document.getElementById('analytic-body').innerHTML = '';
+  }
+  analyticRunning = true;
+  var btn = document.getElementById('btn-astep-play');
+  btn.innerHTML = '&#9646;&#9646; Pausar'; btn.classList.add('running');
+  runAnalyticStep();
+}
+
+function runAnalyticStep() {
+  if (analyticStep >= analyticSteps.length) { finishAnalyticAnim(); return; }
+  var s    = analyticSteps[analyticStep];
+  var body = document.getElementById('analytic-body');
+  var card = document.createElement('div');
+  card.className = 'step-card ' + (s.cls || '');
+
+  var mathHTML = '';
+  if (s.math) {
+    mathHTML += '<div class="step-math" data-katex="' + s.math.replace(/"/g,'&quot;') + '"></div>';
+  }
+  if (s.math2) {
+    mathHTML += '<div class="step-math" data-katex="' + s.math2.replace(/"/g,'&quot;') + '"></div>';
+  }
+  var tableHTML = s.table ? s.table : '';
+  var noteHTML  = s.note  ? '<div class="step-note">' + s.note + '</div>' : '';
+
+  card.innerHTML =
+    '<div class="step-num">' + s.num + '</div>' +
+    '<div class="step-title">' + s.title + '</div>' +
+    mathHTML + tableHTML + noteHTML;
+
+  body.appendChild(card);
+  renderKatexBlocks(card);
+  rerenderMath(card);
+  setTimeout(function() { card.classList.add('visible'); }, 30);
+  card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  analyticStep++;
+  analyticTimer = setTimeout(function() { if (analyticRunning) runAnalyticStep(); }, 1500);
+}
+
+function pauseAnalyticAnim() {
+  analyticRunning = false; clearTimeout(analyticTimer);
+  var btn = document.getElementById('btn-astep-play');
+  btn.innerHTML = '&#9654; Continuar'; btn.classList.remove('running');
+}
+
+function finishAnalyticAnim() {
+  analyticRunning = false;
+  var btn = document.getElementById('btn-astep-play');
+  btn.innerHTML = '&#10003; Completado'; btn.classList.remove('running');
+  btn.style.background = '#2e7d52'; btn.style.color = 'white';
+}
+
+function resetAnalyticAnim() {
+  analyticRunning = false; clearTimeout(analyticTimer); analyticStep = 0;
+  var btn = document.getElementById('btn-astep-play');
+  btn.innerHTML = '&#9654; Iniciar'; btn.classList.remove('running');
+  btn.style.background = ''; btn.style.color = '';
+  document.getElementById('analytic-body').innerHTML =
+    '<div class="analytic-placeholder">Presiona <strong>Iniciar</strong> para ver el desarrollo paso a paso.</div>';
+}
+
+var bikeTimer=null, bikeRunning=false, bikeT=0, bikeFuncN=1;
+var BIKE_FUNCS = {
+  1: { fn: function(t){return 6;},   dist: function(t){return 6*t;},   tMax:10, label:'v(t) = 6 m/s' },
+  2: { fn: function(t){return 2*t;}, dist: function(t){return t*t;},   tMax:8,  label:'v(t) = 2t m/s' }
+};
+var TRACK_W=700, TRACK_L=650, TRACK_X0=40;
+
+function setBikeFunc(n) {
+  bikeFuncN=n;
+  document.getElementById('bike-f1').className='func-btn'+(n===1?' active':'');
+  document.getElementById('bike-f2').className='func-btn'+(n===2?' active':'');
+  resetBike();
+}
+
+function getBikeSpeed() {
+  var v=parseInt(document.getElementById('bike-speed').value);
+  return [80,50,30,18,10][v-1];
+}
+
+function toggleBike() {
+  if (bikeRunning) pauseBike(); else startBike();
+}
+
+function startBike() {
+  bikeRunning=true;
+  var btn=document.getElementById('btn-bike');
+  btn.innerHTML='&#9646;&#9646; Pausar'; btn.classList.add('running');
+  runBikeStep();
+}
+
+function runBikeStep() {
+  var BF=BIKE_FUNCS[bikeFuncN];
+  var dt=0.1;
+  bikeT=r4(bikeT+dt);
+  if (bikeT>BF.tMax) { finishBike(); return; }
+  drawBike(bikeT);
+  updateBikeInfo(bikeT);
+  bikeTimer=setTimeout(function(){ if(bikeRunning) runBikeStep(); }, getBikeSpeed());
+}
+
+function finishBike() {
+  bikeRunning=false; clearTimeout(bikeTimer);
+  var BF=BIKE_FUNCS[bikeFuncN];
+  var btn=document.getElementById('btn-bike');
+  btn.innerHTML='&#10003; Completado'; btn.classList.remove('running');
+  btn.style.background='#2e7d52'; btn.style.color='white';
+  document.getElementById('bi-total').textContent=r4(BF.dist(BF.tMax))+' m';
+  document.getElementById('bi-total').className='bi-val peak';
+  drawBike(BF.tMax);
+}
+
+function pauseBike() {
+  bikeRunning=false; clearTimeout(bikeTimer);
+  var btn=document.getElementById('btn-bike');
+  btn.innerHTML='&#9654; Continuar'; btn.classList.remove('running');
+}
+
+function resetBike() {
+  bikeRunning=false; clearTimeout(bikeTimer); bikeT=0;
+  var btn=document.getElementById('btn-bike');
+  btn.innerHTML='&#9654; Iniciar'; btn.classList.remove('running');
+  btn.style.background=''; btn.style.color='';
+  document.getElementById('bi-total').textContent='—';
+  document.getElementById('bi-total').className='bi-val';
+  drawBike(0); updateBikeInfo(0);
+}
+
+function updateBikeInfo(t) {
+  var BF=BIKE_FUNCS[bikeFuncN];
+  document.getElementById('bi-t').textContent=r4(t)+' s';
+  document.getElementById('bi-v').textContent=r4(BF.fn(t))+' m/s';
+  document.getElementById('bi-d').textContent=r4(BF.dist(t))+' m';
+  // Acceleration: 0 for constant, PARAMS.a for accelerated
+  var accel = bikeFuncN === 1 ? 0 : PARAMS.a;
+  document.getElementById('bi-a').textContent = accel + ' m/s²';
+}
+
+function drawBike(t) {
+  var BF=BIKE_FUNCS[bikeFuncN];
+  var pct = BF.tMax>0 ? t/BF.tMax : 0;
+  var bx  = TRACK_X0 + pct*TRACK_L;
+  var svg = d3.select('#bike-svg');
+  svg.selectAll('*').remove();
+
+  var svgW=800, svgH=170;
+
+  // Sky gradient
+  var defs=svg.append('defs');
+  var skyGrad=defs.append('linearGradient').attr('id','sky-g').attr('x1','0%').attr('y1','0%').attr('x2','0%').attr('y2','100%');
+  skyGrad.append('stop').attr('offset','0%').attr('stop-color','#b8d4f0');
+  skyGrad.append('stop').attr('offset','100%').attr('stop-color','#ddeeff');
+  svg.append('rect').attr('width',svgW).attr('height',svgH).attr('fill','url(#sky-g)');
+
+  // Ground
+  svg.append('rect').attr('x',0).attr('y',130).attr('width',svgW).attr('height',40)
+    .attr('fill','#7cba5a');
+  svg.append('rect').attr('x',0).attr('y',128).attr('width',svgW).attr('height',6)
+    .attr('fill','#5a9e3a');
+
+  // Road
+  svg.append('rect').attr('x',TRACK_X0-10).attr('y',124).attr('width',TRACK_L+20).attr('height',10)
+    .attr('fill','#888').attr('rx',2);
+  // Road dashes
+  for(var dx=TRACK_X0+20;dx<TRACK_X0+TRACK_L-20;dx+=40){
+    svg.append('rect').attr('x',dx).attr('y',128).attr('width',20).attr('height',3)
+      .attr('fill','#fff').attr('opacity',0.6);
+  }
+
+  // Distance track (progress)
+  svg.append('rect').attr('x',TRACK_X0).attr('y',124).attr('width',pct*TRACK_L).attr('height',10)
+    .attr('fill','#c8a951').attr('opacity',0.5).attr('rx',2);
+
+  // Start flag (left) — vertical pole + flag shape
+  var sf = svg.append('g').attr('transform','translate('+TRACK_X0+',100)');
+  sf.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',26)
+    .attr('stroke','#333').attr('stroke-width',2);
+  sf.append('polygon').attr('points','0,0 14,5 0,10')
+    .attr('fill','#003B75');
+  sf.append('text').attr('x',0).attr('y',36).attr('text-anchor','middle')
+    .attr('font-size',9).attr('fill','#555').attr('font-family','Source Serif 4,serif')
+    .text('Inicio');
+
+  // Finish flag (right) — checkered pattern
+  var ef = svg.append('g').attr('transform','translate('+(TRACK_X0+TRACK_L)+',100)');
+  ef.append('line').attr('x1',0).attr('y1',0).attr('x2',0).attr('y2',26)
+    .attr('stroke','#333').attr('stroke-width',2);
+  // 2x2 checkered squares
+  [[0,0,'#fff'],[4,0,'#333'],[0,4,'#333'],[4,4,'#fff'],
+   [0,8,'#fff'],[4,8,'#333'],[0,12,'#333'],[4,12,'#fff']].forEach(function(sq){
+    ef.append('rect').attr('x',sq[0]).attr('y',sq[1]).attr('width',4).attr('height',4)
+      .attr('fill',sq[2]).attr('stroke','#888').attr('stroke-width',0.3);
+  });
+  ef.append('text').attr('x',0).attr('y',36).attr('text-anchor','middle')
+    .attr('font-size',9).attr('fill','#555').attr('font-family','Source Serif 4,serif')
+    .text('Meta');
+
+  // Distance label
+  svg.append('text').attr('x',(TRACK_X0+bx)/2).attr('y',145).attr('text-anchor','middle')
+    .attr('font-size',11).attr('fill','#003B75').attr('font-family','JetBrains Mono,monospace').attr('font-weight','600')
+    .text(r4(BF.dist(t))+' m');
+
+  // Speed label
+  if (t>0) {
+    svg.append('text').attr('x',bx+4).attr('y',100).attr('font-size',10)
+      .attr('fill','#9b1845').attr('font-family','JetBrains Mono,monospace')
+      .text('v='+r4(BF.fn(t))+'m/s');
+  }
+
+  // Bicycle (SVG group) at position bx
+  var by=108; // wheel center y
+  var g=svg.append('g').attr('transform','translate('+bx+','+by+')');
+
+  // Wheels
+  [[-16,0],[16,0]].forEach(function(pos){
+    g.append('circle').attr('cx',pos[0]).attr('cy',pos[1]).attr('r',14)
+      .attr('fill','none').attr('stroke','#333').attr('stroke-width',2.5);
+    g.append('circle').attr('cx',pos[0]).attr('cy',pos[1]).attr('r',3)
+      .attr('fill','#333');
+    // spokes
+    for(var s=0;s<4;s++){
+      var ang=s*Math.PI/4 + t*BF.fn(t)*0.3;
+      g.append('line')
+        .attr('x1',pos[0]+Math.cos(ang)*3).attr('y1',pos[1]+Math.sin(ang)*3)
+        .attr('x2',pos[0]+Math.cos(ang)*13).attr('y2',pos[1]+Math.sin(ang)*13)
+        .attr('stroke','#555').attr('stroke-width',1);
+    }
+  });
+
+  // Frame
+  g.append('line').attr('x1',-16).attr('y1',0).attr('x2',0).attr('y2',-22)
+    .attr('stroke','#003B75').attr('stroke-width',2.5);
+  g.append('line').attr('x1',16).attr('y1',0).attr('x2',0).attr('y2',-22)
+    .attr('stroke','#003B75').attr('stroke-width',2.5);
+  g.append('line').attr('x1',0).attr('y1',-22).attr('x2',-8).attr('y2',-10)
+    .attr('stroke','#003B75').attr('stroke-width',2.5);
+  g.append('line').attr('x1',0).attr('y1',-22).attr('x2',16).attr('y2',0)
+    .attr('stroke','#9b1845').attr('stroke-width',2);
+
+  // Handlebar
+  g.append('line').attr('x1',14).attr('y1',-25).attr('x2',20).attr('y2',-25)
+    .attr('stroke','#333').attr('stroke-width',2).attr('stroke-linecap','round');
+  // Seat
+  g.append('line').attr('x1',-8).attr('y1',-28).attr('x2',0).attr('y2',-28)
+    .attr('stroke','#333').attr('stroke-width',2.5).attr('stroke-linecap','round');
+  // Fork
+  g.append('line').attr('x1',16).attr('y1',0).attr('x2',14).attr('y2',-24)
+    .attr('stroke','#555').attr('stroke-width',1.5);
+
+  // Rider
+  // Body
+  g.append('line').attr('x1',0).attr('y1',-28).attr('x2',6).attr('y2',-46)
+    .attr('stroke','#c8a951').attr('stroke-width',4).attr('stroke-linecap','round');
+  // Head
+  g.append('circle').attr('cx',8).attr('cy',-52).attr('r',7)
+    .attr('fill','#f5d5a0').attr('stroke','#c8a951').attr('stroke-width',1.5);
+  // Helmet
+  g.append('path').attr('d','M 2,-54 Q 8,-62 14,-54').attr('fill','#9b1845').attr('stroke','none');
+  // Arm
+  g.append('line').attr('x1',6).attr('y1',-44).attr('x2',16).attr('y2',-36)
+    .attr('stroke','#c8a951').attr('stroke-width',3).attr('stroke-linecap','round');
+  // Leg
+  g.append('line').attr('x1',2).attr('y1',-28).attr('x2',-6).attr('y2',-14)
+    .attr('stroke','#003B75').attr('stroke-width',3).attr('stroke-linecap','round');
+
+  // Time + velocity panel
+  svg.append('rect').attr('x',svgW-148).attr('y',8).attr('width',140).attr('height',70)
+    .attr('fill','rgba(0,59,117,0.85)').attr('rx',4);
+  svg.append('text').attr('x',svgW-78).attr('y',26).attr('text-anchor','middle')
+    .attr('font-size',11).attr('fill','#c8a951').attr('font-family','JetBrains Mono,monospace')
+    .text('t = '+r4(t)+' s');
+  svg.append('text').attr('x',svgW-78).attr('y',42).attr('text-anchor','middle')
+    .attr('font-size',11).attr('fill','white').attr('font-family','JetBrains Mono,monospace')
+    .text('v = '+r4(BF.fn(t))+' m/s');
+  svg.append('text').attr('x',svgW-78).attr('y',56).attr('text-anchor','middle')
+    .attr('font-size',11).attr('fill','#c8a951').attr('font-family','JetBrains Mono,monospace')
+    .text('d = '+r4(BF.dist(t))+' m');
+  var accelVal = bikeFuncN===1 ? 0 : PARAMS.a;
+  svg.append('text').attr('x',svgW-78).attr('y',71).attr('text-anchor','middle')
+    .attr('font-size',11).attr('fill','white').attr('font-family','JetBrains Mono,monospace')
+    .text('a = '+accelVal+' m/s²');
+}
+
+/* ════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════ */
+window.addEventListener('load', function() {
+  rebuildFuncs();
+  updateDynamicTexts();
+  setTimeout(renderKatexBlocks, 100);
+  initIntegral();
+  drawBike(0); updateBikeInfo(0);
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ]
+    });
+  }
+});
+window.addEventListener('resize', function() { initIntegral(); });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 16 — Caja sin tapa con volumen máximo · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --card:#d9b externa; --cardboard:#d8b98a; --cardboard-d:#b8945f; --cut:#c9dcf0; --flap:#e8d3ab;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.setup-box{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0; font-size:.95rem;
+}
+.setup-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:56px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── DIAGRAMAS ── */
+.diagram-wrap{display:grid; grid-template-columns:1fr; gap:16px; margin-top:6px;}
+@media (min-width:720px){ .diagram-wrap{grid-template-columns:1fr 1fr;} }
+.diagram-box{
+  position:relative; width:100%; height:360px;
+  background:#fff; border:1px solid var(--border); border-radius:3px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.diagram-cap{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); text-align:center;
+  padding:6px 0 2px;
+}
+.chart-box{
+  position:relative; width:100%; height:400px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.chart-box.small{height:280px;}
+
+.slider-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.slider-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+}
+.slider-wrap .hval{color:var(--crimson); font-weight:700;}
+input[type=range]{width:100%; accent-color:var(--navy); cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.6;}
+.curve-up{stroke:var(--success);}
+.curve-down{stroke:var(--crimson);}
+.dcurve{fill:none; stroke:var(--crimson); stroke-width:2.2;}
+.opt-line{stroke:var(--gold); stroke-width:2; stroke-dasharray:6,4;}
+.asym-line{stroke:var(--muted); stroke-width:1.3; stroke-dasharray:4,4; opacity:.6;}
+.probe-line{stroke:var(--crimson); stroke-width:1.4; stroke-dasharray:3,3; opacity:.7;}
+.domain-shade{fill:var(--muted); opacity:.08;}
+.max-dot{fill:var(--gold); stroke:var(--navy); stroke-width:2;}
+.probe-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.5;}
+.root-dot{fill:#fff; stroke:var(--crimson); stroke-width:2.2;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.dim-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; fill:var(--navy);}
+.dim-line{stroke:var(--navy); stroke-width:1;}
+.cut-lbl{font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; fill:var(--crimson);}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.57rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:.98rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.opt .v{color:#8a6f1e;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--success); background:#f2f8f4;
+}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--success); margin-bottom:8px;}
+.verdict .vb{font-size:.94rem;}
+
+.reject-box{
+  border-left:5px solid var(--crimson); background:#fdf3f6;
+  border-radius:3px; padding:16px 20px; margin-top:14px; font-size:.93rem;
+}
+.reject-box .rk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:8px;
+}
+
+.dims-final{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-top:16px;}
+.dim-card{
+  background:linear-gradient(180deg,#fbfaf7,#f4f1ea);
+  border:1px solid var(--border); border-top:3px solid var(--gold);
+  border-radius:3px; padding:15px; text-align:center;
+}
+.dim-card .k{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.dim-card .v{font-family:'JetBrains Mono',monospace; font-size:1.35rem; font-weight:700; color:var(--navy);}
+.dim-card .u{font-size:.78rem; color:var(--muted);}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .diagram-box{height:280px;}
+  .chart-box{height:320px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 16 — Caja sin tapa con volumen máximo</div>
+      <div class="header-sub">Optimización: recortar, plegar, maximizar</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">16</div>
+      <h2>Construcción de una caja sin tapa con volumen máximo</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Modelar un problema de volumen: expresar $V(x)$ como función del corte, hallar los puntos
+        críticos con la derivada, <strong>descartar la raíz que cae fuera del dominio</strong> y
+        verificar que la restante es un máximo. El detalle fino está en el <strong>dominio</strong>:
+        no todo valor de $x$ produce una caja real.</p>
+      </div>
+
+      <div class="setup-box">
+        <span class="lbl">Planteamiento</span>
+        <p>Se construye una caja sin tapa a partir de una lámina de cartón de
+        <strong id="s-L">40</strong> cm × <strong id="s-W">40</strong> cm. Se recortan cuadrados de
+        lado $x$ en cada esquina y se doblan los lados hacia arriba. Se busca el $x$ que
+        <strong>maximiza el volumen</strong>.</p>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Cambia las dimensiones de la lámina. Aunque el enunciado usa una lámina cuadrada, el motor
+          resuelve el caso <strong>rectangular</strong> general: el óptimo sale de una cuadrática, y
+          hay que elegir la raíz correcta.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-L">largo lámina L (cm)</label><input type="number" id="p-L" value="40" step="any" min="2"></div>
+          <div class="param-field"><label for="p-W">ancho lámina W (cm)</label><input type="number" id="p-W" value="40" step="any" min="2"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="40,40">Original · 40×40</button>
+          <button class="btn-ghost" data-preset="30,30">30×30</button>
+          <button class="btn-ghost" data-preset="60,30">60×30 · rectangular</button>
+          <button class="btn-ghost" data-preset="50,20">50×20 · muy alargada</button>
+          <button class="btn-ghost" data-preset="24,24">24×24 · x*=4 exacto</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) ESQUEMA ── -->
+      <div class="sec-title">a) Esquema de la lámina y la caja formada</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">
+        A la izquierda, la lámina vista desde arriba con los cuatro cuadrados de lado $x$ recortados
+        (en azul). A la derecha, la caja que resulta al doblar las solapas hacia arriba. Mueve $x$ y
+        observa cómo cambian ambas.
+      </p>
+
+      <div class="diagram-wrap">
+        <div>
+          <div class="diagram-cap">lámina vista desde arriba</div>
+          <div class="diagram-box" id="flat-box"></div>
+        </div>
+        <div>
+          <div class="diagram-cap">caja formada (vista 3D)</div>
+          <div class="diagram-box" id="box3d-box"></div>
+        </div>
+      </div>
+
+      <div class="slider-wrap">
+        <span class="hlbl">lado del corte x = <span class="hval" id="x-val">6.67</span> cm</span>
+        <input type="range" id="x-slider" min="0.1" max="19" step="0.05" value="6.67">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Barrer x y hallar el máximo</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+        <button class="btn-ghost" id="btn-goto">↦ Saltar al óptimo</button>
+      </div>
+
+      <!-- ── b) BASE ── -->
+      <div class="sec-title">b) Dimensiones de la base en función de $x$</div>
+      <div class="solve-box" id="solve-b"></div>
+
+      <!-- ── c) VOLUMEN ── -->
+      <div class="sec-title">c) El volumen $V(x)$ como función del corte</div>
+      <div class="solve-box" id="solve-c"></div>
+      <p class="note" id="note-c"></p>
+
+      <div class="sec-title">Gráfica de $V(x)$</div>
+      <div class="chart-box" id="chart-V"><div class="tooltip" id="tip-V"></div></div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">corte x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">base</span><span class="v" id="lv-base" style="font-size:.8rem;">—</span></div>
+        <div class="live-cell"><span class="k">altura</span><span class="v" id="lv-h">—</span></div>
+        <div class="live-cell crim"><span class="k">volumen V(x)</span><span class="v" id="lv-V">—</span></div>
+        <div class="live-cell opt"><span class="k">máximo posible</span><span class="v" id="lv-max">—</span></div>
+      </div>
+
+      <!-- ── d) DERIVADA Y ÓPTIMO ── -->
+      <div class="sec-title">d) Derivada $V'(x)$ y el valor que maximiza</div>
+      <div class="solve-box" id="solve-d"></div>
+
+      <div class="reject-box" id="reject-box"></div>
+
+      <div class="sec-title">Gráfica de $V'(x)$: dos raíces, una válida</div>
+      <div class="chart-box small" id="chart-dV"><div class="tooltip" id="tip-dV"></div></div>
+      <p class="note">
+        $V'(x)$ es una <strong>cuadrática</strong>: corta el eje <em>dos veces</em>. Pero solo una raíz
+        cae dentro del dominio $0 &lt; x &lt; \tfrac{W}{2}$. La otra da una «caja» imposible.
+      </p>
+
+      <!-- ── e) VERIFICAR MÁXIMO ── -->
+      <div class="sec-title">e) Verifique que es un máximo</div>
+      <div id="verify-panel"></div>
+
+      <!-- ── f) VOLUMEN MÁXIMO ── -->
+      <div class="sec-title">f) ¿Cuál es el volumen máximo de la caja?</div>
+      <div id="dims-panel"></div>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>El papel del dominio y por qué se descarta una raíz</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">Optimización con dominio restringido</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 16 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   Lámina L (largo) × W (ancho). Se recortan cuadrados de lado x en las esquinas.
+   Base de la caja:  (L − 2x) × (W − 2x).   Altura: x.
+   V(x) = x (L − 2x)(W − 2x),   con dominio  0 < x < min(L,W)/2.
+   V'(x) = 12x² − 4(L+W)x + LW   (cuadrática).
+   Raíces: x = [ (L+W) ± √(L²−LW+W²) ] / 6.  La raíz "−" es la válida.
+   ═══════════════════════════════════════════════ */
+let L = 40, W = 40;
+let XCUR = 0;
+let ANIM = null;
+
+const TOL = 1e-9;
+
+/* ── Funciones puras ── */
+function baseL(x){ return L - 2*x; }
+function baseW(x){ return W - 2*x; }
+function V(x){ return x * baseL(x) * baseW(x); }
+function Vp(x){ return 12*x*x - 4*(L+W)*x + L*W; }       // V'(x)
+function Vpp(x){ return 24*x - 4*(L+W); }                 // V''(x)
+function xMaxDomain(){ return Math.min(L, W) / 2; }       // límite superior del dominio
+
+/* ── Las dos raíces de V'=0, y cuál es válida ── */
+function roots(){
+  /* 12x² − 4(L+W)x + LW = 0  →  x = [4(L+W) ± √Δ] / 24 = [(L+W) ± √(L²−LW+W²)]/6 */
+  const disc = (L+W)*(L+W) - 3*L*W;   // = L² − LW + W² (siempre > 0 para L,W>0)
+  const s = Math.sqrt(Math.max(0, disc));
+  const rMinus = ((L+W) - s) / 6;
+  const rPlus  = ((L+W) + s) / 6;
+  return {rMinus, rPlus, disc};
+}
+function xStar(){
+  /* La raíz válida es la "−": la "+" siempre cae fuera del dominio (≥ min(L,W)/2) */
+  const {rMinus} = roots();
+  return rMinus;
+}
+function optimum(){
+  const xs = xStar();
+  return {
+    x: xs, V: V(xs),
+    bL: baseL(xs), bW: baseW(xs), h: xs,
+    Vpp: Vpp(xs)
+  };
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 2 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+
+/* ── LaTeX (dependiente de parámetros) ── */
+function V_factoredTex(){ return 'x\\,(' + fmt(L) + ' - 2x)(' + fmt(W) + ' - 2x)'; }
+function V_expandedTex(){
+  /* V = 4x³ − 2(L+W)x² + LW·x */
+  return '4x^{3} - ' + fmt(2*(L+W)) + 'x^{2} + ' + fmt(L*W) + 'x';
+}
+function Vp_Tex(){ return '12x^{2} - ' + fmt(4*(L+W)) + 'x + ' + fmt(L*W); }
+function Vpp_Tex(){ return '24x - ' + fmt(4*(L+W)); }
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const l = parseFloat(document.getElementById('p-L').value);
+  const w = parseFloat(document.getElementById('p-W').value);
+  L = (isFinite(l) && l > 1) ? l : 40;
+  W = (isFinite(w) && w > 1) ? w : 40;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  document.getElementById('s-L').textContent = fmt(L);
+  document.getElementById('s-W').textContent = fmt(W);
+
+  const sl = document.getElementById('x-slider');
+  const hi = xMaxDomain() * 0.999;
+  sl.min = 0.05; sl.max = hi; sl.step = hi / 400;
+  XCUR = xStar();
+  sl.value = XCUR;
+  document.getElementById('x-val').textContent = fmt(XCUR);
+
+  renderPreview();
+  renderSolveB();
+  renderSolveC();
+  renderSolveD();
+  renderReject();
+  renderVerify();
+  renderDims();
+  drawFlat();
+  drawBox3D();
+  drawVChart();
+  drawDVChart();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PREVIEW
+   ═══════════════════════════════════════════════ */
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const o = optimum();
+  const dm = xMaxDomain();
+  el.innerHTML =
+    'Base de la caja: $(' + fmt(L) + '-2x) \\times (' + fmt(W) + '-2x)$, altura $x$. ' +
+    'El dominio es $0 &lt; x &lt; ' + fmt(dm) + '$ (más allá, un lado de la base sería negativo). ' +
+    'El óptimo resultará $x^{*} = ' + fmt(o.x, 3) + '$ cm, pero primero hay que construir $V(x)$.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) BASE
+   ═══════════════════════════════════════════════ */
+function renderSolveB(){
+  const box = document.getElementById('solve-b');
+  let html = '';
+  html += '<div class="solve-step"><span class="n">Idea</span><span class="b">' +
+    'Al recortar un cuadrado de lado $x$ en <em>cada esquina</em>, cada dimensión de la lámina ' +
+    'pierde $x$ por <strong>los dos extremos</strong>: un total de $2x$.</span></div>';
+  html += '<div class="solve-step"><span class="n">Base</span><span class="b">' +
+    'Las dimensiones de la base de la caja son:' +
+    '$$\\text{largo base} = ' + fmt(L) + ' - 2x \\qquad \\text{ancho base} = ' + fmt(W) + ' - 2x$$</span></div>';
+  html += '<div class="solve-step"><span class="n">Altura</span><span class="b">' +
+    'Al doblar las solapas hacia arriba, la <strong>altura</strong> de la caja es justamente el ' +
+    'lado del corte: $h = x$.</span></div>';
+  box.innerHTML = html;
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — c) VOLUMEN
+   ═══════════════════════════════════════════════ */
+function renderSolveC(){
+  const box = document.getElementById('solve-c');
+  const dm = xMaxDomain();
+  let html = '';
+  html += '<div class="solve-step"><span class="n">Volumen</span><span class="b">' +
+    'Volumen = largo × ancho × alto:' +
+    '$$V(x) = ' + V_factoredTex() + '$$</span></div>';
+  html += '<div class="solve-step"><span class="n">Expandir</span><span class="b">' +
+    'Multiplicando:' +
+    '$$V(x) = ' + V_expandedTex() + '$$' +
+    'Es un <strong>polinomio cúbico</strong>. Su derivada será cuadrática — de ahí las dos raíces.</span></div>';
+  html += '<div class="solve-step"><span class="n">Dominio</span><span class="b">' +
+    'Para que la caja exista, los tres factores deben ser positivos: $x&gt;0$, $' + fmt(L) + '-2x&gt;0$ ' +
+    'y $' + fmt(W) + '-2x&gt;0$. El más restrictivo fija el tope:' +
+    '$$0 &lt; x &lt; \\dfrac{\\min(' + fmt(L) + ',' + fmt(W) + ')}{2} = ' + fmt(dm) + '$$' +
+    'En los extremos ($x=0$ o $x=' + fmt(dm) + '$) el volumen es <strong>cero</strong>: sin altura, o sin base.</span></div>';
+  box.innerHTML = html;
+  renderMath(box);
+
+  document.getElementById('note-c').innerHTML =
+    'El volumen vale $0$ en ambos extremos del dominio y es positivo en medio: por eso la curva ' +
+    'sube desde cero, alcanza una cima y vuelve a bajar a cero. El máximo está en esa cima.';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — d) DERIVADA Y ÓPTIMO
+   ═══════════════════════════════════════════════ */
+function renderSolveD(){
+  const box = document.getElementById('solve-d');
+  const o = optimum();
+  const {rMinus, rPlus, disc} = roots();
+  let html = '';
+
+  html += '<div class="solve-step"><span class="n">Derivar</span><span class="b">' +
+    'Derivamos la forma expandida:' +
+    '$$V\'(x) = ' + Vp_Tex() + '$$' +
+    'Es una <strong>cuadrática</strong>: se anula en (a lo sumo) dos puntos.</span></div>';
+
+  html += '<div class="solve-step"><span class="n">Fórmula</span><span class="b">' +
+    'Aplicamos la fórmula cuadrática a $12x^{2} - ' + fmt(4*(L+W)) + 'x + ' + fmt(L*W) + ' = 0$. ' +
+    'Simplificando (dividiendo por 4), $x = \\dfrac{(' + fmt(L) + '+' + fmt(W) + ') \\pm \\sqrt{' + fmt(L) + '^{2} - ' + fmt(L) + '\\cdot' + fmt(W) + ' + ' + fmt(W) + '^{2}}}{6}$:' +
+    '$$x = \\dfrac{' + fmt(L+W) + ' \\pm \\sqrt{' + fmt(disc, 2) + '}}{6} \\;\\Longrightarrow\\; ' +
+    'x_{1} = ' + fmt(rMinus, 4) + ', \\quad x_{2} = ' + fmt(rPlus, 4) + '$$</span></div>';
+
+  html += '<div class="solve-step"><span class="n">Elegir</span><span class="b">' +
+    'Dos candidatos, pero solo uno vive en el dominio $0 &lt; x &lt; ' + fmt(xMaxDomain()) + '$. ' +
+    'El válido es $x^{*} = ' + fmt(o.x, 4) + '$ cm. ' +
+    '(Abajo se explica por qué el otro se descarta.)</span></div>';
+
+  box.innerHTML = html;
+  renderMath(box);
+}
+
+function renderReject(){
+  const el = document.getElementById('reject-box');
+  const {rPlus} = roots();
+  const dm = xMaxDomain();
+  el.innerHTML =
+    '<span class="rk">Por qué se descarta la otra raíz</span>' +
+    '<p>La raíz $x_{2} = ' + fmt(rPlus, 3) + '$ cae <strong>fuera del dominio</strong>: es mayor que ' +
+    '$' + fmt(dm) + ' = \\min(L,W)/2$. ' +
+    'Si intentáramos ese corte, el lado $' + fmt(Math.min(L,W)) + ' - 2(' + fmt(rPlus,3) + ') = ' +
+    fmt(Math.min(L,W) - 2*rPlus, 3) + '$ sería <strong>negativo</strong>: no existe tal caja. ' +
+    'Matemáticamente $x_{2}$ anula la derivada, pero <em>físicamente</em> es imposible. ' +
+    'Por eso en optimización aplicada el <strong>dominio no es un detalle</strong>: es parte de la respuesta.</p>';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — e) VERIFICAR MÁXIMO
+   ═══════════════════════════════════════════════ */
+function renderVerify(){
+  const el = document.getElementById('verify-panel');
+  const o = optimum();
+  let html = '<div class="verdict"><span class="vk">Verificación · dos criterios</span>' +
+    '<div class="vt">Es un MÁXIMO ✓</div><div class="vb">';
+
+  html += '<p style="margin-bottom:10px;"><strong>Criterio 1 · segunda derivada.</strong> ' +
+    '$V\'\'(x) = ' + Vpp_Tex() + '$. En el óptimo:</p>' +
+    '<p style="text-align:center;">$$V\'\'(' + fmt(o.x,3) + ') = ' + fmt(o.Vpp, 3) + ' &lt; 0$$</p>' +
+    '<p style="margin-bottom:10px;">Segunda derivada <strong>negativa</strong> ⟹ concavidad hacia abajo ⟹ ' +
+    '<strong>máximo</strong>. (La otra raíz daría $V\'\' &gt; 0$: un mínimo — pero está fuera del dominio.)</p>';
+
+  html += '<p style="margin-bottom:10px;"><strong>Criterio 2 · cambio de signo de $V\'$.</strong> ' +
+    'Como $V(0) = 0$, la caja crece al empezar, así que $V\' &gt; 0$ a la izquierda de $x^{*}$. ' +
+    'Y $V(x) \\to 0$ al acercarse al borde del dominio, así que $V\' &lt; 0$ a la derecha. ' +
+    'El cambio de $+$ a $-$ confirma el máximo.</p>';
+
+  html += '<p>El volumen máximo es $V(x^{*}) = ' + fmt(o.V, 2) + '$ cm³.</p></div></div>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — f) VOLUMEN MÁXIMO
+   ═══════════════════════════════════════════════ */
+function renderDims(){
+  const el = document.getElementById('dims-panel');
+  const o = optimum();
+  let html = '<p style="font-size:.95rem;margin-bottom:6px;">' +
+    'Con $x^{*} = ' + fmt(o.x,3) + '$ cm, la caja óptima tiene:</p>';
+  html += '<div class="dims-final">' +
+    '<div class="dim-card"><span class="k">base</span><div class="v">' + fmt(o.bL,1) + '×' + fmt(o.bW,1) + '<span class="u"> cm</span></div></div>' +
+    '<div class="dim-card"><span class="k">altura</span><div class="v">' + fmt(o.h,2) + '<span class="u"> cm</span></div></div>' +
+    '<div class="dim-card"><span class="k">volumen máximo</span><div class="v">' + fmt(o.V,1) + '<span class="u"> cm³</span></div></div>' +
+    '</div>';
+  html += '<p style="font-size:.93rem;margin-top:14px;">' +
+    'Es decir: recortando cuadrados de $' + fmt(o.x,2) + '$ cm en cada esquina de la lámina de ' +
+    '$' + fmt(L) + '\\times' + fmt(W) + '$, y doblando, se obtiene la caja de <strong>mayor volumen posible</strong>: ' +
+    '$' + fmt(o.V,1) + '$ cm³. Cualquier otro corte da menos.</p>';
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DIAGRAMA PLANO (lámina)
+   ═══════════════════════════════════════════════ */
+function drawFlat(){
+  const box = document.getElementById('flat-box');
+  d3.select('#flat-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const Wd = box.clientWidth || 380, Hd = box.clientHeight || 360;
+  const pad = 44;
+  const sc = Math.min((Wd - 2*pad)/L, (Hd - 2*pad)/W);
+  const PW = L*sc, PH = W*sc;
+  const x0 = (Wd - PW)/2, y0 = (Hd - PH)/2;
+  const cut = XCUR * sc;
+
+  const svg = d3.select('#flat-box').append('svg')
+    .attr('width', Wd).attr('height', Hd).attr('viewBox','0 0 ' + Wd + ' ' + Hd);
+
+  /* Lámina */
+  svg.append('rect').attr('x', x0).attr('y', y0).attr('width', PW).attr('height', PH)
+    .attr('fill','var(--cardboard)').attr('stroke','var(--cardboard-d)').attr('stroke-width',1.5);
+
+  /* Líneas de pliegue */
+  [x0+cut, x0+PW-cut].forEach(xx => {
+    svg.append('line').attr('x1',xx).attr('x2',xx).attr('y1',y0).attr('y2',y0+PH)
+      .attr('stroke','var(--navy)').attr('stroke-width',1).attr('stroke-dasharray','4,3').attr('opacity',.5);
+  });
+  [y0+cut, y0+PH-cut].forEach(yy => {
+    svg.append('line').attr('x1',x0).attr('x2',x0+PW).attr('y1',yy).attr('y2',yy)
+      .attr('stroke','var(--navy)').attr('stroke-width',1).attr('stroke-dasharray','4,3').attr('opacity',.5);
+  });
+
+  /* Base (centro) resaltada */
+  svg.append('rect')
+    .attr('x', x0+cut).attr('y', y0+cut)
+    .attr('width', Math.max(0,PW-2*cut)).attr('height', Math.max(0,PH-2*cut))
+    .attr('fill','var(--flap)').attr('opacity',.5);
+
+  /* Cuadrados recortados en las esquinas */
+  const corners = [[x0,y0],[x0+PW-cut,y0],[x0,y0+PH-cut],[x0+PW-cut,y0+PH-cut]];
+  corners.forEach(([cx,cy]) => {
+    svg.append('rect').attr('x',cx).attr('y',cy).attr('width',cut).attr('height',cut)
+      .attr('fill','var(--cut)').attr('stroke','var(--crimson)').attr('stroke-width',1.4);
+    /* Aspa de "recortado" */
+    svg.append('line').attr('x1',cx).attr('y1',cy).attr('x2',cx+cut).attr('y2',cy+cut)
+      .attr('stroke','var(--crimson)').attr('stroke-width',.8).attr('opacity',.6);
+    svg.append('line').attr('x1',cx+cut).attr('y1',cy).attr('x2',cx).attr('y2',cy+cut)
+      .attr('stroke','var(--crimson)').attr('stroke-width',.8).attr('opacity',.6);
+  });
+
+  /* Cota del corte x (esquina sup izq) */
+  if (cut > 12){
+    svg.append('text').attr('class','cut-lbl')
+      .attr('x', x0+cut/2).attr('y', y0+cut/2+3).attr('text-anchor','middle')
+      .text('x');
+  }
+
+  /* Cotas L y W */
+  svg.append('text').attr('class','dim-lbl')
+    .attr('x', x0+PW/2).attr('y', y0+PH+22).attr('text-anchor','middle').text(fmt(L)+' cm');
+  svg.append('text').attr('class','dim-lbl')
+    .attr('transform','translate('+(x0-14)+','+(y0+PH/2)+') rotate(-90)')
+    .attr('text-anchor','middle').text(fmt(W)+' cm');
+
+  /* Etiqueta de base */
+  if (PW-2*cut > 30 && PH-2*cut > 20){
+    svg.append('text').attr('class','dim-lbl').attr('opacity',.8)
+      .attr('x', x0+PW/2).attr('y', y0+PH/2+3).attr('text-anchor','middle')
+      .text(fmt(baseL(XCUR),1)+'×'+fmt(baseW(XCUR),1));
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DIAGRAMA 3D (caja) — proyección isométrica simple
+   ═══════════════════════════════════════════════ */
+function drawBox3D(){
+  const box = document.getElementById('box3d-box');
+  d3.select('#box3d-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const Wd = box.clientWidth || 380, Hd = box.clientHeight || 360;
+
+  const bl = baseL(XCUR), bw = baseW(XCUR), h = XCUR;   // dimensiones reales
+  /* Proyección isométrica: ejes en pantalla */
+  const ang = Math.PI/7;                                 // inclinación de la profundidad
+  const dxu = Math.cos(ang), dyu = Math.sin(ang);        // vector "profundidad" (ancho bw)
+
+  /* Escala para encajar */
+  const spanX = bl + bw*dxu;
+  const spanY = h + bw*dyu;
+  const pad = 50;
+  const sc = Math.min((Wd - 2*pad)/Math.max(spanX,1), (Hd - 2*pad)/Math.max(spanY + h*0.2, 1));
+
+  /* Origen: esquina frontal inferior izquierda de la caja */
+  const ox = (Wd - spanX*sc)/2;
+  const oy = Hd - pad - (Hd - 2*pad - spanY*sc)/2;
+
+  /* Proyecta un punto (X a lo ancho del largo bl, Y profundidad bw, Z altura h) */
+  function P(X, Y, Z){
+    return [
+      ox + (X + Y*dxu)*sc,
+      oy - (Z + Y*dyu)*sc
+    ];
+  }
+
+  const svg = d3.select('#box3d-box').append('svg')
+    .attr('width', Wd).attr('height', Hd).attr('viewBox','0 0 ' + Wd + ' ' + Hd);
+
+  const poly = (pts, fill, op) => svg.append('polygon')
+    .attr('points', pts.map(p => p.join(',')).join(' '))
+    .attr('fill', fill).attr('stroke','var(--cardboard-d)').attr('stroke-width',1.3)
+    .attr('stroke-linejoin','round').attr('opacity', op===undefined?1:op);
+
+  /* 8 vértices: base (Z=0) y borde superior (Z=h) */
+  const A0=P(0,0,0),  B0=P(bl,0,0),  C0=P(bl,bw,0),  D0=P(0,bw,0);
+  const A1=P(0,0,h),  B1=P(bl,0,h),  C1=P(bl,bw,h),  D1=P(0,bw,h);
+
+  /* Cara interior del fondo (base) */
+  poly([A0,B0,C0,D0], '#c9a877', 1);
+  /* Pared trasera (interior) */
+  poly([D0,C0,C1,D1], '#cbb083', 1);
+  /* Pared lateral derecha (interior) */
+  poly([B0,C0,C1,B1], '#d0b489', 1);
+  /* Pared frontal (exterior, más clara) */
+  poly([A0,B0,B1,A1], 'var(--cardboard)', 1);
+  /* Pared lateral izquierda (exterior) */
+  poly([A0,D0,D1,A1], '#cdae80', 1);
+  /* Bordes superiores (grosor visible del cartón) */
+  [[A1,B1],[B1,C1],[C1,D1],[D1,A1]].forEach(([p,q]) => {
+    svg.append('line').attr('x1',p[0]).attr('y1',p[1]).attr('x2',q[0]).attr('y2',q[1])
+      .attr('stroke','var(--navy)').attr('stroke-width',1.4).attr('opacity',.55);
+  });
+
+  /* Cota de altura */
+  svg.append('text').attr('class','dim-lbl').attr('fill','var(--crimson)')
+    .attr('x', A1[0]-8).attr('y', (A0[1]+A1[1])/2).attr('text-anchor','end')
+    .text('h=' + fmt(h,1));
+
+  /* Etiqueta de volumen */
+  svg.append('text').attr('class','dim-lbl')
+    .attr('x', Wd/2).attr('y', Hd-14).attr('text-anchor','middle')
+    .text('V = ' + fmt(V(XCUR),0) + ' cm³');
+
+  if (Math.abs(XCUR - xStar()) < xStar()*0.02){
+    svg.append('text').attr('class','dim-lbl').attr('fill','#8a6f1e')
+      .attr('x', Wd/2).attr('y', 20).attr('text-anchor','middle')
+      .text('◆ ÓPTIMO · volumen máximo');
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO V(x)
+   ═══════════════════════════════════════════════ */
+function drawVChart(){
+  const box = document.getElementById('chart-V');
+  d3.select('#chart-V').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const Wd = box.clientWidth || 800, Hd = box.clientHeight || 400;
+  const m = {top:20, right:22, bottom:40, left:66};
+  const iw = Math.max(60, Wd - m.left - m.right);
+  const ih = Math.max(60, Hd - m.top - m.bottom);
+
+  const dm = xMaxDomain();
+  /* Mostramos un poco más allá del dominio para ver que V<0 fuera (contexto) */
+  const xMin = -dm*0.05, xMax = dm*1.12;
+
+  const o = optimum();
+  const N = 400, step = (xMax - xMin)/N;
+  /* Segmentar por signo de V' → colorear subida/bajada dentro del dominio */
+  const segs = []; let cur = null;
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    const y = V(x);
+    if (!isFinite(y)){ cur=null; continue; }
+    const inDom = (x > 0 && x < dm);
+    const s = inDom ? (Vp(x) > 0 ? 1 : -1) : 0;
+    if (!cur || cur.sign !== s){
+      if (cur && cur.pts.length) cur.pts.push([x,y]);
+      cur = {sign:s, pts:[]}; segs.push(cur);
+    }
+    cur.pts.push([x,y]);
+  }
+
+  const allY = segs.flatMap(s=>s.pts).map(d=>d[1]).filter(isFinite);
+  let yMin = Math.min(...allY, 0), yMax = Math.max(...allY, o.V);
+  const pad = (yMax-yMin)*0.1; yMin -= pad; yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin,xMax]).range([0,iw]);
+  const ys = d3.scaleLinear().domain([yMin,yMax]).range([ih,0]);
+
+  const svg = d3.select('#chart-V').append('svg')
+    .attr('width',Wd).attr('height',Hd).attr('viewBox','0 0 '+Wd+' '+Hd);
+  const cid='clip-V-'+Date.now();
+  svg.append('defs').append('clipPath').attr('id',cid).append('rect').attr('width',iw).attr('height',ih);
+  const g=svg.append('g').attr('transform','translate('+m.left+','+m.top+')');
+  const plot=g.append('g').attr('clip-path','url(#'+cid+')');
+
+  /* Sombra fuera del dominio */
+  plot.append('rect').attr('class','domain-shade')
+    .attr('x', xs(xMin)).attr('y',0).attr('width', Math.max(0,xs(0)-xs(xMin))).attr('height', ih);
+  plot.append('rect').attr('class','domain-shade')
+    .attr('x', xs(dm)).attr('y',0).attr('width', Math.max(0,xs(xMax)-xs(dm))).attr('height', ih);
+
+  g.append('g').attr('class','grid').attr('transform','translate(0,'+ih+')')
+    .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  g.append('g').attr('class','axis').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label').attr('x',iw).attr('y',ih+33).attr('text-anchor','end').text('x (corte)');
+  g.append('text').attr('class','axis-label').attr('x',-8).attr('y',-7).attr('text-anchor','end').text('V(x)');
+
+  if (0>=yMin&&0<=yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0)).attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  /* Óptimo */
+  if (o.x>=xMin&&o.x<=xMax){
+    plot.append('line').attr('class','opt-line').attr('x1',xs(o.x)).attr('x2',xs(o.x)).attr('y1',0).attr('y2',ih);
+    if (o.V>=yMin&&o.V<=yMax)
+      plot.append('line').attr('class','asym-line').attr('x1',0).attr('x2',iw).attr('y1',ys(o.V)).attr('y2',ys(o.V));
+  }
+
+  const line = d3.line().x(d=>xs(d[0])).y(d=>ys(d[1]))
+    .defined(d=>isFinite(d[1])&&d[1]>=yMin&&d[1]<=yMax).curve(d3.curveCatmullRom.alpha(.5));
+  segs.forEach(s=>{
+    if (s.pts.length<2) return;
+    const cls = s.sign>0 ? 'curve curve-up' : (s.sign<0 ? 'curve curve-down' : 'curve');
+    plot.append('path').datum(s.pts).attr('class', cls)
+      .attr('stroke', s.sign===0 ? 'var(--muted)' : null)
+      .attr('opacity', s.sign===0 ? .5 : 1).attr('d', line);
+  });
+
+  /* Raíces x=0 y x=dm (donde V=0): puntos */
+  [0, dm].forEach(rx => {
+    if (rx>=xMin&&rx<=xMax)
+      plot.append('circle').attr('cx',xs(rx)).attr('cy',ys(0)).attr('r',4)
+        .attr('fill','#fff').attr('stroke','var(--navy)').attr('stroke-width',1.6);
+  });
+
+  /* Máximo */
+  if (o.x>=xMin&&o.x<=xMax&&o.V>=yMin&&o.V<=yMax){
+    plot.append('circle').attr('class','max-dot').attr('cx',xs(o.x)).attr('cy',ys(o.V)).attr('r',6.5);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x',xs(o.x)+9).attr('y',ys(o.V)-10).text('máx · V = '+fmt(o.V,0));
+  }
+
+  /* Punto actual */
+  const yc = V(XCUR);
+  if (XCUR>=xMin&&XCUR<=xMax&&yc>=yMin&&yc<=yMax){
+    plot.append('line').attr('class','probe-line').attr('x1',xs(XCUR)).attr('x2',xs(XCUR)).attr('y1',ys(yc)).attr('y2',ih);
+    plot.append('circle').attr('class','probe-dot').attr('cx',xs(XCUR)).attr('cy',ys(yc)).attr('r',6);
+  }
+
+  const tip=document.getElementById('tip-V');
+  svg.append('rect').attr('x',m.left).attr('y',m.top).attr('width',iw).attr('height',ih).attr('fill','transparent')
+    .on('mousemove',function(ev){
+      const [mx]=d3.pointer(ev,svg.node());
+      const x=xs.invert(mx-m.left); const y=V(x);
+      if(!isFinite(y)||y<yMin||y>yMax){tip.classList.remove('show');return;}
+      const inDom=(x>0&&x<dm);
+      tip.innerHTML='x = '+fmt(x,2)+'<br>V = '+fmt(y,1)+' cm³'+(inDom?'':'<br>(fuera del dominio)');
+      tip.style.left=(m.left+xs(x))+'px'; tip.style.top=(m.top+ys(y))+'px'; tip.classList.add('show');
+    })
+    .on('mouseleave',()=>tip.classList.remove('show'))
+    .on('click',function(ev){
+      const [mx]=d3.pointer(ev,svg.node());
+      const x=xs.invert(mx-m.left);
+      if(x>0&&x<dm) setX(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO V'(x)
+   ═══════════════════════════════════════════════ */
+function drawDVChart(){
+  const box = document.getElementById('chart-dV');
+  d3.select('#chart-dV').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const Wd = box.clientWidth || 800, Hd = box.clientHeight || 280;
+  const m = {top:18, right:22, bottom:38, left:60};
+  const iw = Math.max(60, Wd - m.left - m.right);
+  const ih = Math.max(60, Hd - m.top - m.bottom);
+
+  const {rMinus, rPlus} = roots();
+  const dm = xMaxDomain();
+  /* Rango que incluye ambas raíces para que se vean las dos */
+  const xMin = -dm*0.1, xMax = Math.max(rPlus*1.1, dm*1.15);
+
+  const N=400, step=(xMax-xMin)/N; const pts=[];
+  for(let i=0;i<=N;i++){ const x=xMin+i*step; pts.push([x,Vp(x)]); }
+  const vals=pts.map(d=>d[1]);
+  let yMin=Math.min(...vals,0), yMax=Math.max(...vals,0);
+  const pad=(yMax-yMin)*0.12; yMin-=pad; yMax+=pad;
+
+  const xs=d3.scaleLinear().domain([xMin,xMax]).range([0,iw]);
+  const ys=d3.scaleLinear().domain([yMin,yMax]).range([ih,0]);
+
+  const svg=d3.select('#chart-dV').append('svg').attr('width',Wd).attr('height',Hd).attr('viewBox','0 0 '+Wd+' '+Hd);
+  const cid='clip-dV-'+Date.now();
+  svg.append('defs').append('clipPath').attr('id',cid).append('rect').attr('width',iw).attr('height',ih);
+  const g=svg.append('g').attr('transform','translate('+m.left+','+m.top+')');
+  const plot=g.append('g').attr('clip-path','url(#'+cid+')');
+
+  /* Sombra fuera del dominio */
+  plot.append('rect').attr('class','domain-shade').attr('x',xs(xMin)).attr('y',0).attr('width',Math.max(0,xs(0)-xs(xMin))).attr('height',ih);
+  plot.append('rect').attr('class','domain-shade').attr('x',xs(dm)).attr('y',0).attr('width',Math.max(0,xs(xMax)-xs(dm))).attr('height',ih);
+
+  g.append('g').attr('class','grid').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  g.append('g').attr('class','axis').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+  g.append('text').attr('class','axis-label').attr('x',iw).attr('y',ih+31).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label').attr('x',-8).attr('y',-6).attr('text-anchor','end').text("V '(x)");
+
+  if(0>=yMin&&0<=yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0)).attr('stroke','var(--muted)').attr('stroke-width',1.6);
+
+  const line=d3.line().x(d=>xs(d[0])).y(d=>ys(d[1])).defined(d=>isFinite(d[1])&&d[1]>=yMin&&d[1]<=yMax).curve(d3.curveCatmullRom.alpha(.5));
+  plot.append('path').datum(pts).attr('class','dcurve').attr('d',line);
+
+  /* Raíz VÁLIDA (dentro): dorada, cerrada */
+  if(rMinus>=xMin&&rMinus<=xMax){
+    plot.append('circle').attr('class','max-dot').attr('cx',xs(rMinus)).attr('cy',ys(0)).attr('r',6);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x',xs(rMinus)).attr('y',ys(0)+(yMin<0?-10:18)).attr('text-anchor','middle')
+      .text('x* = '+fmt(rMinus,2)+' ✓');
+  }
+  /* Raíz INVÁLIDA (fuera): abierta, roja */
+  if(rPlus>=xMin&&rPlus<=xMax){
+    plot.append('circle').attr('class','root-dot').attr('cx',xs(rPlus)).attr('cy',ys(0)).attr('r',6);
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--crimson)')
+      .attr('x',xs(rPlus)).attr('y',ys(0)+(yMin<0?18:-10)).attr('text-anchor','middle')
+      .text('x = '+fmt(rPlus,2)+' ✗ fuera');
+  }
+
+  const yc=Vp(XCUR);
+  if(XCUR>=xMin&&XCUR<=xMax&&yc>=yMin&&yc<=yMax)
+    plot.append('circle').attr('class','probe-dot').attr('cx',xs(XCUR)).attr('cy',ys(yc)).attr('r',5);
+
+  const tip=document.getElementById('tip-dV');
+  svg.append('rect').attr('x',m.left).attr('y',m.top).attr('width',iw).attr('height',ih).attr('fill','transparent')
+    .on('mousemove',function(ev){
+      const [mx]=d3.pointer(ev,svg.node());
+      const x=xs.invert(mx-m.left); const y=Vp(x);
+      if(!isFinite(y)||y<yMin||y>yMax){tip.classList.remove('show');return;}
+      tip.innerHTML='x = '+fmt(x,2)+"<br>V ' = "+fmt(y,1)+'<br>'+(y>1e-6?'V crece ↗':(y<-1e-6?'V decrece ↘':'crítico'));
+      tip.style.left=(m.left+xs(x))+'px'; tip.style.top=(m.top+ys(y))+'px'; tip.classList.add('show');
+    })
+    .on('mouseleave',()=>tip.classList.remove('show'))
+    .on('click',function(ev){
+      const [mx]=d3.pointer(ev,svg.node());
+      const x=xs.invert(mx-m.left);
+      if(x>0&&x<dm) setX(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const o = optimum();
+  document.getElementById('lv-x').textContent = fmt(XCUR,2)+' cm';
+  document.getElementById('lv-base').textContent = fmt(baseL(XCUR),1)+'×'+fmt(baseW(XCUR),1);
+  document.getElementById('lv-h').textContent = fmt(XCUR,2)+' cm';
+  document.getElementById('lv-V').textContent = fmt(V(XCUR),1)+' cm³';
+  document.getElementById('lv-max').textContent = fmt(o.V,1)+' cm³';
+}
+
+function setX(x){
+  const sl=document.getElementById('x-slider');
+  const lo=parseFloat(sl.min), hi=parseFloat(sl.max);
+  XCUR=Math.max(lo,Math.min(hi,x));
+  sl.value=XCUR;
+  document.getElementById('x-val').textContent=fmt(XCUR);
+  updateLive(); drawFlat(); drawBox3D(); drawVChart(); drawDVChart();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if(ANIM){clearInterval(ANIM);ANIM=null;}
+  const b=document.getElementById('btn-anim');
+  if(b) b.textContent='▶ Barrer x y hallar el máximo';
+}
+function startAnim(){
+  stopAnim();
+  const sl=document.getElementById('x-slider');
+  const lo=parseFloat(sl.min), hi=parseFloat(sl.max);
+  let t=0; const steps=150;
+  document.getElementById('btn-anim').textContent='● Barriendo…';
+  ANIM=setInterval(()=>{
+    t++; setX(lo+(hi-lo)*(t/steps));
+    if(t>=steps){stopAnim(); setX(xStar());}
+  },28);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const o=optimum();
+  const {rPlus}=roots();
+  const dm=xMaxDomain();
+  const qs=[
+    {
+      q:'¿Por qué cada dimensión de la base pierde $2x$ y no solo $x$?',
+      opts:[
+        'Porque el corte es un cuadrado.',
+        'Porque se recorta en <strong>ambos extremos</strong> de cada lado: $x$ a la izquierda y $x$ a la derecha.',
+        'Porque hay cuatro esquinas.'
+      ],
+      ok:1,
+      fb:'Cada lado de la lámina tiene <em>dos</em> esquinas. Al recortar $x$ en cada una, ese lado ' +
+         'pierde $x + x = 2x$. Por eso la base mide $(' + fmt(L) + '-2x) \\times (' + fmt(W) + '-2x)$, no $(' + fmt(L) + '-x)$.'
+    },
+    {
+      q:'$V\'(x)=0$ da dos soluciones. ¿Por qué descartamos $x = ' + fmt(rPlus,2) + '$?',
+      opts:[
+        'Porque es la raíz más grande.',
+        'Porque cae fuera del dominio $0&lt;x&lt;' + fmt(dm) + '$: daría un lado de base negativo.',
+        'Porque da un volumen negativo.'
+      ],
+      ok:1,
+      fb:'No se descarta por ser grande, sino por ser <strong>imposible</strong>: con $x=' + fmt(rPlus,2) + '$, ' +
+         'el lado $' + fmt(Math.min(L,W)) + '-2x = ' + fmt(Math.min(L,W)-2*rPlus,2) + '$ sería negativo. ' +
+         'La derivada no conoce el dominio; nosotros sí. Esa raíz es un mínimo de la cúbica, pero fuera de la región física.'
+    },
+    {
+      q:'¿Por qué el volumen se anula en <em>ambos</em> extremos del dominio?',
+      opts:[
+        'Por un error de cálculo.',
+        'Si $x=0$ no hay altura (caja plana); si $x=' + fmt(dm) + '$ no queda base. Sin altura o sin base, $V=0$.',
+        'Porque la lámina es cuadrada.'
+      ],
+      ok:1,
+      fb:'En $x \\to 0$: la caja no tiene pared, es la lámina plana, volumen cero. ' +
+         'En $x \\to ' + fmt(dm) + '$: los cortes se comen toda la base, no queda suelo, volumen cero. ' +
+         'Entre esos dos ceros la función es positiva: sube, alcanza el máximo en $x^{*}=' + fmt(o.x,2) + '$ y baja. ' +
+         'Es la razón geométrica de que exista un máximo interior.'
+    }
+  ];
+
+  let html='';
+  qs.forEach((item,qi)=>{
+    html+='<div class="reflect-q" data-ok="'+item.ok+'"><div class="qt">'+item.q+'</div><div class="opt-row">';
+    item.opts.forEach((o2,oi)=>{
+      html+='<label class="opt" data-o="'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'"><span>'+o2+'</span></label>';
+    });
+    html+='</div><div class="fb">'+item.fb+'</div></div>';
+  });
+  const boxEl=document.getElementById('reflect');
+  boxEl.innerHTML=html;
+  boxEl.querySelectorAll('.reflect-q').forEach(card=>{
+    const ok=parseInt(card.dataset.ok,10);
+    card.querySelectorAll('.opt').forEach(opt=>{
+      opt.addEventListener('click',()=>{
+        const oi=parseInt(opt.dataset.o,10);
+        card.querySelectorAll('.opt').forEach(o2=>o2.classList.remove('ok','no'));
+        opt.classList.add(oi===ok?'ok':'no');
+        if(oi!==ok) card.querySelector('.opt[data-o="'+ok+'"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(boxEl);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÓDULO FORMAL
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def=document.getElementById('def-katex');
+  def.innerHTML=
+    '$$\\text{Optimizar en } [a,b]: \\text{ evaluar } f \\text{ en los puntos críticos } \\textbf{interiores} \\text{ y en los extremos } a, b.$$' +
+    '$$\\text{Un cero de } f\' \\text{ fuera de } [a,b] \\text{ no es candidato: se descarta.}$$';
+  renderMath(def);
+
+  const proof=document.getElementById('proof');
+  const o=optimum();
+  const {rMinus,rPlus,disc}=roots();
+  let steps='';
+
+  steps+='<div class="proof-step"><span class="sn">Paso 1 · Función y dominio</span>' +
+    'Construimos $V(x) = ' + V_factoredTex() + ' = ' + V_expandedTex() + '$, ' +
+    'sobre el dominio <strong>cerrado</strong> $[0,\\; ' + fmt(xMaxDomain()) + ']$. ' +
+    'El dominio no es opcional: define qué cortes producen una caja real.</div>';
+
+  steps+='<div class="proof-step"><span class="sn">Paso 2 · Candidatos</span>' +
+    'Los candidatos a máximo son los <strong>puntos críticos interiores</strong> y los <strong>extremos</strong>. ' +
+    'Resolviendo $V\'(x) = ' + Vp_Tex() + ' = 0$:' +
+    '$$x = \\dfrac{' + fmt(L+W) + ' \\pm \\sqrt{' + fmt(disc,2) + '}}{6} = ' + fmt(rMinus,3) + ' \\;\\text{ o }\\; ' + fmt(rPlus,3) + '.$$</div>';
+
+  steps+='<div class="proof-step"><span class="sn">Paso 3 · Filtrar por dominio</span>' +
+    'Solo $x = ' + fmt(rMinus,3) + '$ pertenece a $[0,' + fmt(xMaxDomain()) + ']$. ' +
+    'La otra raíz, $' + fmt(rPlus,3) + '$, supera $' + fmt(xMaxDomain()) + '$ y se descarta: ' +
+    'corresponde a un mínimo local de la cúbica, en la región donde $V$ sería negativo si la caja «existiera». ' +
+    'En los extremos, $V(0) = V(' + fmt(xMaxDomain()) + ') = 0$.</div>';
+
+  steps+='<div class="proof-step"><span class="sn">Paso 4 · Comparar</span>' +
+    'Evaluamos el único candidato interior: $V(' + fmt(rMinus,3) + ') = ' + fmt(o.V,2) + ' &gt; 0$, ' +
+    'que supera a los extremos (ambos $0$). Es el <strong>máximo absoluto</strong> en el dominio. ' +
+    'Confirmación por segunda derivada: $V\'\'(' + fmt(o.x,3) + ') = ' + fmt(o.Vpp,2) + ' &lt; 0$.</div>';
+
+  steps+='<div class="proof-step"><span class="sn">Caso cuadrado</span>' +
+    'Cuando $L = W$ (lámina cuadrada de lado $a$), la fórmula se simplifica: ' +
+    '$x^{*} = \\dfrac{2a - \\sqrt{4a^{2}-3a^{2}}}{6} = \\dfrac{2a-a}{6} = \\dfrac{a}{6}$. ' +
+    'Para $a = 40$ da $x^{*} = ' + (L===W ? fmt(40/6,3) : '40/6 \\approx 6{,}67') + '$ cm — la respuesta clásica.</div>';
+
+  steps+='<div class="qed-box"><div>' +
+    'En optimización aplicada, resolver $f\'=0$ es la mitad del trabajo. La otra mitad es preguntarse ' +
+    '<em>cuáles</em> de esas soluciones son físicamente admisibles.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML=steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el=document.getElementById('conclusion');
+  const o=optimum();
+  const {rPlus}=roots();
+  let html='';
+
+  html+='<p><strong>a)</strong> La lámina se recorta en las cuatro esquinas (cuadrados de lado $x$) y ' +
+    'se doblan las solapas: la caja tiene base $(' + fmt(L) + '-2x)(' + fmt(W) + '-2x)$ y altura $x$ ' +
+    '(ver esquema interactivo).</p>';
+
+  html+='<p><strong>b)</strong> Base: $(' + fmt(L) + '-2x) \\times (' + fmt(W) + '-2x)$ cm.</p>';
+
+  html+='<p><strong>c)</strong> Volumen:</p>';
+  html+='<p style="text-align:center;">$$V(x) = ' + V_factoredTex() + ' = ' + V_expandedTex() + ', \\qquad 0 &lt; x &lt; ' + fmt(xMaxDomain()) + '$$</p>';
+
+  html+='<p><strong>d)</strong> Derivando: $V\'(x) = ' + Vp_Tex() + '$. Igualando a cero se obtienen ' +
+    '$x = ' + fmt(o.x,3) + '$ y $x = ' + fmt(rPlus,3) + '$; solo el primero está en el dominio, luego ' +
+    '$x^{*} = ' + fmt(o.x,3) + '$ cm.</p>';
+
+  html+='<p><strong>e)</strong> $V\'\'(' + fmt(o.x,3) + ') = ' + fmt(o.Vpp,2) + ' &lt; 0$: es un ' +
+    '<strong>máximo</strong>. (También $V\'$ pasa de $+$ a $-$.)</p>';
+
+  html+='<p><strong>f)</strong> El volumen máximo es:</p>';
+  html+='<p style="text-align:center;">$$V(x^{*}) = ' + fmt(o.V,2) + '\\text{ cm}^{3}$$</p>';
+  html+='<p>con una caja de base $' + fmt(o.bL,1) + ' \\times ' + fmt(o.bW,1) + '$ cm y altura $' + fmt(o.h,2) + '$ cm. ' +
+    (L===W ? 'Para la lámina cuadrada de $' + fmt(L) + '$ cm, el corte óptimo es exactamente $' + fmt(L) + '/6 = ' + fmt(L/6,3) + '$ cm.' : '') +
+    '</p>';
+
+  el.innerHTML=html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-L','p-W'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown',ev=>{ if(ev.key==='Enter') refreshAll(); });
+  });
+  document.getElementById('btn-reset').addEventListener('click',()=>{
+    document.getElementById('p-L').value=40;
+    document.getElementById('p-W').value=40;
+    refreshAll();
+  });
+  document.querySelectorAll('[data-preset]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const p=btn.dataset.preset.split(',');
+      document.getElementById('p-L').value=p[0].trim();
+      document.getElementById('p-W').value=p[1].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('x-slider').addEventListener('input',ev=>{ stopAnim(); setX(parseFloat(ev.target.value)); });
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+  document.getElementById('btn-goto').addEventListener('click',()=>{ stopAnim(); setX(xStar()); });
+
+  const edT=document.getElementById('ed-toggle');
+  edT.addEventListener('click',()=>{
+    const body=document.getElementById('ed-body');
+    const open=body.classList.toggle('open');
+    edT.classList.toggle('open',open);
+    edT.setAttribute('aria-expanded',String(open));
+    if(open) setTimeout(()=>renderMath(body),0);
+  });
+
+  let rt=null;
+  window.addEventListener('resize',()=>{
+    clearTimeout(rt);
+    rt=setTimeout(()=>{ drawFlat(); drawBox3D(); drawVChart(); drawDVChart(); },140);
+  });
+
+  refreshAll();
+}
+
+(function boot(){
+  function ready(){ return document.readyState!=='loading' && window.d3 && window.renderMathInElement; }
+  function attempt(tries){
+    if(ready()){ initPage(); return; }
+    if(tries<=0){ initPage(); return; }
+    setTimeout(()=>attempt(tries-1),60);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>attempt(40));
+  else attempt(40);
+})();
+</script>
+
+</body>
+</html>

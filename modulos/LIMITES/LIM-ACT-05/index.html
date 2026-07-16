@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SE²∂PEM – Actividad 5: Límite infinito y asíntota vertical</title>
+
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"/>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<!-- D3 -->
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --pos:#1d4ed8; --neg:#ea580c;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--light); color:var(--text);
+  font-family:'Source Serif 4',Georgia,serif; font-size:16px; line-height:1.7; min-height:100vh;
+}
+
+/* HEADER */
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  padding:18px 40px; display:grid; grid-template-columns:130px 1fr 200px;
+  align-items:center; gap:16px; position:relative;
+}
+header::after{content:'';position:absolute;bottom:-8px;left:0;right:0;height:3px;background:var(--gold);opacity:.45;}
+.logo-wrap{display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.logo-wrap img{height:74px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.30));}
+.logo-right{flex-direction:row;gap:14px;}
+.logo-right img{height:58px;}
+.ubb-label{display:block;color:rgba(255,255,255,.80);font-size:.62rem;letter-spacing:.06em;text-align:center;margin-top:6px;line-height:1.4;}
+.header-center{text-align:center;color:var(--white);}
+.seminar-label{font-weight:700;font-family:'Playfair Display',serif;font-size:.88rem;letter-spacing:.02em;color:var(--gold);margin-bottom:4px;}
+.header-center h1{font-family:'Source Serif 4',serif;font-size:.82rem;font-weight:400;font-style:italic;line-height:1.4;max-width:560px;margin:0 auto 6px;color:rgba(255,255,255,.85);}
+.header-subtitle{font-size:.76rem;color:rgba(255,255,255,.55);letter-spacing:.07em;}
+
+/* MAIN */
+main{max-width:880px;margin:0 auto;padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); overflow:hidden; animation:fadeUp .55s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+.activity-header{background:var(--navy);color:var(--white);padding:13px 26px;display:flex;align-items:center;gap:14px;}
+.activity-number{background:var(--crimson);color:var(--white);font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.activity-title{font-family:'Playfair Display',serif;font-size:1.02rem;font-weight:600;}
+.activity-body{padding:28px 30px 38px;}
+
+.objetivo-box{border-left:4px solid var(--crimson);background:var(--accent-bg);padding:14px 18px;border-radius:0 3px 3px 0;margin-bottom:24px;}
+.objetivo-box .lbl{font-family:'Playfair Display',serif;color:var(--crimson);font-size:.82rem;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:4px;}
+.objetivo-box p{font-size:.95rem;}
+
+.function-display{text-align:center;margin:20px 0 12px;padding:16px;background:#fafaf7;border:1px solid var(--border);border-radius:3px;}
+.function-label{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+
+.section-heading{font-family:'Playfair Display',serif;font-size:.97rem;font-weight:600;color:var(--navy);margin-bottom:14px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.q-num{color:var(--crimson);font-weight:700;margin-right:6px;}
+
+/* PARAM SELECTOR */
+.a-selector-wrap{background:var(--accent-bg);border:1px solid var(--border);border-radius:4px;padding:16px 20px;margin:22px 0;}
+.a-selector-label{font-size:.92rem;color:var(--navy);font-weight:600;margin-bottom:10px;}
+.a-selector-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.a-selector-controls label{font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--navy);font-weight:600;}
+.a-selector-controls input[type=number]{width:90px;padding:6px 10px;border:1.5px solid var(--navy);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--navy);text-align:center;background:white;}
+.a-selector-controls input[type=number]:focus{outline:none;border-color:var(--crimson);}
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.a-preview{margin-top:10px;font-size:.83rem;color:var(--muted);font-style:italic;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:none;border-radius:3px;font-family:'Source Serif 4',serif;font-size:.86rem;cursor:pointer;transition:all .17s;letter-spacing:.03em;}
+.btn-sm{padding:6px 14px;font-size:.82rem;}
+.btn-verify{background:var(--crimson);color:white;}
+.btn-verify:hover{background:#7d1238;transform:translateY(-1px);}
+.btn-primary{background:var(--navy);color:white;}
+.btn-primary:hover{background:#253660;transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--navy);background:var(--accent-bg);}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px 0 14px;}
+.score-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;background:var(--navy);color:var(--gold);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.80rem;opacity:0;transition:opacity .3s;}
+.score-badge.visible{opacity:1;}
+.hint-box{background:#fffbee;border:1px dashed var(--gold);border-radius:3px;padding:11px 16px;margin-bottom:18px;font-size:.87rem;color:#5a4a00;display:none;}
+.hint-box.visible{display:block;}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:8px;}
+table{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.86rem;}
+thead tr{background:var(--navy);color:var(--white);}
+thead th{padding:9px 11px;text-align:center;font-weight:500;letter-spacing:.04em;}
+thead th:first-child{text-align:left;padding-left:18px;}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--border);}
+tbody td:first-child{text-align:left;padding-left:18px;color:var(--muted);font-style:italic;}
+.cell-input{width:84px;padding:4px 4px;border:1px solid transparent;border-radius:3px;background:transparent;font-family:'JetBrains Mono',monospace;font-size:.82rem;text-align:center;color:var(--text);transition:border-color .18s,background .18s;}
+.cell-input:focus{outline:none;border-color:var(--crimson);background:#fff8fb;}
+.cell-input.filled{color:var(--navy);font-weight:500;}
+.cell-input.correct{color:var(--success);border-color:var(--success);background:#f0faf5;}
+.cell-input.wrong{color:var(--crimson);border-color:var(--crimson);background:#fff0f4;}
+.side-tag{font-size:.62rem;display:block;letter-spacing:.05em;}
+.tag-left{color:var(--neg);} .tag-right{color:var(--pos);}
+
+/* CHART */
+.chart-section{margin-top:34px;}
+.chart-options{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.chart-options label{font-size:.82rem;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer;}
+.chart-options input[type=checkbox]{accent-color:var(--crimson);width:14px;height:14px;}
+.range-wrap{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);}
+.range-wrap input[type=range]{accent-color:var(--navy);width:120px;}
+.zoom-hint{font-size:.75rem;color:var(--muted);font-style:italic;margin-bottom:8px;}
+.chart-box{background:white;border:1px solid var(--border);border-radius:3px;overflow:hidden;box-shadow:inset 0 1px 4px rgba(0,0,0,.04);position:relative;height:440px;cursor:crosshair;}
+.chart-box svg{width:100%;height:100%;display:block;}
+.axis-label{font-family:'Source Serif 4',serif;font-size:13px;fill:#003B75;font-weight:600;}
+.chart-tooltip{position:absolute;background:var(--navy);color:white;padding:6px 11px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem;pointer-events:none;opacity:0;transition:opacity .15s;white-space:nowrap;z-index:10;box-shadow:0 3px 10px rgba(0,0,0,.25);}
+.chart-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--navy);}
+
+/* ANIM + lateral panel */
+.anim-controls{display:flex;gap:10px;align-items:center;margin:14px 0 0;}
+.btn-anim{background:var(--crimson);color:white;padding:9px 20px;border:none;border-radius:3px;font-family:'Source Serif 4',serif;font-size:.88rem;cursor:pointer;transition:all .17s;letter-spacing:.03em;}
+.btn-anim:hover{background:#7d1238;transform:translateY(-1px);}
+.btn-anim.running{background:#5a6b40;}
+.limit-panel{margin:14px 0 0;border:1px solid var(--border);border-radius:4px;background:#fafaf7;overflow:hidden;display:none;}
+.limit-panel.visible{display:block;}
+.limit-panel-row{display:grid;grid-template-columns:1fr auto 1fr;gap:0;}
+.limit-side{padding:16px 20px;text-align:center;}
+.left-side{background:#fff4ee;border-right:1px solid var(--border);}
+.right-side{background:#eef4ff;border-left:1px solid var(--border);}
+.side-label{font-size:.78rem;color:var(--muted);margin-bottom:6px;}
+.side-arrow{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--navy);margin-bottom:8px;}
+.side-x{font-family:'JetBrains Mono',monospace;font-size:.92rem;font-weight:600;color:var(--navy);margin-bottom:4px;}
+.side-fx{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;}
+.fx-neg{color:var(--neg);} .fx-pos{color:var(--pos);}
+.limit-center{padding:16px 18px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;min-width:130px;background:var(--navy);color:white;}
+.center-label{font-size:.70rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;}
+.center-result{font-size:1.5rem;font-weight:700;color:white;}
+.limit-conclusion{padding:12px 20px;font-size:.88rem;color:var(--text);border-top:1px solid var(--border);background:white;min-height:42px;text-align:center;}
+
+/* reflection */
+.reflect-list{list-style:none;margin:6px 0 0;}
+.reflect-item{background:#fafaf7;border:1px solid var(--border);border-left:3px solid var(--navy);border-radius:0 4px 4px 0;padding:12px 16px;margin-bottom:10px;}
+.reflect-q{font-size:.92rem;color:var(--navy);font-weight:600;margin-bottom:6px;}
+.reflect-toggle{font-size:.80rem;color:var(--crimson);cursor:pointer;user-select:none;}
+.reflect-a{font-size:.88rem;color:var(--text);margin-top:8px;display:none;}
+.reflect-a.visible{display:block;}
+
+/* conclusion */
+.conclusion-box{margin-top:16px;background:linear-gradient(135deg,#f0f7ff,#fdeef0);border:1px solid #c9d6ec;border-radius:4px;padding:18px 22px;}
+.conclusion-box .lbl{font-family:'Playfair Display',serif;color:var(--navy);font-size:.82rem;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:10px;}
+.conclusion-box .formula-line{text-align:center;margin:10px 0;}
+
+/* asymptote callout */
+.asym-callout{display:flex;align-items:center;gap:10px;background:var(--accent-bg);border-radius:3px;padding:11px 16px;margin-top:14px;font-size:.87rem;}
+.asym-dot{width:9px;height:9px;border-radius:50%;background:var(--crimson);flex-shrink:0;}
+
+/* FOOTER */
+footer{text-align:center;padding:22px;font-size:.76rem;color:var(--muted);border-top:1px solid var(--border);letter-spacing:.05em;}
+footer strong{color:var(--navy);}
+
+@media(max-width:640px){
+  header{grid-template-columns:50px 1fr 90px;padding:12px 14px;gap:10px;}
+  .logo-wrap img{height:42px;}
+  .logo-right img{height:34px;}
+  .logo-right{gap:8px;}
+  .ubb-label{display:none;}
+  .header-center h1{font-size:.72rem;}
+  .activity-body{padding:20px 16px 30px;}
+  .limit-panel-row{grid-template-columns:1fr;}
+  .left-side,.right-side{border:none;border-bottom:1px solid var(--border);}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <img src="assets/logo_ubb.png" alt="Universidad del Bío-Bío"/>
+    <span class="ubb-label">Universidad<br/>del Bío-Bío</span>
+  </div>
+  <div class="header-center">
+    <div class="seminar-label">IV Seminario Estudiantil de Ecuaciones Diferenciales y Educación Matemática</div>
+    <h1>Vinculación con el Medio para el Fortalecimiento de la Enseñanza y las Matemáticas Aplicadas</h1>
+    <div class="header-subtitle">Facultad de Ciencias · Universidad del Bío-Bío · Año 2026</div>
+  </div>
+  <div class="logo-wrap logo-right">
+    <img src="assets/logo_seminario.png" alt="SE²∂PEM"/>
+    <img src="assets/logo_cmm.png" alt="Centro de Modelamiento Matemático"/>
+  </div>
+</header>
+
+<main>
+  <div class="activity-card">
+    <div class="activity-header">
+      <div class="activity-number">5</div>
+      <div class="activity-title">Límite infinito y asíntota vertical</div>
+    </div>
+
+    <div class="activity-body">
+      <!-- OBJETIVO -->
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Comprender que cuando una función racional tiene un denominador que se anula
+        (pero el numerador no), el valor del límite puede tender a $+\infty$ o $-\infty$,
+        lo que da origen a una <strong>asíntota vertical</strong>.</p>
+      </div>
+
+      <!-- FUNCION -->
+      <div class="function-label">Función</div>
+      <div class="function-display"><span id="fn-display"></span></div>
+      <p style="text-align:center;font-size:.85rem;color:var(--muted)" id="fn-note"></p>
+
+      <!-- PARAM SELECTOR -->
+      <div class="a-selector-wrap">
+        <div class="a-selector-label">Generalización paramétrica — explora cualquier asíntota vertical</div>
+        <div class="a-selector-controls">
+          <label for="k-value">k =</label>
+          <input type="number" id="k-value" value="1" step="0.5"/>
+          <label for="c-value">c =</label>
+          <input type="number" id="c-value" value="3" step="0.5"/>
+          <button class="btn btn-primary btn-sm" onclick="applyParams()">Aplicar</button>
+        </div>
+        <div class="preset-row">
+          <button class="btn btn-ghost btn-sm" onclick="setParams(1,3)">f(x)=1/(x−3)</button>
+          <button class="btn btn-ghost btn-sm" onclick="setParams(1,0)">f(x)=1/x</button>
+          <button class="btn btn-ghost btn-sm" onclick="setParams(-2,1)">f(x)=−2/(x−1)</button>
+          <button class="btn btn-ghost btn-sm" onclick="setParams(1,-2)">f(x)=1/(x+2)</button>
+        </div>
+        <div class="a-preview" id="param-preview"></div>
+      </div>
+
+      <!-- 1. TABLA -->
+      <div class="section-heading"><span class="q-num">1.</span>Complete la tabla de valores para <span id="tbl-x-near"></span></div>
+      <div class="hint-box" id="hint-box"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr id="tbl-head"></tr></thead>
+          <tbody><tr id="tbl-x-row"></tr><tr id="tbl-fx-row"></tr></tbody>
+        </table>
+      </div>
+      <div class="controls">
+        <button class="btn btn-verify" onclick="verifyTable()">Verificar</button>
+        <button class="btn btn-primary" onclick="fillTable()">Rellenar solución</button>
+        <button class="btn btn-ghost" onclick="clearTable()">Limpiar</button>
+        <button class="btn btn-ghost" onclick="toggleHint()">Pista</button>
+        <span class="score-badge" id="score-badge"></span>
+      </div>
+
+      <!-- 2. REFLEXION -->
+      <div class="section-heading" style="margin-top:30px"><span class="q-num">2.</span>Reflexione</div>
+      <ul class="reflect-list" id="reflect-list"></ul>
+
+      <!-- GRAFICO -->
+      <div class="chart-section">
+        <div class="section-heading">Simulador gráfico</div>
+        <div class="chart-options">
+          <label><input type="checkbox" id="opt-grid" checked onchange="drawChart()"/> Grilla</label>
+          <label><input type="checkbox" id="opt-asym" checked onchange="drawChart()"/> Asíntota vertical</label>
+          <label><input type="checkbox" id="opt-points" checked onchange="drawChart()"/> Puntos de la tabla</label>
+          <div class="range-wrap">
+            <span>Zoom</span>
+            <input type="range" id="zoom-range" min="1" max="12" value="5" step="0.5" oninput="drawChart()"/>
+          </div>
+        </div>
+        <div class="zoom-hint">Pasa el cursor sobre la curva para leer (x, f(x)). Usa el control de zoom para acercarte a la asíntota.</div>
+        <div class="chart-box"><svg id="chart"></svg><div class="chart-tooltip" id="tooltip"></div></div>
+
+        <div class="anim-controls">
+          <button class="btn-anim" id="anim-btn" onclick="toggleAnim()">▶ Animar acercamiento bilateral</button>
+        </div>
+
+        <div class="limit-panel" id="limit-panel">
+          <div class="limit-panel-row">
+            <div class="limit-side left-side">
+              <div class="side-label">Por la izquierda</div>
+              <div class="side-arrow" id="L-arrow">x → c⁻</div>
+              <div class="side-x" id="L-x">x = —</div>
+              <div class="side-fx fx-neg" id="L-fx">f(x) = —</div>
+            </div>
+            <div class="limit-center">
+              <div class="center-label">Tendencia</div>
+              <div class="center-result" id="center-result">∞</div>
+            </div>
+            <div class="limit-side right-side">
+              <div class="side-label">Por la derecha</div>
+              <div class="side-arrow" id="R-arrow">x → c⁺</div>
+              <div class="side-x" id="R-x">x = —</div>
+              <div class="side-fx fx-pos" id="R-fx">f(x) = —</div>
+            </div>
+          </div>
+          <div class="limit-conclusion" id="limit-conclusion"></div>
+        </div>
+      </div>
+
+      <a href="".\index.html"" class="act-card" style="--col-color:#1e6fd9;">
+            <div class="act-card-arrow">→</div>
+          </a>
+
+      <!-- 3. CONCLUSION -->
+      <div class="conclusion-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div class="formula-line" id="concl-left"></div>
+        <div class="formula-line" id="concl-right"></div>
+        <div class="formula-line" id="concl-final"></div>
+        <div class="asym-callout">
+          <span class="asym-dot"></span>
+          <span id="asym-text"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>SE²∂PEM</strong>  · IV Seminario Estudiantil de Ecuaciones Diferenciales y Educación Matemática
+ <br> Universidad del Bío-Bío · Actividad 5
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   PARÁMETROS Y FUNCIÓN GENERALIZADA  f(x) = k / (x - c)
+════════════════════════════════════════════════════════ */
+let K = 1, C = 3;
+const X_OFFSETS = [-0.3, -0.1, -0.01, -0.001, 0.001, 0.01, 0.1, 0.3]; // respecto a c
+
+function f(x){ return K / (x - C); }
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v){
+  if (!isFinite(v)) return v>0?'+∞':'−∞';
+  let s = (Math.abs(v) >= 1e4 || (Math.abs(v) < 1e-3 && v!==0)) ? v.toExponential(3) : (+v.toFixed(4)).toString();
+  return s;
+}
+function fmtNum(v){ const s=(+r6(v)).toString(); return s; }
+
+/* signo del lado y de k para saber a qué infinito tiende */
+function sideLimit(side){ // side -1 izquierda, +1 derecha
+  // x-c tiene el signo de 'side' (pequeño); f = k/(x-c)
+  const sign = Math.sign(K) * side;
+  return sign > 0 ? +Infinity : -Infinity;
+}
+
+/* ── LaTeX de la función ── */
+function fnLatex(){
+  const num = (K===1)?'1':(K===-1?'-1':fmtNum(K));
+  const den = C===0 ? 'x' : (C>0 ? `x - ${fmtNum(C)}` : `x + ${fmtNum(Math.abs(C))}`);
+  return `f(x) = \\dfrac{${num}}{${den}}`;
+}
+function cLatex(){ return fmtNum(C); }
+
+/* ════════════════════════════════════════════════════════
+   RENDER DE TEXTOS Y FÓRMULAS
+════════════════════════════════════════════════════════ */
+function renderAll(){
+  document.getElementById('fn-display').innerHTML = `$$${fnLatex()}$$`;
+  document.getElementById('fn-note').textContent =
+    `El denominador se anula en x = ${fmtNum(C)}, donde el numerador vale ${fmtNum(K)} ≠ 0.`;
+  document.getElementById('tbl-x-near').innerHTML = `$x$ cercanos a $${cLatex()}$:`;
+  document.getElementById('param-preview').textContent =
+    `Caso actual: f(x) = ${K}/(x − ${C}). Asíntota vertical en x = ${C}. ` +
+    `Como k = ${K} ${K>0?'> 0':'< 0'}, el comportamiento lateral se invierte respecto del signo de k.`;
+
+  buildTableStructure();
+  renderReflection();
+  renderConclusion();
+  renderHint();
+  drawChart();
+  typeset();
+}
+
+function renderHint(){
+  document.getElementById('hint-box').innerHTML =
+    `<strong>Pista:</strong> evalúa $f(x)=${fnLatex().replace('f(x) = ','')}$ en cada $x$. ` +
+    `Cuanto más cerca esté $x$ de $${cLatex()}$, más pequeño es el denominador y más grande (en valor absoluto) resulta $f(x)$. ` +
+    `El signo depende de si te acercas por la izquierda ($x-c<0$) o por la derecha ($x-c>0$).`;
+}
+
+/* ── REFLEXIÓN con respuestas desplegables ── */
+function renderReflection(){
+  const limL = sideLimit(-1), limR = sideLimit(+1);
+  const qs = [
+    {
+      q:`¿Qué sucede con los valores de $f(x)$ cuando $x$ se aproxima a $${cLatex()}$ por la izquierda? ¿Y por la derecha?`,
+      a:`Por la izquierda ($x\\to ${cLatex()}^-$) los valores tienden a $${limL>0?'+\\infty':'-\\infty'}$; ` +
+        `por la derecha ($x\\to ${cLatex()}^+$) tienden a $${limR>0?'+\\infty':'-\\infty'}$. ` +
+        `Crecen sin cota en valor absoluto, con signos opuestos.`
+    },
+    {
+      q:`¿Está definida la función en $x = ${cLatex()}$?`,
+      a:`No. En $x=${cLatex()}$ el denominador es $0$, de modo que $f$ no está definida ahí: ese punto no pertenece al dominio.`
+    },
+    {
+      q:`¿Podemos decir que el límite existe en $x = ${cLatex()}$?`,
+      a:`No existe como límite finito. Los límites laterales son $${limL>0?'+\\infty':'-\\infty'}$ y $${limR>0?'+\\infty':'-\\infty'}$: ` +
+        `${limL===limR?'aunque coinciden en el infinito, el límite no es un número real':'son distintos, por lo que el límite bilateral no existe'}.`
+    }
+  ];
+  const ul = document.getElementById('reflect-list');
+  ul.innerHTML = qs.map((o,i)=>`
+    <li class="reflect-item">
+      <div class="reflect-q">${o.q}</div>
+      <span class="reflect-toggle" onclick="toggleAnswer(${i})">▸ Ver respuesta esperada</span>
+      <div class="reflect-a" id="ans-${i}">${o.a}</div>
+    </li>`).join('');
+}
+function toggleAnswer(i){
+  const el=document.getElementById('ans-'+i);
+  el.classList.toggle('visible');
+  typeset();
+}
+
+/* ── CONCLUSIÓN ── */
+function renderConclusion(){
+  const limL = sideLimit(-1), limR = sideLimit(+1);
+  const den = C===0 ? 'x' : (C>0 ? `x - ${fmtNum(C)}` : `x + ${fmtNum(Math.abs(C))}`);
+  const num = (K===1)?'1':(K===-1?'-1':fmtNum(K));
+  const expr = `\\dfrac{${num}}{${den}}`;
+  document.getElementById('concl-left').innerHTML =
+    `$$\\lim_{x\\to ${cLatex()}^-} ${expr} = ${limL>0?'+\\infty':'-\\infty'}$$`;
+  document.getElementById('concl-right').innerHTML =
+    `$$\\lim_{x\\to ${cLatex()}^+} ${expr} = ${limR>0?'+\\infty':'-\\infty'}$$`;
+  document.getElementById('concl-final').innerHTML =
+    `$$\\text{Por tanto, } \\lim_{x\\to ${cLatex()}} ${expr} \\text{ no existe.}$$`;
+  document.getElementById('asym-text').innerHTML =
+    `Hay una <strong>asíntota vertical</strong> en $x = ${cLatex()}$.`;
+}
+
+/* ════════════════════════════════════════════════════════
+   TABLA
+════════════════════════════════════════════════════════ */
+let tblValues = [];
+function buildTableStructure(){
+  tblValues = X_OFFSETS.map(off => r6(C + off));
+  const head = document.getElementById('tbl-head');
+  const xRow = document.getElementById('tbl-x-row');
+  const fRow = document.getElementById('tbl-fx-row');
+  head.innerHTML = `<th>x</th>` + tblValues.map((xv,i)=>{
+    const tag = X_OFFSETS[i]<0 ? `<span class="side-tag tag-left">←</span>` : `<span class="side-tag tag-right">→</span>`;
+    return `<th>${fmtNum(xv)}${tag}</th>`;
+  }).join('');
+  xRow.innerHTML = `<td>x</td>` + tblValues.map(xv=>`<td>${fmtNum(xv)}</td>`).join('');
+  fRow.innerHTML = `<td>f(x)</td>` + tblValues.map((xv,i)=>
+    `<td><input class="cell-input" id="cell-${i}" inputmode="decimal" oninput="markFilled(${i})"/></td>`).join('');
+}
+function markFilled(i){
+  const el=document.getElementById('cell-'+i);
+  el.className='cell-input'+(el.value.trim()?' filled':'');
+}
+function solutionAt(i){ return r6(f(tblValues[i])); }
+function parseCell(v){ return parseFloat(String(v).replace(',','.').replace('−','-')); }
+
+function verifyTable(){
+  let correct=0;
+  tblValues.forEach((xv,i)=>{
+    const el=document.getElementById('cell-'+i);
+    const sol=solutionAt(i);
+    const val=parseCell(el.value);
+    el.className='cell-input';
+    if(isNaN(val)) return;
+    const tol=Math.max(Math.abs(sol)*0.02, 0.05);
+    if(Math.abs(val-sol)<=tol){el.classList.add('correct');correct++;}
+    else el.classList.add('wrong');
+  });
+  const badge=document.getElementById('score-badge');
+  badge.textContent=`Puntaje: ${correct} / ${tblValues.length}`;
+  badge.classList.add('visible');
+}
+function fillTable(){
+  tblValues.forEach((xv,i)=>{
+    const el=document.getElementById('cell-'+i);
+    el.value=fmtNum(solutionAt(i));
+    el.className='cell-input correct';
+  });
+  const badge=document.getElementById('score-badge');
+  badge.textContent=`Solución completa`;
+  badge.classList.add('visible');
+}
+function clearTable(){
+  tblValues.forEach((xv,i)=>{const el=document.getElementById('cell-'+i);el.value='';el.className='cell-input';});
+  document.getElementById('score-badge').classList.remove('visible');
+}
+function toggleHint(){ document.getElementById('hint-box').classList.toggle('visible'); }
+
+/* ════════════════════════════════════════════════════════
+   GRÁFICO D3
+════════════════════════════════════════════════════════ */
+const M={top:24,right:48,bottom:42,left:58};
+function drawChart(){
+  const box=document.querySelector('.chart-box');
+  if(!box) return;
+  const W=box.clientWidth||700, H=box.clientHeight||440;
+  const iW=W-M.left-M.right, iH=H-M.top-M.bottom;
+  const span=parseFloat(document.getElementById('zoom-range').value);
+  const xDom=[C-span, C+span];
+  // dominio y proporcional, recortado
+  const yLim=Math.max(Math.abs(K)/0.15, 4);
+  const yDom=[-yLim, yLim];
+
+  const xs=d3.scaleLinear().domain(xDom).range([0,iW]);
+  const ys=d3.scaleLinear().domain(yDom).range([iH,0]);
+
+  const svg=d3.select('#chart').attr('width',W).attr('height',H);
+  svg.selectAll('*').remove();
+  svg.append('defs').append('clipPath').attr('id','clip')
+    .append('rect').attr('width',iW).attr('height',iH);
+  const g=svg.append('g').attr('transform',`translate(${M.left},${M.top})`);
+
+  // grid
+  if(document.getElementById('opt-grid').checked){
+    xs.ticks(8).forEach(v=>g.append('line').attr('x1',xs(v)).attr('x2',xs(v)).attr('y1',0).attr('y2',iH).attr('stroke','#e8e4dd').attr('stroke-dasharray','3,3'));
+    ys.ticks(8).forEach(v=>g.append('line').attr('x1',0).attr('x2',iW).attr('y1',ys(v)).attr('y2',ys(v)).attr('stroke','#e8e4dd').attr('stroke-dasharray','3,3'));
+  }
+
+  // asíntota vertical
+  if(document.getElementById('opt-asym').checked){
+    g.append('line').attr('x1',xs(C)).attr('x2',xs(C)).attr('y1',0).attr('y2',iH)
+      .attr('stroke','#9b1845').attr('stroke-width',1.6).attr('stroke-dasharray','6,4');
+    g.append('text').attr('x',xs(C)+5).attr('y',14).attr('font-size',11).attr('fill','#9b1845')
+      .attr('font-family','JetBrains Mono,monospace').text(`x = ${fmtNum(C)}`);
+  }
+
+  // ejes
+  const axY=Math.max(0,Math.min(iH,ys(0)));
+  const axX=Math.max(0,Math.min(iW,xs(0)));
+  g.append('line').attr('x1',0).attr('x2',iW).attr('y1',axY).attr('y2',axY).attr('stroke','#2c2c2c').attr('stroke-width',1.4);
+  g.append('line').attr('x1',axX).attr('x2',axX).attr('y1',0).attr('y2',iH).attr('stroke','#2c2c2c').attr('stroke-width',1.4);
+  g.append('text').attr('x',iW+12).attr('y',axY+5).attr('class','axis-label').text('x');
+  g.append('text').attr('x',axX).attr('y',-8).attr('class','axis-label').attr('text-anchor','middle').text('f(x)');
+  // ticks
+  xs.ticks(8).forEach(v=>{ if(Math.abs(v)<1e-9) return;
+    g.append('text').attr('x',xs(v)).attr('y',axY+15).attr('text-anchor','middle').attr('font-size',9).attr('fill','#6b6560').attr('font-family','JetBrains Mono,monospace').text(+v.toFixed(2));});
+  ys.ticks(8).forEach(v=>{ if(Math.abs(v)<1e-9) return;
+    g.append('text').attr('x',axX-6).attr('y',ys(v)+4).attr('text-anchor','end').attr('font-size',9).attr('fill','#6b6560').attr('font-family','JetBrains Mono,monospace').text(+v.toFixed(1));});
+
+  // curva en dos ramas (evita la discontinuidad)
+  const clip=g.append('g').attr('clip-path','url(#clip)');
+  const line=d3.line().x(d=>xs(d.x)).y(d=>ys(d.y)).curve(d3.curveCatmullRom);
+  [[xDom[0],C-1e-6],[C+1e-6,xDom[1]]].forEach(([a,b])=>{
+    const N=300, pts=[];
+    for(let i=0;i<=N;i++){ const x=a+(b-a)*i/N; const y=f(x); if(isFinite(y)) pts.push({x,y}); }
+    clip.append('path').datum(pts).attr('fill','none').attr('stroke','#003B75').attr('stroke-width',2.2).attr('d',line);
+  });
+
+  // puntos de la tabla
+  if(document.getElementById('opt-points').checked){
+    tblValues.forEach((xv,i)=>{
+      const y=f(xv);
+      if(y<yDom[0]||y>yDom[1]) return;
+      clip.append('circle').attr('cx',xs(xv)).attr('cy',ys(y)).attr('r',4.5)
+        .attr('fill',X_OFFSETS[i]<0?'#ea580c':'#1d4ed8').attr('stroke','#fff').attr('stroke-width',1.4);
+    });
+  }
+
+  // capa de interacción tooltip
+  const tip=document.getElementById('tooltip');
+  svg.append('rect').attr('x',M.left).attr('y',M.top).attr('width',iW).attr('height',iH)
+    .attr('fill','transparent')
+    .on('mousemove',function(ev){
+      const [mx,my]=d3.pointer(ev,g.node());
+      const x=xs.invert(mx); const y=f(x);
+      tip.style.opacity=1;
+      tip.style.left=(M.left+mx)+'px';
+      tip.style.top=(M.top+my-14)+'px';
+      tip.textContent=`x=${fmtNum(x)}  f(x)=${fmt(y)}`;
+    })
+    .on('mouseleave',()=>{ tip.style.opacity=0; });
+
+  // animación: puntos móviles
+  if(animState.running){ drawAnimPoints(g,xs,ys,iH,yDom); }
+}
+
+/* ── ANIMACIÓN bilateral ── */
+let animState={running:false,t:0,raf:null};
+function toggleAnim(){
+  const btn=document.getElementById('anim-btn');
+  const panel=document.getElementById('limit-panel');
+  animState.running=!animState.running;
+  if(animState.running){
+    btn.classList.add('running'); btn.textContent='⏸ Detener';
+    panel.classList.add('visible'); animState.t=0; stepAnim();
+  }else{
+    btn.classList.remove('running'); btn.textContent='▶ Animar acercamiento bilateral';
+    cancelAnimationFrame(animState.raf); drawChart();
+  }
+}
+function stepAnim(){
+  animState.t+=0.012;
+  if(animState.t>1) animState.t=0; // loop
+  updateAnimPanel();
+  drawChart();
+  animState.raf=requestAnimationFrame(stepAnim);
+}
+function animDist(){ // distancia a c, decreciente exponencial
+  const span=parseFloat(document.getElementById('zoom-range').value);
+  const d0=span*0.6;
+  return d0*Math.pow(0.0025, animState.t); // de d0 hasta ~d0/400
+}
+function drawAnimPoints(g,xs,ys,iH,yDom){
+  const d=animDist();
+  [[-1,'#ea580c'],[+1,'#1d4ed8']].forEach(([side,col])=>{
+    const x=C+side*d; let y=f(x);
+    const yc=Math.max(yDom[0],Math.min(yDom[1],y));
+    g.append('circle').attr('cx',xs(x)).attr('cy',ys(yc)).attr('r',6).attr('fill',col).attr('stroke','#fff').attr('stroke-width',2);
+    g.append('line').attr('x1',xs(x)).attr('x2',xs(x)).attr('y1',ys(yc)).attr('y2',Math.min(iH,Math.max(0,ys(0))))
+      .attr('stroke',col).attr('stroke-width',1).attr('stroke-dasharray','3,3').attr('opacity',.6);
+  });
+}
+function updateAnimPanel(){
+  const d=animDist();
+  const xL=C-d, xR=C+d;
+  const fL=f(xL), fR=f(xR);
+  const limL=sideLimit(-1), limR=sideLimit(+1);
+  document.getElementById('L-arrow').textContent=`x → ${fmtNum(C)}⁻`;
+  document.getElementById('R-arrow').textContent=`x → ${fmtNum(C)}⁺`;
+  document.getElementById('L-x').textContent=`x = ${fmtNum(xL)}`;
+  document.getElementById('R-x').textContent=`x = ${fmtNum(xR)}`;
+  document.getElementById('L-fx').textContent=`f(x) = ${fmt(fL)}`;
+  document.getElementById('R-fx').textContent=`f(x) = ${fmt(fR)}`;
+  document.getElementById('L-fx').className='side-fx '+(fL<0?'fx-neg':'fx-pos');
+  document.getElementById('R-fx').className='side-fx '+(fR<0?'fx-neg':'fx-pos');
+  document.getElementById('center-result').textContent =
+    (limL===limR) ? (limL>0?'+∞':'−∞') : '∄';
+  document.getElementById('limit-conclusion').innerHTML =
+    `A medida que $x\\to ${fmtNum(C)}$, $|f(x)|$ crece sin cota: ` +
+    `por la izquierda hacia $${limL>0?'+\\infty':'-\\infty'}$ y por la derecha hacia $${limR>0?'+\\infty':'-\\infty'}$. ` +
+    `El límite bilateral no existe.`;
+  typeset();
+}
+
+/* ════════════════════════════════════════════════════════
+   PARÁMETROS
+════════════════════════════════════════════════════════ */
+function applyParams(){
+  const k=parseFloat(document.getElementById('k-value').value);
+  const c=parseFloat(document.getElementById('c-value').value);
+  if(isNaN(k)||k===0){ alert('k debe ser un número distinto de 0.'); return; }
+  if(isNaN(c)){ alert('c debe ser un número.'); return; }
+  K=k; C=c;
+  if(animState.running) toggleAnim();
+  document.getElementById('score-badge').classList.remove('visible');
+  renderAll();
+}
+function setParams(k,c){
+  document.getElementById('k-value').value=k;
+  document.getElementById('c-value').value=c;
+  applyParams();
+}
+
+/* ── KaTeX ── */
+function typeset(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ]});
+  }
+}
+
+window.addEventListener('resize', drawChart);
+window.addEventListener('load', ()=>{ renderAll(); });
+</script>
+</body>
+</html>

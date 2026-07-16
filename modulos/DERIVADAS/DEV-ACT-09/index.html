@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 9 — La derivada como función pendiente · Cursillo de Actualización Docente</title>
+
+<!-- ── FUENTES ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ── KaTeX (CSS) ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ═══════════ IDENTIDAD VISUAL ═══════════ */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28);
+  padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{
+  height:52px; width:auto; object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));
+}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem; letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:5px;
+}
+.header-title{
+  font-family:'Playfair Display',serif; font-weight:700;
+  font-size:1.5rem; color:#fff; line-height:1.25;
+}
+.header-sub{
+  font-size:.86rem; color:rgba(255,255,255,.72);
+  font-style:italic; margin-top:3px;
+}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem; letter-spacing:.17em;
+  color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{
+  font-family:'Playfair Display',serif;
+  font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;
+}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+/* ── TARJETA ── */
+.activity-card{
+  background:var(--white); border:1px solid var(--border);
+  border-radius:3px; box-shadow:0 4px 28px rgba(0,59,117,.09);
+  margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{
+  background:var(--navy); color:#fff;
+  padding:15px 24px; display:flex; align-items:center; gap:15px;
+}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1.16rem; letter-spacing:.01em;
+}
+.card-body{padding:26px 28px 30px;}
+
+/* ── OBJETIVO ── */
+.objetivo-box{
+  border-left:4px solid var(--crimson);
+  background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+/* ── FUNCIÓN ── */
+.func-display{
+  background:#fafaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px 20px; text-align:center;
+  margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:10px;
+}
+
+/* ── PARÁMETROS ── */
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{
+  font-size:.85rem; color:var(--muted); margin-bottom:14px;
+}
+.param-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr));
+  gap:14px; align-items:end;
+}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text], select{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border);
+  border-radius:3px; background:#fff; color:var(--text); width:100%;
+}
+input:focus, select:focus{
+  outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);
+}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem;
+  letter-spacing:.06em; padding:9px 15px; border-radius:3px;
+  border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0;
+  font-size:.9rem;
+}
+
+/* ── TABLA ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:540px;}
+th, td{
+  border:1px solid var(--border); padding:9px 8px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+thead th{
+  background:var(--navy); color:#fff; font-weight:500;
+  letter-spacing:.05em; font-size:.78rem;
+}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+tbody td.rowlbl{background:#f4f2ec; font-weight:700; color:var(--navy); text-align:left; padding-left:12px;}
+td input.cell{
+  width:100%; min-width:86px; border:1px solid transparent;
+  background:transparent; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+td input.cell:focus{outline:none; border-color:var(--navy); background:#fff;}
+td input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+td input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+td.hl{background:#fdf7e3 !important;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── GRÁFICOS ── */
+.chart-box{
+  position:relative; width:100%; height:440px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; margin-top:6px; overflow:hidden;
+}
+.chart-box.small{height:300px;}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer;
+  color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+.range-field{display:flex; align-items:center; gap:9px; flex:1; min-width:240px;}
+.range-field span{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+  white-space:nowrap;
+}
+input[type=range]{flex:1; accent-color:var(--navy); cursor:pointer; min-width:90px;}
+.probe-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.probe-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:9px;
+}
+.probe-wrap .hval{color:var(--crimson); font-weight:700;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.4;}
+.dcurve{fill:none; stroke:var(--crimson); stroke-width:2.2;}
+.tan-line{stroke:var(--gold); stroke-width:2.2;}
+.tan-line.active{stroke:var(--crimson); stroke-width:2.6;}
+.probe-tan{stroke:var(--crimson); stroke-width:2.5; stroke-dasharray:8,4;}
+.slope-tri{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3,3; opacity:.85;}
+.link-line{stroke:var(--muted); stroke-width:1.1; stroke-dasharray:4,4; opacity:.55;}
+.closed-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.4;}
+.open-dot{fill:#fff; stroke:var(--navy); stroke-width:2.2;}
+.pt-dot{fill:var(--navy); stroke:#fff; stroke-width:1.5; cursor:pointer;}
+.pt-dot:hover{r:7.5;}
+.dpt-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.5; cursor:pointer;}
+.axis-label{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  fill:var(--muted); font-weight:500;
+}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.pt-lbl{font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px;
+  transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+/* ── PANEL DE PUNTOS ── */
+.pts-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:12px; margin-top:16px;
+}
+.pt-card{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--gold); border-radius:3px;
+  padding:13px 15px; cursor:pointer;
+  transition:background .15s, transform .13s, box-shadow .15s;
+}
+.pt-card:hover{background:#f2efe8; transform:translateY(-1px);}
+.pt-card.sel{
+  border-top-color:var(--crimson); background:var(--accent-bg);
+  box-shadow:0 3px 12px rgba(0,59,117,.12);
+}
+.pt-card .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:7px;
+}
+.pt-card .v{
+  font-family:'JetBrains Mono',monospace; font-size:.95rem;
+  color:var(--navy); line-height:1.75;
+}
+.pt-card .v b{color:var(--crimson);}
+
+.live-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px; margin-top:16px;
+}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--navy); border-radius:3px;
+  padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem;
+  font-weight:700; color:var(--navy); word-break:break-all;
+}
+.live-cell.crim .v{color:var(--crimson);}
+.live-cell.gold .v{color:#8a6f1e;}
+
+/* ── DESPLEGABLE ── */
+.ed-section{
+  border:1px solid var(--border); border-radius:3px;
+  margin-top:26px; overflow:hidden; background:#fff;
+}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem; letter-spacing:0;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  color:var(--gold); transition:transform .25s ease;
+}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0;
+  font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy);
+  border-radius:3px; padding:14px 18px; margin-top:14px;
+  font-size:.93rem; display:flex; justify-content:space-between;
+  align-items:center; gap:14px;
+}
+.qed-box .qed{
+  font-family:'JetBrains Mono',monospace; font-size:1.25rem;
+  color:var(--navy); font-weight:700;
+}
+
+/* ── REFLEXIÓN ── */
+.reflect-q{
+  border:1px solid var(--border); border-radius:3px;
+  padding:15px 18px; margin-bottom:12px; background:#fff;
+}
+.reflect-q .qt{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:10px; color:var(--navy);
+}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px;
+  padding:9px 12px; border:1px solid var(--border); border-radius:3px;
+  cursor:pointer; font-size:.9rem; transition:background .14s, border-color .14s;
+  background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+/* ── CONCLUSIÓN ── */
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px;
+  padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{
+  border-top:1px solid var(--border); background:#efece5;
+  padding:24px 22px; text-align:center;
+}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .chart-box.small{height:260px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 9 — Derivada de $f(x)=x^{2}$</div>
+      <div class="header-sub">La derivada como función pendiente y la familia de rectas tangentes</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">9</div>
+      <h2>Derivada de $f(x)=x^{2}$</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Evaluar la <strong>función derivada</strong> $f'$ en varios puntos, comprender que cada valor
+        $f'(a)$ es la <strong>pendiente de la recta tangente</strong> en $x=a$, y visualizar la
+        <strong>familia de tangentes</strong> sobre la curva. Distinguir la gráfica de $f$ de la
+        gráfica de $f'$.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función y su derivada</span>
+        <div id="func-katex">$$f(x)=x^{2} \qquad\Longrightarrow\qquad f'(x)=2x$$</div>
+      </div>
+
+      <!-- ── PARÁMETROS ── -->
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Elige la familia de funciones, sus coeficientes y los <strong>puntos de evaluación</strong>
+          (separados por comas). Todo se recalcula: tabla, gráficas, tangentes, fórmulas y conclusiones.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-fam">familia</label>
+            <select id="p-fam">
+              <option value="quad" selected>cuadrática · px² + qx + r</option>
+              <option value="cubic">cúbica · px³ + qx + r</option>
+              <option value="sqrt">raíz · p·√x + r</option>
+              <option value="recip">recíproca · p/x + r</option>
+              <option value="sin">seno · p·sen(qx) + r</option>
+              <option value="exp">exponencial · p·e^(qx) + r</option>
+            </select>
+          </div>
+          <div class="param-field">
+            <label for="p-p">p</label>
+            <input type="number" id="p-p" value="1" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-q">q</label>
+            <input type="number" id="p-q" value="0" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-r">r</label>
+            <input type="number" id="p-r" value="0" step="any">
+          </div>
+          <div class="param-field" style="grid-column:span 2;">
+            <label for="p-pts">puntos de evaluación (a₁, a₂, …)</label>
+            <input type="text" id="p-pts" value="1, 2, 3">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="quad,1,0,0,1, 2, 3">Original · x² en 1,2,3</button>
+          <button class="btn-ghost" data-preset="quad,1,0,0,-2, -1, 0, 1, 2">x² simétrico · vértice</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,0,-1, 0, 1">x³ · con f′(0)=0</button>
+          <button class="btn-ghost" data-preset="sqrt,1,0,0,1, 4, 9">√x en 1,4,9</button>
+          <button class="btn-ghost" data-preset="recip,1,0,0,0.5, 1, 2">1/x · pendiente negativa</button>
+          <button class="btn-ghost" data-preset="sin,1,1,0,0, 1.5708, 3.1416">sen x · máximo y ceros</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) TABLA ── -->
+      <div class="sec-title">a) Calcule $f'(a)$ en cada punto</div>
+      <p style="font-size:.93rem;margin-bottom:6px;">
+        Usa la regla <span id="rule-inline"></span> para evaluar la derivada en cada punto.
+        Completa también $f(a)$, que necesitarás para escribir la ecuación de cada tangente.
+      </p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-fa"></tr>
+            <tr id="row-fp"></tr>
+            <tr id="row-tan"></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify">Verificar</button>
+        <button class="btn-primary" id="btn-fill">Rellenar solución</button>
+        <button class="btn-ghost" id="btn-clear">Limpiar</button>
+        <button class="btn-ghost" id="btn-hint">Pista</button>
+        <span class="score-badge" id="score"></span>
+      </div>
+
+      <div class="hint-box" id="hint"></div>
+
+      <!-- ── b) SIGNIFICADO GRÁFICO ── -->
+      <div class="sec-title">b) ¿Qué representan estos valores en la gráfica?</div>
+      <div id="pts-panel" class="pts-panel"></div>
+      <p class="note">
+        Haz clic en cualquier tarjeta para <strong>resaltar</strong> esa tangente en el gráfico.
+      </p>
+
+      <!-- ── c) CURVA Y TANGENTES ── -->
+      <div class="sec-title">c) Curva y rectas tangentes</div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-tans" checked> familia de tangentes</label>
+        <label><input type="checkbox" id="opt-tri" checked> triángulo de pendiente</label>
+        <label><input type="checkbox" id="opt-labels" checked> etiquetas</label>
+        <label><input type="checkbox" id="opt-probe" checked> tangente móvil</label>
+        <div class="range-field">
+          <span>zoom</span>
+          <input type="range" id="opt-zoom" min="1" max="12" step="0.5" value="4">
+          <span id="zoom-val">4</span>
+        </div>
+      </div>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="probe-wrap">
+        <span class="hlbl">Tangente móvil en x = <span class="hval" id="probe-val">1</span></span>
+        <input type="range" id="probe-slider" min="-4" max="4" step="0.01" value="1">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Recorrer todas las tangentes</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">f(x)</span><span class="v" id="lv-fx">—</span></div>
+        <div class="live-cell crim"><span class="k">f ′(x) · pendiente</span><span class="v" id="lv-fp">—</span></div>
+        <div class="live-cell gold"><span class="k">ángulo de la tangente</span><span class="v" id="lv-ang">—</span></div>
+        <div class="live-cell"><span class="k">comportamiento</span><span class="v" id="lv-beh" style="font-size:.8rem;">—</span></div>
+      </div>
+
+      <!-- ── GRÁFICO DE f' ── -->
+      <div class="sec-title">La gráfica de $f'$: la derivada es <em>otra función</em></div>
+      <p style="font-size:.93rem;margin-bottom:4px;">
+        Cada valor $f'(a)$ que calculaste es <strong>un punto</strong> de esta segunda curva.
+        La altura aquí es la <strong>pendiente</strong> allá.
+      </p>
+      <div class="chart-box small" id="chart-d">
+        <div class="tooltip" id="tooltip-d"></div>
+      </div>
+      <p class="note">
+        Los ceros de $f'$ (cortes con el eje horizontal) corresponden a las
+        <strong>tangentes horizontales</strong> de $f$. Donde $f'&gt;0$, la curva sube;
+        donde $f'&lt;0$, baja.
+      </p>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Deducción de la regla $f'(x)$ desde la definición por límite</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box">
+            <span class="lbl">Definición</span>
+            <div id="def-katex"></div>
+          </div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div id="conclusion"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 9 · Dr. Eligio Colmenares</p>
+</footer>
+
+<!-- ═══════════ CDN (sin onload) ═══════════ -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL (única fuente de verdad)
+   ═══════════════════════════════════════════════ */
+let FAM  = 'quad';        // familia
+let PP   = 1, PQ = 0, PR = 0;  // coeficientes
+let PTS  = [1, 2, 3];     // puntos de evaluación
+let SEL  = -1;            // índice del punto seleccionado (-1 = ninguno)
+let ZOOM = 4;             // semiancho de la ventana x
+let PROBE = 1;            // x de la tangente móvil
+let ANIM = null;          // handle de animación
+
+const TOL = 1e-9;
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — FUNCIONES PURAS DE CÁLCULO
+   ═══════════════════════════════════════════════ */
+function f(x){
+  switch(FAM){
+    case 'quad':  return PP*x*x + PQ*x + PR;
+    case 'cubic': return PP*x*x*x + PQ*x + PR;
+    case 'sqrt':  return x < 0 ? NaN : PP*Math.sqrt(x) + PR;
+    case 'recip': return Math.abs(x) < 1e-12 ? NaN : PP/x + PR;
+    case 'sin':   return PP*Math.sin(PQ*x) + PR;
+    case 'exp':   return PP*Math.exp(PQ*x) + PR;
+    default:      return NaN;
+  }
+}
+function fp(x){
+  switch(FAM){
+    case 'quad':  return 2*PP*x + PQ;
+    case 'cubic': return 3*PP*x*x + PQ;
+    case 'sqrt':  return x <= 0 ? NaN : PP/(2*Math.sqrt(x));
+    case 'recip': return Math.abs(x) < 1e-12 ? NaN : -PP/(x*x);
+    case 'sin':   return PP*PQ*Math.cos(PQ*x);
+    case 'exp':   return PP*PQ*Math.exp(PQ*x);
+    default:      return NaN;
+  }
+}
+
+/* Recta tangente en a, como función de x */
+function tanAt(a){
+  const m = fp(a), y0 = f(a);
+  return x => (isFinite(m) && isFinite(y0)) ? y0 + m*(x - a) : NaN;
+}
+
+/* Dominio válido */
+function domainOK(x){
+  if (FAM === 'sqrt')  return x >= 0;
+  if (FAM === 'recip') return Math.abs(x) > 1e-9;
+  return true;
+}
+/* Punto derivable (no solo definido) */
+function diffOK(x){
+  if (FAM === 'sqrt')  return x > 1e-9;
+  if (FAM === 'recip') return Math.abs(x) > 1e-9;
+  return true;
+}
+
+function r6(v){ return Math.round(v * 1e6) / 1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 4 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+
+/* ── LaTeX de f ── */
+function fTex(){
+  const noQ = Math.abs(PQ) < 1e-12;
+  const noR = Math.abs(PR) < 1e-12;
+  const pc = (Math.abs(PP - 1) < 1e-12) ? '' : (Math.abs(PP + 1) < 1e-12 ? '-' : fmt(PP));
+  let base;
+  switch(FAM){
+    case 'quad':  base = pc + 'x^{2}'; if (!noQ) base += ' ' + signTerm(PQ) + 'x'; break;
+    case 'cubic': base = pc + 'x^{3}'; if (!noQ) base += ' ' + signTerm(PQ) + 'x'; break;
+    case 'sqrt':  base = pc + '\\sqrt{x}'; break;
+    case 'recip': base = '\\dfrac{' + fmt(PP) + '}{x}'; break;
+    case 'sin':   base = pc + '\\operatorname{sen}(' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x)'; break;
+    case 'exp':   base = pc + 'e^{' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x}'; break;
+    default:      base = 'x';
+  }
+  if (!noR) base += ' ' + signTerm(PR);
+  return base;
+}
+/* ── LaTeX de f' ── */
+function fpTex(){
+  switch(FAM){
+    case 'quad':  return fmt(2*PP) + 'x' + (Math.abs(PQ)<1e-12 ? '' : ' ' + signTerm(PQ));
+    case 'cubic': return fmt(3*PP) + 'x^{2}' + (Math.abs(PQ)<1e-12 ? '' : ' ' + signTerm(PQ));
+    case 'sqrt':  return '\\dfrac{' + fmt(PP) + '}{2\\sqrt{x}}';
+    case 'recip': return '-\\dfrac{' + fmt(PP) + '}{x^{2}}';
+    case 'sin':   return fmt(PP*PQ) + '\\cos(' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x)';
+    case 'exp':   return fmt(PP*PQ) + 'e^{' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x}';
+    default:      return '';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* degrada sin romper */ }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — LECTURA DE PARÁMETROS
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  FAM = document.getElementById('p-fam').value;
+  const p = parseFloat(document.getElementById('p-p').value);
+  const q = parseFloat(document.getElementById('p-q').value);
+  const r = parseFloat(document.getElementById('p-r').value);
+  PP = isFinite(p) ? p : 1;
+  PQ = isFinite(q) ? q : 0;
+  PR = isFinite(r) ? r : 0;
+
+  const raw = document.getElementById('p-pts').value;
+  const parsed = raw.split(/[,;]/)
+    .map(s => parseFloat(s.trim().replace(',', '.')))
+    .filter(v => isFinite(v) && domainOK(v) && diffOK(v))
+    .slice(0, 7);
+  PTS = parsed.length ? parsed : [1];
+
+  ZOOM = parseFloat(document.getElementById('opt-zoom').value) || 4;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+  SEL = -1;
+
+  /* Rango de la tangente móvil, adaptado al zoom y al dominio */
+  const ps = document.getElementById('probe-slider');
+  const c  = centerX();
+  const lo = FAM === 'sqrt' ? Math.max(0.05, c - ZOOM) : c - ZOOM;
+  const hi = c + ZOOM;
+  ps.min = lo; ps.max = hi; ps.step = (hi - lo) / 800;
+  PROBE = PTS[0];
+  if (PROBE < lo || PROBE > hi) PROBE = (lo + hi) / 2;
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+
+  renderFuncDisplay();
+  renderPreview();
+  renderRuleInline();
+  buildTable();
+  renderPtsPanel();
+  drawChart();
+  drawDeriv();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* Centro de la ventana: promedio de los puntos de evaluación */
+function centerX(){
+  const s = PTS.reduce((acc, v) => acc + v, 0);
+  return PTS.length ? s / PTS.length : 0;
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY Y PREVIEW
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + ' \\qquad\\Longrightarrow\\qquad f\'(x)=' + fpTex() + '$$';
+  renderMath(el);
+}
+
+function renderRuleInline(){
+  const el = document.getElementById('rule-inline');
+  el.innerHTML = '$f\'(x) = ' + fpTex() + '$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const lista = PTS.map(a => fmt(a)).join(',\\; ');
+  el.innerHTML =
+    'Caso actual: $f(x) = ' + fTex() + '$, con derivada $f\'(x) = ' + fpTex() + '$. ' +
+    'Evaluaremos en $a \\in \\{' + lista + '\\}$. ' +
+    'Cada $f\'(a)$ es un <strong>número</strong>: la pendiente de la tangente en ese punto. ' +
+    'La función $f\'$, en cambio, es una <strong>curva completa</strong> que asigna a cada $x$ su pendiente.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TABLA EDITABLE AUTOVERIFICABLE
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-fa');
+  const r2 = document.getElementById('row-fp');
+  const r3 = document.getElementById('row-tan');
+
+  let head = '<th style="background:var(--navy)">punto a</th>';
+  PTS.forEach(a => { head += '<th>a = ' + fmt(a) + '</th>'; });
+  th.innerHTML = head;
+
+  let h1 = '<td class="rowlbl">f(a)</td>';
+  PTS.forEach((a, i) => {
+    h1 += '<td><input class="cell" type="text" inputmode="decimal" data-row="fa" data-i="' + i + '" placeholder="?"></td>';
+  });
+  r1.innerHTML = h1;
+
+  let h2 = '<td class="rowlbl">f ′(a) &nbsp;· pendiente</td>';
+  PTS.forEach((a, i) => {
+    h2 += '<td><input class="cell" type="text" inputmode="decimal" data-row="fp" data-i="' + i + '" placeholder="?"></td>';
+  });
+  r2.innerHTML = h2;
+
+  /* Fila de solo lectura: ecuación de la tangente (se rellena al verificar/rellenar) */
+  let h3 = '<td class="rowlbl">recta tangente</td>';
+  PTS.forEach((a, i) => {
+    h3 += '<td id="tan-cell-' + i + '" style="color:var(--muted);font-size:.78rem;">—</td>';
+  });
+  r3.innerHTML = h3;
+
+  document.getElementById('score').className = 'score-badge';
+  document.getElementById('hint').className = 'hint-box';
+}
+
+function tanEqTex(a){
+  const m = fp(a), y0 = f(a);
+  if (!isFinite(m) || !isFinite(y0)) return '—';
+  const b = y0 - m*a;
+  if (Math.abs(m) < TOL) return 'y = ' + fmt(y0);
+  return 'y = ' + fmt(m) + 'x ' + signTerm(b);
+}
+
+function showTanRow(){
+  PTS.forEach((a, i) => {
+    const cell = document.getElementById('tan-cell-' + i);
+    if (cell){
+      cell.textContent = tanEqTex(a);
+      cell.style.color = 'var(--navy)';
+      cell.style.fontWeight = '700';
+    }
+  });
+}
+
+function verifyTable(){
+  const cells = document.querySelectorAll('#tabla input.cell');
+  let ok = 0, total = 0, tried = 0;
+
+  cells.forEach(cell => {
+    const i   = parseInt(cell.dataset.i, 10);
+    const row = cell.dataset.row;
+    const a   = PTS[i];
+    const truth = (row === 'fa') ? f(a) : fp(a);
+    total++;
+    const raw = cell.value.trim().replace(',', '.');
+    cell.classList.remove('correct','wrong');
+    if (raw === '') return;
+    tried++;
+    const val = parseFloat(raw);
+    const tolAbs = Math.max(Math.abs(truth) * 5e-4, 5e-4);
+    if (isFinite(val) && isFinite(truth) && Math.abs(val - truth) <= tolAbs){
+      cell.classList.add('correct'); ok++;
+    } else {
+      cell.classList.add('wrong');
+    }
+  });
+
+  const badge = document.getElementById('score');
+  badge.textContent = tried === 0
+    ? 'Completa al menos una celda'
+    : ok + ' / ' + total + ' correctas';
+  badge.className = 'score-badge show' + (ok === total && total > 0 ? ' perfect' : '');
+  if (ok === total && total > 0) showTanRow();
+}
+
+function fillTable(){
+  document.querySelectorAll('#tabla input.cell').forEach(cell => {
+    const i   = parseInt(cell.dataset.i, 10);
+    const row = cell.dataset.row;
+    const a   = PTS[i];
+    const v   = (row === 'fa') ? f(a) : fp(a);
+    cell.value = isFinite(v) ? fmt(v, 4) : '—';
+    cell.classList.remove('wrong');
+    cell.classList.add('correct');
+  });
+  showTanRow();
+  const badge = document.getElementById('score');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function clearTable(){
+  document.querySelectorAll('#tabla input.cell').forEach(cell => {
+    cell.value = '';
+    cell.classList.remove('correct','wrong');
+  });
+  PTS.forEach((a, i) => {
+    const cell = document.getElementById('tan-cell-' + i);
+    if (cell){
+      cell.textContent = '—';
+      cell.style.color = 'var(--muted)';
+      cell.style.fontWeight = '400';
+    }
+  });
+  document.getElementById('score').className = 'score-badge';
+}
+
+function toggleHint(){
+  const box = document.getElementById('hint');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+
+  const a0 = PTS[0];
+  box.innerHTML =
+    '<strong>Pista.</strong> La derivada ya está calculada: $f\'(x) = ' + fpTex() + '$. ' +
+    'Solo hay que <strong>sustituir</strong> el valor de $a$ en esa expresión. Por ejemplo, con $a = ' + fmt(a0) + '$:' +
+    '$$f\'(' + fmt(a0) + ') = ' + fpTex().replace(/x/g, '(' + fmt(a0) + ')') + ' = ' + fmt(fp(a0)) + '.$$' +
+    'Para la <strong>ecuación de la tangente</strong> usa la forma punto-pendiente:' +
+    '$$y - f(a) = f\'(a)\\,(x - a) \\quad\\Longleftrightarrow\\quad y = f(a) + f\'(a)\\,(x-a).$$' +
+    '<p style="margin-top:8px;">Ojo con la distinción: $f(a)$ es la <em>altura</em> de la curva; ' +
+    '$f\'(a)$ es su <em>inclinación</em>. Son números distintos y responden a preguntas distintas.</p>';
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL DE PUNTOS (parte b)
+   ═══════════════════════════════════════════════ */
+function behaviorTxt(m){
+  if (!isFinite(m)) return 'no derivable';
+  if (Math.abs(m) < 1e-7) return 'tangente horizontal';
+  return m > 0 ? 'creciente (sube)' : 'decreciente (baja)';
+}
+
+function renderPtsPanel(){
+  const panel = document.getElementById('pts-panel');
+  let html = '';
+  PTS.forEach((a, i) => {
+    const y = f(a), m = fp(a);
+    const ang = Math.atan(m) * 180 / Math.PI;
+    html += '<div class="pt-card' + (i === SEL ? ' sel' : '') + '" data-i="' + i + '">' +
+      '<span class="k">punto a = ' + fmt(a) + '</span>' +
+      '<div class="v">' +
+        'f(' + fmt(a) + ') = ' + fmt(y, 3) + '<br>' +
+        'f ′(' + fmt(a) + ') = <b>' + fmt(m, 3) + '</b><br>' +
+        'ángulo ≈ ' + fmt(ang, 1) + '°<br>' +
+        '<span style="color:var(--muted);font-size:.85em;">' + behaviorTxt(m) + '</span>' +
+      '</div></div>';
+  });
+  panel.innerHTML = html;
+
+  panel.querySelectorAll('.pt-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const i = parseInt(card.dataset.i, 10);
+      SEL = (SEL === i) ? -1 : i;
+      renderPtsPanel();
+      if (SEL >= 0) setProbe(PTS[SEL]);
+      else drawChart();
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL (curva + familia de tangentes)
+   ═══════════════════════════════════════════════ */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 440;
+  const m = {top:22, right:26, bottom:42, left:64};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const showGrid   = document.getElementById('opt-grid').checked;
+  const showTans   = document.getElementById('opt-tans').checked;
+  const showTri    = document.getElementById('opt-tri').checked;
+  const showLabels = document.getElementById('opt-labels').checked;
+  const showProbe  = document.getElementById('opt-probe').checked;
+
+  const c = centerX();
+  let xMin = c - ZOOM, xMax = c + ZOOM;
+  if (FAM === 'sqrt') xMin = Math.max(xMin, 0);
+  /* Asegura que todos los puntos de evaluación queden dentro */
+  PTS.forEach(a => {
+    if (a < xMin) xMin = a - ZOOM*0.1;
+    if (a > xMax) xMax = a + ZOOM*0.1;
+  });
+
+  /* Muestreo por ramas (nunca a través del polo) */
+  const N = 700, step = (xMax - xMin) / N;
+  const branchL = [], branchR = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (!domainOK(x)) continue;
+    if (FAM === 'recip' && Math.abs(x) < step*0.8) continue;
+    const y = f(x);
+    if (!isFinite(y)) continue;
+    (FAM === 'recip' && x < 0 ? branchL : branchR).push([x, y]);
+  }
+
+  /* Dominio y: curva recortada + TODAS las tangentes en ambos extremos + probe */
+  const curveY = [...branchL, ...branchR].map(d => d[1]).filter(isFinite);
+  let refLo, refHi;
+  if (curveY.length){
+    const sorted = curveY.slice().sort(d3.ascending);
+    refLo = d3.quantile(sorted, 0.02);
+    refHi = d3.quantile(sorted, 0.98);
+  } else { refLo = -1; refHi = 1; }
+  const spanRef = Math.max(refHi - refLo, 1);
+  const clipped = curveY.filter(v => v > refLo - spanRef*1.3 && v < refHi + spanRef*1.3);
+
+  /* flatMap: cada tangente evaluada en xMin y xMax (regla 1 y 3) */
+  const tanY = PTS.flatMap(a => {
+    const t = tanAt(a);
+    return [t(xMin), t(xMax)];
+  }).filter(isFinite);
+
+  const probeY = [];
+  if (showProbe && diffOK(PROBE)){
+    const tp = tanAt(PROBE);
+    [tp(xMin), tp(xMax), f(PROBE)].forEach(v => { if (isFinite(v)) probeY.push(v); });
+  }
+  const ptsY = PTS.map(f).filter(isFinite);
+
+  const allY = [...clipped, ...tanY, ...probeY, ...ptsY].filter(isFinite);
+  let yMin = allY.length ? Math.min(...allY) : -1;
+  let yMax = allY.length ? Math.max(...allY) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.12;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-box').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-main-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  if (showGrid){
+    g.append('g').attr('class','grid')
+      .attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(6));
+
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  /* Curva por ramas */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  if (branchL.length > 1) plot.append('path').datum(branchL).attr('class','curve').attr('d', line);
+  if (branchR.length > 1) plot.append('path').datum(branchR).attr('class','curve').attr('d', line);
+
+  /* ── FAMILIA DE TANGENTES (parte c) ── */
+  if (showTans){
+    PTS.forEach((a, i) => {
+      const t = tanAt(a);
+      const y1 = t(xMin), y2 = t(xMax);
+      if (!isFinite(y1) || !isFinite(y2)) return;
+      const active = (i === SEL);
+      plot.append('line')
+        .attr('class', 'tan-line' + (active ? ' active' : ''))
+        .attr('opacity', SEL === -1 ? .92 : (active ? 1 : .28))
+        .attr('x1', xs(xMin)).attr('y1', ys(y1))
+        .attr('x2', xs(xMax)).attr('y2', ys(y2));
+    });
+  }
+
+  /* Triángulo de pendiente (1, f'(a)) sobre la tangente seleccionada o todas si hay pocas */
+  if (showTri && showTans){
+    const idxs = (SEL >= 0) ? [SEL] : PTS.map((_, i) => i);
+    idxs.forEach(i => {
+      const a = PTS[i];
+      const mSlope = fp(a), y0 = f(a);
+      if (!isFinite(mSlope) || !isFinite(y0)) return;
+      const dx = Math.min(1, ZOOM * 0.22);           // base horizontal del triángulo
+      const x1 = a, x2 = a + dx;
+      const yA = y0, yB = y0 + mSlope*dx;
+      if (!isFinite(yB)) return;
+      plot.append('line').attr('class','slope-tri')
+        .attr('x1', xs(x1)).attr('y1', ys(yA))
+        .attr('x2', xs(x2)).attr('y2', ys(yA));
+      plot.append('line').attr('class','slope-tri')
+        .attr('x1', xs(x2)).attr('y1', ys(yA))
+        .attr('x2', xs(x2)).attr('y2', ys(yB));
+      if (showLabels && (SEL === -1 || SEL === i)){
+        plot.append('text').attr('class','pt-lbl').attr('fill','var(--muted)')
+          .attr('x', xs(x2) + 5).attr('y', (ys(yA) + ys(yB)) / 2)
+          .text('Δy = ' + fmt(mSlope*dx, 2));
+      }
+    });
+  }
+
+  /* ── TANGENTE MÓVIL ── */
+  if (showProbe && diffOK(PROBE) && isFinite(f(PROBE))){
+    const tp = tanAt(PROBE);
+    const y1 = tp(xMin), y2 = tp(xMax);
+    if (isFinite(y1) && isFinite(y2)){
+      plot.append('line').attr('class','probe-tan')
+        .attr('x1', xs(xMin)).attr('y1', ys(y1))
+        .attr('x2', xs(xMax)).attr('y2', ys(y2));
+    }
+    plot.append('circle').attr('class','closed-dot')
+      .attr('cx', xs(PROBE)).attr('cy', ys(f(PROBE))).attr('r', 6);
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--crimson)')
+      .attr('x', iw - 6).attr('y', ih - 10).attr('text-anchor','end')
+      .text('tangente móvil · m = ' + fmt(fp(PROBE), 3));
+  }
+
+  /* Puntos de evaluación — CERRADOS: la curva SÍ pasa por (a, f(a)) */
+  PTS.forEach((a, i) => {
+    const y = f(a);
+    if (!isFinite(y) || a < xMin || a > xMax) return;
+    plot.append('circle')
+      .attr('class','pt-dot')
+      .attr('cx', xs(a)).attr('cy', ys(y))
+      .attr('r', i === SEL ? 7.5 : 6)
+      .on('click', () => {
+        SEL = (SEL === i) ? -1 : i;
+        renderPtsPanel();
+        if (SEL >= 0) setProbe(PTS[SEL]); else drawChart();
+      });
+
+    if (showLabels){
+      plot.append('text').attr('class','pt-lbl').attr('fill','var(--navy)')
+        .attr('x', xs(a) + 9).attr('y', ys(y) - 9)
+        .text("f '(" + fmt(a) + ") = " + fmt(fp(a), 2));
+    }
+  });
+
+  /* Tooltip */
+  const tip = document.getElementById('tooltip');
+  const hover = plot.append('line')
+    .attr('stroke','var(--navy)').attr('stroke-width',1)
+    .attr('stroke-dasharray','3,3').attr('opacity',0)
+    .attr('y1',0).attr('y2',ih);
+  const hdot = plot.append('circle')
+    .attr('r',4.5).attr('fill','var(--navy)').attr('opacity',0);
+
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x);
+      if (!isFinite(y) || y < yMin || y > yMax){
+        tip.classList.remove('show'); hover.attr('opacity',0); hdot.attr('opacity',0);
+        return;
+      }
+      hover.attr('opacity',.5).attr('x1', xs(x)).attr('x2', xs(x));
+      hdot.attr('opacity',1).attr('cx', xs(x)).attr('cy', ys(y));
+      tip.innerHTML = 'x = ' + fmt(x, 3) + '<br>f(x) = ' + fmt(y, 4) +
+        (diffOK(x) ? "<br>f '(x) = " + fmt(fp(x), 4) : '<br>(no derivable)');
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top  = (m.top  + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', function(){
+      tip.classList.remove('show'); hover.attr('opacity',0); hdot.attr('opacity',0);
+    })
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (diffOK(x)) setProbe(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO DE LA FUNCIÓN DERIVADA f'
+   ═══════════════════════════════════════════════ */
+function drawDeriv(){
+  const box = document.getElementById('chart-d');
+  d3.select('#chart-d').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 300;
+  const m = {top:20, right:26, bottom:40, left:64};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const c = centerX();
+  let xMin = c - ZOOM, xMax = c + ZOOM;
+  if (FAM === 'sqrt') xMin = Math.max(xMin, 0);
+  PTS.forEach(a => {
+    if (a < xMin) xMin = a - ZOOM*0.1;
+    if (a > xMax) xMax = a + ZOOM*0.1;
+  });
+
+  /* Muestreo por ramas: la derivada también puede tener polo/asíntota */
+  const N = 600, step = (xMax - xMin) / N;
+  const brL = [], brR = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (!diffOK(x)) continue;
+    if ((FAM === 'recip' || FAM === 'sqrt') && Math.abs(x) < step*0.8) continue;
+    const v = fp(x);
+    if (!isFinite(v)) continue;
+    (x < 0 && (FAM === 'recip') ? brL : brR).push([x, v]);
+  }
+
+  const vals = [...brL, ...brR].map(d => d[1]).filter(isFinite);
+  let refLo, refHi;
+  if (vals.length){
+    const sorted = vals.slice().sort(d3.ascending);
+    refLo = d3.quantile(sorted, 0.02);
+    refHi = d3.quantile(sorted, 0.98);
+  } else { refLo = -1; refHi = 1; }
+  const spanRef = Math.max(refHi - refLo, 1);
+  const clipped = vals.filter(v => v > refLo - spanRef*1.3 && v < refHi + spanRef*1.3);
+
+  const ptVals = PTS.map(fp).filter(isFinite);
+  const probeVal = diffOK(PROBE) ? [fp(PROBE)].filter(isFinite) : [];
+  const allV = [...clipped, ...ptVals, ...probeVal, 0].filter(isFinite);
+
+  let yMin = allV.length ? Math.min(...allV) : -1;
+  let yMax = allV.length ? Math.max(...allV) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.15;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-d').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-d-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  g.append('g').attr('class','grid')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 32).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -7).attr('text-anchor','end').text("f '(x)");
+
+  /* Eje y = 0 destacado: separa creciente de decreciente */
+  if (0 >= yMin && 0 <= yMax){
+    plot.append('line')
+      .attr('x1', 0).attr('x2', iw).attr('y1', ys(0)).attr('y2', ys(0))
+      .attr('stroke','var(--muted)').attr('stroke-width',1.3);
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--muted)')
+      .attr('x', 6).attr('y', ys(0) - 6)
+      .text("f '(x) = 0  →  tangente horizontal");
+  }
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  /* Curva de f' por ramas */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  if (brL.length > 1) plot.append('path').datum(brL).attr('class','dcurve').attr('d', line);
+  if (brR.length > 1) plot.append('path').datum(brR).attr('class','dcurve').attr('d', line);
+
+  /* Puntos (a, f'(a)) — CERRADOS: f' SÍ toma ese valor en a (a es derivable) */
+  PTS.forEach((a, i) => {
+    const v = fp(a);
+    if (!isFinite(v) || a < xMin || a > xMax) return;
+    plot.append('circle')
+      .attr('class','dpt-dot')
+      .attr('cx', xs(a)).attr('cy', ys(v))
+      .attr('r', i === SEL ? 7 : 5.6)
+      .on('click', () => {
+        SEL = (SEL === i) ? -1 : i;
+        renderPtsPanel();
+        if (SEL >= 0) setProbe(PTS[SEL]); else { drawChart(); drawDeriv(); }
+      });
+    plot.append('text').attr('class','pt-lbl').attr('fill','var(--crimson)')
+      .attr('x', xs(a) + 8).attr('y', ys(v) - 8)
+      .text(fmt(v, 2));
+  });
+
+  /* PUNTO ABIERTO donde f NO es derivable pero el límite lateral de f' existe:
+     caso √x en x=0 (f está definida, f' diverge → no se dibuja punto)
+     y caso 1/x en x=0 (fuera del dominio → tampoco).
+     Criterio: solo se dibuja punto si diffOK(x) y fp(x) es finito. */
+
+  /* Punto móvil */
+  if (diffOK(PROBE)){
+    const v = fp(PROBE);
+    if (isFinite(v) && PROBE >= xMin && PROBE <= xMax){
+      plot.append('line')
+        .attr('x1', xs(PROBE)).attr('x2', xs(PROBE))
+        .attr('y1', ys(v)).attr('y2', ys(0) || ih)
+        .attr('stroke','var(--crimson)').attr('stroke-width',1.1)
+        .attr('stroke-dasharray','3,3').attr('opacity',.6);
+      plot.append('circle').attr('class','closed-dot')
+        .attr('cx', xs(PROBE)).attr('cy', ys(v)).attr('r', 5.8);
+    }
+  }
+
+  /* Tooltip */
+  const tipd = document.getElementById('tooltip-d');
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (!diffOK(x)){ tipd.classList.remove('show'); return; }
+      const v = fp(x);
+      if (!isFinite(v) || v < yMin || v > yMax){ tipd.classList.remove('show'); return; }
+      tipd.innerHTML = 'x = ' + fmt(x, 3) + "<br>f '(x) = " + fmt(v, 4) +
+                       '<br>' + behaviorTxt(v);
+      tipd.style.left = (m.left + xs(x)) + 'px';
+      tipd.style.top  = (m.top  + ys(v)) + 'px';
+      tipd.classList.add('show');
+    })
+    .on('mouseleave', () => tipd.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (diffOK(x)) setProbe(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO Y SONDA
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const y = f(PROBE), mSlope = fp(PROBE);
+  document.getElementById('lv-x').textContent  = fmt(PROBE, 4);
+  document.getElementById('lv-fx').textContent = fmt(y, 5);
+  document.getElementById('lv-fp').textContent = fmt(mSlope, 5);
+  const ang = isFinite(mSlope) ? Math.atan(mSlope) * 180 / Math.PI : NaN;
+  document.getElementById('lv-ang').textContent = isFinite(ang) ? fmt(ang, 2) + '°' : '—';
+  document.getElementById('lv-beh').textContent = behaviorTxt(mSlope);
+}
+
+function setProbe(x){
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  PROBE = Math.max(lo, Math.min(hi, x));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+  updateLive();
+  drawChart();
+  drawDeriv();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN: RECORRIDO DE TANGENTES
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Recorrer todas las tangentes';
+}
+
+function startAnim(){
+  stopAnim();
+  SEL = -1;
+  renderPtsPanel();
+
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  const steps = 160;
+  let t = 0;
+
+  document.getElementById('btn-anim').textContent = '● Recorriendo…';
+
+  ANIM = setInterval(() => {
+    t++;
+    const frac = t / steps;
+    let x = lo + (hi - lo) * frac;
+    /* Salta los puntos no derivables sin romper la animación */
+    if (!diffOK(x)) x = x + (hi - lo) * 0.01;
+
+    PROBE = Math.max(lo, Math.min(hi, x));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive();
+    drawChart();
+    drawDeriv();
+
+    if (t >= steps){
+      stopAnim();
+      /* Estado final coherente: la sonda queda en el último punto de evaluación */
+      const last = PTS[PTS.length - 1];
+      setProbe(diffOK(last) ? last : (lo + hi) / 2);
+    }
+  }, 30);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN AUTOVERIFICABLE
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const a1 = PTS[0];
+  const m1 = fp(a1);
+  const y1 = f(a1);
+  const zeros = PTS.filter(a => Math.abs(fp(a)) < 1e-7);
+
+  const qs = [
+    {
+      q: 'b) ¿Qué representa el número $f\'(' + fmt(a1) + ') = ' + fmt(m1) + '$ en la gráfica?',
+      opts: [
+        'La <strong>altura</strong> de la curva en $x = ' + fmt(a1) + '$, es decir, $f(' + fmt(a1) + ')$.',
+        'La <strong>pendiente</strong> de la recta tangente a la curva en el punto $(' + fmt(a1) + ',\\, ' + fmt(y1) + ')$.',
+        'El área bajo la curva entre $0$ y $' + fmt(a1) + '$.'
+      ],
+      ok: 1,
+      fb: 'La altura es $f(' + fmt(a1) + ') = ' + fmt(y1) + '$; la <strong>inclinación</strong> es ' +
+          '$f\'(' + fmt(a1) + ') = ' + fmt(m1) + '$. Son cosas distintas. ' +
+          'Un valor de pendiente $' + fmt(m1) + '$ significa: si avanzo $1$ unidad en $x$, la recta tangente ' +
+          'sube ' + (m1 >= 0 ? '' : '(en realidad baja) ') + '$' + fmt(m1) + '$ unidades en $y$. ' +
+          'El ángulo con la horizontal es $\\arctan(' + fmt(m1) + ') \\approx ' +
+          fmt(Math.atan(m1)*180/Math.PI, 1) + '^{\\circ}$.'
+    },
+    {
+      q: '¿Cuál es la diferencia entre $f\'(' + fmt(a1) + ')$ y la función $f\'$?',
+      opts: [
+        'Ninguna: son notaciones equivalentes.',
+        '$f\'(' + fmt(a1) + ')$ es un <strong>número</strong> (una pendiente concreta); $f\'$ es una <strong>función</strong> que asigna a cada $x$ su pendiente.',
+        '$f\'$ solo existe si la evalúas en un punto.'
+      ],
+      ok: 1,
+      fb: 'Precisamente. $f\'(x) = ' + fpTex() + '$ es una <strong>regla</strong>, una curva completa ' +
+          '(la segunda gráfica de esta actividad). Al sustituir $x = ' + fmt(a1) + '$ obtienes ' +
+          '<em>un</em> valor: $' + fmt(m1) + '$. Cada punto de la gráfica de $f\'$ codifica ' +
+          'la <strong>inclinación</strong> de $f$ en esa abscisa.'
+    },
+    {
+      q: '¿Qué ocurre en la gráfica de $f$ donde $f\'(x) = 0$?',
+      opts: [
+        'La curva corta el eje $x$.',
+        'La curva tiene una <strong>tangente horizontal</strong> (posible máximo, mínimo o punto de inflexión).',
+        'La función no está definida ahí.'
+      ],
+      ok: 1,
+      fb: 'Pendiente cero $\\Rightarrow$ tangente horizontal. ' +
+          (zeros.length
+            ? 'En tu selección actual, esto ocurre en $x = ' + zeros.map(a => fmt(a)).join(',\\; ') + '$. '
+            : 'En tu selección actual no hay ningún punto con $f\'(a)=0$; prueba el preset «x² simétrico» o «x³» para ver uno. ') +
+          'Ojo: que $f\'(x)=0$ <em>no</em> significa que $f(x)=0$. Son ejes distintos en gráficas distintas.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '">';
+    html += '<div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="r' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DEDUCCIÓN DE LA REGLA
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$f\'(x) \\;=\\; \\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h},\\qquad h \\neq 0.$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Cociente incremental genérico</span>' +
+    'No fijamos un punto: dejamos $x$ libre. La derivada será entonces ' +
+    'una <strong>nueva función</strong>, no un número.</div>';
+
+  if (FAM === 'quad'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Expandir</span>' +
+      '$$\\begin{aligned}' +
+      'f(x+h)-f(x) &= ' + fmt(PP) + '\\big[(x+h)^{2}-x^{2}\\big] + ' + fmt(PQ) + 'h \\\\' +
+      '&= ' + fmt(PP) + '\\big[2xh + h^{2}\\big] + ' + fmt(PQ) + 'h ' +
+      '\\;=\\; h\\big(' + fmt(2*PP) + 'x + ' + fmt(PP) + 'h + ' + fmt(PQ) + '\\big).' +
+      '\\end{aligned}$$' +
+      'La constante $' + fmt(PR) + '$ se cancela: <strong>una traslación vertical no cambia la pendiente</strong>.</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Cancelar h y tomar el límite</span>' +
+      'Como $h \\neq 0$:' +
+      '$$\\frac{f(x+h)-f(x)}{h} = ' + fmt(2*PP) + 'x + ' + fmt(PQ) + ' + ' + fmt(PP) + 'h ' +
+      '\\;\\xrightarrow[h\\to 0]{}\\; ' + fpTex() + '.$$' +
+      'Por tanto $f\'(x) = ' + fpTex() + '$: la regla que usaste en la parte (a).</div>';
+  } else if (FAM === 'cubic'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Expandir el cubo</span>' +
+      '$$(x+h)^{3} - x^{3} = 3x^{2}h + 3xh^{2} + h^{3} = h\\big(3x^{2} + 3xh + h^{2}\\big).$$</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Cancelar y tomar el límite</span>' +
+      '$$\\frac{f(x+h)-f(x)}{h} = ' + fmt(PP) + '\\big(3x^{2}+3xh+h^{2}\\big) + ' + fmt(PQ) +
+      '\\;\\xrightarrow[h\\to 0]{}\\; ' + fpTex() + '.$$</div>';
+  } else if (FAM === 'sqrt'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Racionalizar</span>' +
+      '$$\\frac{\\sqrt{x+h}-\\sqrt{x}}{h}\\cdot\\frac{\\sqrt{x+h}+\\sqrt{x}}{\\sqrt{x+h}+\\sqrt{x}} ' +
+      '= \\frac{1}{\\sqrt{x+h}+\\sqrt{x}}.$$</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Tomar el límite</span>' +
+      '$$f\'(x) = \\lim_{h\\to 0}\\frac{' + fmt(PP) + '}{\\sqrt{x+h}+\\sqrt{x}} = ' + fpTex() + ', \\qquad x &gt; 0.$$' +
+      'Nótese la restricción $x &gt; 0$: en $x=0$ la función está definida pero ' +
+      '<strong>no es derivable</strong> (la tangente sería vertical).</div>';
+  } else if (FAM === 'recip'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Común denominador</span>' +
+      '$$\\frac{1}{h}\\left(\\frac{' + fmt(PP) + '}{x+h}-\\frac{' + fmt(PP) + '}{x}\\right) ' +
+      '= \\frac{1}{h}\\cdot\\frac{' + fmt(-PP) + 'h}{x(x+h)} = \\frac{' + fmt(-PP) + '}{x(x+h)}.$$</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Tomar el límite</span>' +
+      '$$f\'(x) = \\lim_{h\\to 0}\\frac{' + fmt(-PP) + '}{x(x+h)} = ' + fpTex() + ', \\qquad x \\neq 0.$$' +
+      'La derivada tiene el mismo signo en todo su dominio: la curva es siempre ' +
+      (PP > 0 ? 'decreciente' : 'creciente') + ' en cada rama.</div>';
+  } else {
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Regla conocida</span>' +
+      'Aplicando las reglas de derivación (y la regla de la cadena para el factor interno):' +
+      '$$f\'(x) = ' + fpTex() + '.$$' +
+      'Verifícalo numéricamente: mueve la tangente móvil y compara su pendiente con ' +
+      'la altura de la curva roja en la segunda gráfica. Deben coincidir siempre.</div>';
+  }
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Evaluar en los puntos pedidos</span>' +
+    'Ahora sustituimos:' +
+    '$$' + PTS.map(a => "f'(" + fmt(a) + ') = ' + fmt(fp(a))).join(', \\qquad ') + '.$$' +
+    'Cada uno de estos números es la <strong>pendiente</strong> de una tangente distinta.</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'La derivada $f\'(x) = ' + fpTex() + '$ es una función que devuelve, para cada $x$, ' +
+    'la <strong>pendiente de la tangente</strong> a $y = ' + fTex() + '$ en ese punto.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN DINÁMICA
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+
+  let html = '';
+  html += '<p><strong>a)</strong> Evaluando $f\'(x) = ' + fpTex() + '$ en cada punto:</p>';
+  html += '<p style="text-align:center;">$$' +
+    PTS.map(a => "f'(" + fmt(a) + ') = ' + fmt(fp(a))).join(', \\qquad ') + '$$</p>';
+
+  html += '<p><strong>b)</strong> Cada uno de estos valores es la <strong>pendiente de la recta tangente</strong> ' +
+    'a la curva en el punto correspondiente. No son alturas, sino <em>inclinaciones</em>: ' +
+    'miden la razón de cambio instantánea de $f$ en ese punto.</p>';
+
+  const signos = PTS.map(a => fp(a));
+  const todosPos = signos.every(m => m > 1e-7);
+  const todosNeg = signos.every(m => m < -1e-7);
+  const hayCero  = signos.some(m => Math.abs(m) < 1e-7);
+
+  if (todosPos)
+    html += '<p>Como todas las pendientes son <strong>positivas</strong>, la curva es creciente en todos los puntos evaluados: cada tangente sube de izquierda a derecha.</p>';
+  else if (todosNeg)
+    html += '<p>Como todas las pendientes son <strong>negativas</strong>, la curva es decreciente en todos los puntos evaluados: cada tangente baja de izquierda a derecha.</p>';
+  else if (hayCero)
+    html += '<p>Hay al menos un punto con pendiente <strong>nula</strong>: allí la tangente es <strong>horizontal</strong>, candidato a máximo, mínimo o punto de inflexión.</p>';
+  else
+    html += '<p>Las pendientes <strong>cambian de signo</strong> entre los puntos evaluados: la curva pasa de decrecer a crecer (o viceversa), lo que anuncia un extremo local entre ellos.</p>';
+
+  html += '<p><strong>c)</strong> Las rectas tangentes tienen ecuaciones:</p>';
+  /* Varias ecuaciones apiladas: el salto de línea SOLO es válido dentro de un
+     entorno de alineación. Un "\\" suelto en display mode no hace nada en LaTeX
+     y KaTeX lo reporta como newLineInDisplayMode. */
+  html += '<p style="text-align:center;">$$\\begin{aligned}' +
+    PTS.map(a => {
+      const m = fp(a), y0 = f(a);
+      const b = y0 - m*a;
+      const rhs = Math.abs(m) < TOL
+        ? fmt(y0)
+        : fmt(m) + 'x ' + signTerm(b);
+      /* & alinea todas las ecuaciones por el signo igual */
+      return 'y \\;&=\\; ' + rhs + ' \\qquad \\text{(en } a = ' + fmt(a) + '\\text{)}';
+    }).join(' \\\\ ') + '\\end{aligned}$$</p>';
+  html += '<p>Todas son <strong>rectas distintas</strong>, cada una tocando la curva en un solo punto ' +
+    'y compartiendo con ella su dirección instantánea. El conjunto de sus pendientes, ' +
+    'leído como función de $x$, es exactamente la gráfica de $f\'$.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  document.getElementById('p-fam').addEventListener('change', refreshAll);
+  ['p-p','p-q','p-r','p-pts'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') refreshAll();
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-fam').value = 'quad';
+    document.getElementById('p-p').value = 1;
+    document.getElementById('p-q').value = 0;
+    document.getElementById('p-r').value = 0;
+    document.getElementById('p-pts').value = '1, 2, 3';
+    document.getElementById('opt-zoom').value = 4;
+    document.getElementById('zoom-val').textContent = '4';
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const raw = btn.dataset.preset;
+      const parts = raw.split(',');
+      document.getElementById('p-fam').value = parts[0].trim();
+      document.getElementById('p-p').value   = parts[1].trim();
+      document.getElementById('p-q').value   = parts[2].trim();
+      document.getElementById('p-r').value   = parts[3].trim();
+      document.getElementById('p-pts').value = parts.slice(4).join(',').trim();
+      refreshAll();
+    });
+  });
+
+  /* Tabla */
+  document.getElementById('btn-verify').addEventListener('click', verifyTable);
+  document.getElementById('btn-fill').addEventListener('click', fillTable);
+  document.getElementById('btn-clear').addEventListener('click', clearTable);
+  document.getElementById('btn-hint').addEventListener('click', toggleHint);
+
+  /* Opciones del gráfico */
+  ['opt-grid','opt-tans','opt-tri','opt-labels','opt-probe'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawChart);
+  });
+
+  document.getElementById('opt-zoom').addEventListener('input', ev => {
+    ZOOM = parseFloat(ev.target.value);
+    document.getElementById('zoom-val').textContent = ZOOM;
+    const ps = document.getElementById('probe-slider');
+    const c  = centerX();
+    const lo = FAM === 'sqrt' ? Math.max(0.05, c - ZOOM) : c - ZOOM;
+    const hi = c + ZOOM;
+    ps.min = lo; ps.max = hi; ps.step = (hi - lo) / 800;
+    PROBE = Math.max(lo, Math.min(hi, PROBE));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive(); drawChart(); drawDeriv();
+  });
+
+  /* Sonda */
+  document.getElementById('probe-slider').addEventListener('input', ev => {
+    stopAnim();
+    PROBE = parseFloat(ev.target.value);
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive(); drawChart(); drawDeriv();
+  });
+
+  /* Animación */
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  /* Desplegable */
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  /* Resize */
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { drawChart(); drawDeriv(); }, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

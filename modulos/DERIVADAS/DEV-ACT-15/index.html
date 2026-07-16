@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 15 — Un afiche con el menor papel posible · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --paper:#e9e3d4; --textarea:#c9dcf0; --margin:#f5efe0;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+/* ── PLANTEO ── */
+.setup-box{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0; font-size:.95rem;
+}
+.setup-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+/* ── SOLVE / PASOS ── */
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:56px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── DIAGRAMA DEL AFICHE ── */
+.poster-wrap{
+  display:grid; grid-template-columns:1fr; gap:16px; margin-top:6px;
+}
+@media (min-width:720px){ .poster-wrap{grid-template-columns:minmax(260px,1fr) 1fr;} }
+.poster-box{
+  position:relative; width:100%; height:420px;
+  background:#fff; border:1px solid var(--border); border-radius:3px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.chart-box{
+  position:relative; width:100%; height:420px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.chart-box.small{height:280px;}
+
+.slider-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.slider-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+}
+.slider-wrap .hval{color:var(--crimson); font-weight:700;}
+input[type=range]{width:100%; accent-color:var(--navy); cursor:pointer;}
+
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.6;}
+.dcurve{fill:none; stroke:var(--crimson); stroke-width:2.2;}
+.asym-line{stroke:var(--muted); stroke-width:1.3; stroke-dasharray:4,4; opacity:.6;}
+.opt-line{stroke:var(--gold); stroke-width:2; stroke-dasharray:6,4;}
+.probe-line{stroke:var(--crimson); stroke-width:1.4; stroke-dasharray:3,3; opacity:.7;}
+.min-dot{fill:var(--gold); stroke:var(--navy); stroke-width:2;}
+.probe-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.5;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.dim-lbl{font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; fill:var(--navy);}
+.dim-line{stroke:var(--navy); stroke-width:1;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.opt .v{color:#8a6f1e;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--success); background:#f2f8f4;
+}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; color:var(--success); margin-bottom:8px;}
+.verdict .vb{font-size:.94rem;}
+
+.dims-final{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:16px;
+}
+.dim-card{
+  background:linear-gradient(180deg,#fbfaf7,#f4f1ea);
+  border:1px solid var(--border); border-top:3px solid var(--gold);
+  border-radius:3px; padding:15px; text-align:center;
+}
+.dim-card .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.dim-card .v{font-family:'JetBrains Mono',monospace; font-size:1.4rem; font-weight:700; color:var(--navy);}
+.dim-card .u{font-size:.8rem; color:var(--muted);}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .poster-box,.chart-box{height:320px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 15 — Un afiche con el menor papel posible</div>
+      <div class="header-sub">Optimización: construir la función, derivar, minimizar</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">15</div>
+      <h2>Un afiche con el menor papel posible</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Modelar un problema aplicado: <strong>construir</strong> la función a optimizar a partir de
+        una restricción geométrica, hallar el punto crítico con la derivada, <strong>verificar</strong>
+        que es un mínimo y traducir el resultado a dimensiones concretas. El corazón del método es
+        reducir dos variables a una usando la condición del problema.</p>
+      </div>
+
+      <div class="setup-box">
+        <span class="lbl">Planteamiento</span>
+        <p>Se diseña un afiche rectangular que debe contener <strong id="s-area">300</strong> cm² de
+        área de texto. Debe dejarse un margen de <strong id="s-tb">2</strong> cm arriba y abajo, y
+        <strong id="s-lr">1</strong> cm a cada lado. Se busca <strong>minimizar la cantidad de papel</strong>.</p>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Cambia el área de texto y los márgenes. Todo —la función, la derivada, el óptimo y las
+          dimensiones— se resuelve <strong>simbólicamente</strong> para los valores que elijas.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-S">área texto S (cm²)</label><input type="number" id="p-S" value="300" step="any" min="1"></div>
+          <div class="param-field"><label for="p-mtb">margen arr/ab (cm)</label><input type="number" id="p-mtb" value="2" step="any" min="0"></div>
+          <div class="param-field"><label for="p-mlr">margen lados (cm)</label><input type="number" id="p-mlr" value="1" step="any" min="0"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="300,2,1">Original · S=300, 2/1</button>
+          <button class="btn-ghost" data-preset="384,3,2">S=384, 3/2</button>
+          <button class="btn-ghost" data-preset="200,2,2">S=200, márgenes iguales</button>
+          <button class="btn-ghost" data-preset="600,4,1">S=600, 4/1</button>
+          <button class="btn-ghost" data-preset="150,1,1">S=150, 1/1</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) ALTO EN FUNCIÓN DE x ── -->
+      <div class="sec-title">a) El alto del área de texto en función de $x$</div>
+      <div class="solve-box" id="solve-a"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-a">Verificar</button>
+        <button class="btn-primary" id="btn-fill-a">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-a">Pista</button>
+        <span class="score-badge" id="score-a"></span>
+      </div>
+      <div class="hint-box" id="hint-a"></div>
+
+      <!-- ── b) ÁREA TOTAL ── -->
+      <div class="sec-title">b) El área total del papel en función de $x$</div>
+      <div class="solve-box" id="solve-b"></div>
+      <p class="note" id="note-b"></p>
+
+      <!-- ── DIAGRAMA INTERACTIVO ── -->
+      <div class="sec-title">El afiche, en vivo</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">
+        Mueve el ancho $x$ del área de texto y observa cómo el afiche cambia de forma y su área total
+        (papel) sube o baja. Busca visualmente la forma que gasta menos papel.
+      </p>
+
+      <div class="poster-wrap">
+        <div class="poster-box" id="poster-box"></div>
+        <div class="chart-box" id="chart-A"><div class="tooltip" id="tip-A"></div></div>
+      </div>
+
+      <div class="slider-wrap">
+        <span class="hlbl">ancho del área de texto x = <span class="hval" id="x-val">12.25</span> cm</span>
+        <input type="range" id="x-slider" min="1" max="60" step="0.1" value="12.25">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Barrer x y encontrar el mínimo</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+        <button class="btn-ghost" id="btn-goto">↦ Saltar al óptimo</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">ancho texto x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">alto texto</span><span class="v" id="lv-h">—</span></div>
+        <div class="live-cell"><span class="k">papel: ancho × alto</span><span class="v" id="lv-dim" style="font-size:.82rem;">—</span></div>
+        <div class="live-cell crim"><span class="k">área total A(x)</span><span class="v" id="lv-A">—</span></div>
+        <div class="live-cell opt"><span class="k">mínimo posible</span><span class="v" id="lv-min">—</span></div>
+      </div>
+
+      <!-- ── c) DERIVADA Y ÓPTIMO ── -->
+      <div class="sec-title">c) Derivada y valor de $x$ que minimiza el área</div>
+      <div class="solve-box" id="solve-c"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-c">Verificar mi x*</button>
+        <button class="btn-primary" id="btn-fill-c">Mostrar solución</button>
+        <span class="score-badge" id="score-c"></span>
+      </div>
+
+      <div class="sec-title">Gráfica de $A'(x)$: el cruce por cero</div>
+      <div class="chart-box small" id="chart-dA"><div class="tooltip" id="tip-dA"></div></div>
+      <p class="note">
+        El óptimo está donde $A'(x)$ <strong>cruza el cero de negativo a positivo</strong>: antes el área
+        bajaba, después sube. Ese cambio de signo es lo que lo hace un mínimo.
+      </p>
+
+      <!-- ── d) VERIFICAR MÍNIMO ── -->
+      <div class="sec-title">d) Verifique que es un mínimo</div>
+      <div id="verify-panel"></div>
+
+      <!-- ── e) DIMENSIONES ── -->
+      <div class="sec-title">e) Dimensiones del afiche para gastar el menor papel</div>
+      <div id="dims-panel"></div>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>El método de optimización, paso a paso, y la desigualdad AM–GM</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">Receta general</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 15 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   Área de texto:  x (ancho) · h (alto),  con  x·h = S.
+   Márgenes: mtb arriba y abajo, mlr a cada lado.
+   Papel:  ancho = x + 2·mlr ,  alto = h + 2·mtb.
+   A(x) = (x + 2·mlr)·(S/x + 2·mtb)
+        = S + 2·mtb·x + 2·mlr·S/x + 4·mtb·mlr.
+   A'(x) = 2·mtb − 2·mlr·S / x²  = 0  ⟹  x* = √(mlr·S/mtb).
+   ═══════════════════════════════════════════════ */
+let S = 300;     // área de texto (cm²)
+let MTB = 2;     // margen arriba/abajo
+let MLR = 1;     // margen izquierda/derecha
+let XCUR = 0;    // ancho actual del slider
+let ANIM = null;
+
+const TOL = 1e-9;
+
+/* ── Funciones puras ── */
+function textHeight(x){ return S / x; }               // alto del área de texto
+function paperW(x){ return x + 2*MLR; }               // ancho del papel
+function paperH(x){ return textHeight(x) + 2*MTB; }   // alto del papel
+function A(x){ return paperW(x) * paperH(x); }        // área total (papel)
+function Ap(x){ return 2*MTB - 2*MLR*S/(x*x); }       // A'(x)
+function App(x){ return 4*MLR*S/(x*x*x); }            // A''(x) > 0 siempre
+
+/* ── Óptimo, resuelto simbólicamente ── */
+function xStar(){ return Math.sqrt(MLR*S/MTB); }
+function optimum(){
+  const xs = xStar();
+  return {
+    x: xs,
+    h: textHeight(xs),
+    pw: paperW(xs),
+    ph: paperH(xs),
+    A: A(xs),
+    App: App(xs)
+  };
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 2 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+
+/* ── LaTeX de las expresiones (dependientes de los parámetros) ── */
+function A_expandedTex(){
+  /* A(x) = 2·mtb·x + 2·mlr·S / x + (S + 4·mtb·mlr) */
+  const lin = fmt(2*MTB);
+  const inv = fmt(2*MLR*S);
+  const con = fmt(S + 4*MTB*MLR);
+  return lin + 'x + \\dfrac{' + inv + '}{x} + ' + con;
+}
+function Ap_Tex(){
+  return fmt(2*MTB) + ' - \\dfrac{' + fmt(2*MLR*S) + '}{x^{2}}';
+}
+function App_Tex(){
+  return '\\dfrac{' + fmt(4*MLR*S) + '}{x^{3}}';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const s = parseFloat(document.getElementById('p-S').value);
+  const a = parseFloat(document.getElementById('p-mtb').value);
+  const b = parseFloat(document.getElementById('p-mlr').value);
+  S   = (isFinite(s) && s > 0) ? s : 300;
+  MTB = (isFinite(a) && a > 0) ? a : 2;
+  MLR = (isFinite(b) && b > 0) ? b : 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  document.getElementById('s-area').textContent = fmt(S);
+  document.getElementById('s-tb').textContent = fmt(MTB);
+  document.getElementById('s-lr').textContent = fmt(MLR);
+
+  /* Rango del slider: centrado en el óptimo, generoso a ambos lados */
+  const xs = xStar();
+  const sl = document.getElementById('x-slider');
+  const lo = Math.max(0.5, xs * 0.15);
+  const hi = xs * 3.2;
+  sl.min = lo; sl.max = hi; sl.step = (hi - lo) / 600;
+  XCUR = xs;   // arranca en el óptimo
+  sl.value = XCUR;
+  document.getElementById('x-val').textContent = fmt(XCUR);
+
+  renderPreview();
+  renderSolveA();
+  renderSolveB();
+  renderSolveC();
+  renderVerify();
+  renderDims();
+  drawPoster();
+  drawAreaChart();
+  drawDerivChart();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PREVIEW
+   ═══════════════════════════════════════════════ */
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const o = optimum();
+  el.innerHTML =
+    'Restricción: el área de texto es $x \\cdot h = ' + fmt(S) + '$. ' +
+    'El papel mide $(x + ' + fmt(2*MLR) + ') \\times (h + ' + fmt(2*MTB) + ')$. ' +
+    'La solución óptima resultará $x^{*} = \\sqrt{' + fmt(MLR) + '\\cdot ' + fmt(S) + ' / ' + fmt(MTB) +
+    '} = ' + fmt(o.x, 3) + '$ cm, pero primero hay que <strong>construir</strong> la función.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — a) ALTO EN FUNCIÓN DE x
+   ═══════════════════════════════════════════════ */
+function renderSolveA(){
+  const box = document.getElementById('solve-a');
+  let html = '';
+  html += '<div class="solve-step"><span class="n">Dato</span><span class="b">' +
+    'El área de texto es fija: $x \\cdot h = ' + fmt(S) + '$, donde $x$ es el ancho y $h$ el alto.</span></div>';
+  html += '<div class="solve-step"><span class="n">Despeje</span><span class="b">' +
+    'Despejamos el alto: $$h(x) = \\dfrac{' + fmt(S) + '}{x}$$ ' +
+    'Esta es la <strong>ecuación de restricción</strong>: nos permite escribir el alto en términos ' +
+    'del ancho, reduciendo dos variables a una sola.</span></div>';
+  html += '<div class="answer-check"><label for="ans-a">tu h(x) para x = ' + fmt(xStar(),2) + ' · h =</label>' +
+    '<input type="text" id="ans-a" inputmode="decimal" placeholder="?"></div>';
+  box.innerHTML = html;
+  document.getElementById('score-a').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyA(){
+  const inp = document.getElementById('ans-a');
+  const badge = document.getElementById('score-a');
+  const raw = inp.value.trim().replace(',', '.');
+  inp.style.borderColor = '';
+  if (raw === ''){ badge.textContent = 'Escribe un valor'; badge.className = 'score-badge show'; return; }
+  const val = parseFloat(raw);
+  const truth = textHeight(xStar());
+  if (isFinite(val) && Math.abs(val - truth) <= Math.max(truth*2e-3, 2e-3)){
+    inp.style.borderColor = 'var(--success)';
+    badge.textContent = '✓ Correcto'; badge.className = 'score-badge show perfect';
+  } else {
+    inp.style.borderColor = 'var(--crimson)';
+    badge.textContent = '✗ Revisa: h = S/x'; badge.className = 'score-badge show';
+  }
+}
+function fillA(){
+  const inp = document.getElementById('ans-a');
+  inp.value = fmt(textHeight(xStar()), 3);
+  inp.style.borderColor = 'var(--success)';
+  const badge = document.getElementById('score-a');
+  badge.textContent = 'h(x) = S/x'; badge.className = 'score-badge show perfect';
+}
+function toggleHintA(){
+  const box = document.getElementById('hint-a');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  box.innerHTML = '<strong>Pista.</strong> El área de un rectángulo es base × altura. ' +
+    'Si el área de texto vale $' + fmt(S) + '$ y el ancho es $x$, entonces $x \\cdot h = ' + fmt(S) + '$. ' +
+    'Despeja $h$ dividiendo ambos lados por $x$.';
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) ÁREA TOTAL
+   ═══════════════════════════════════════════════ */
+function renderSolveB(){
+  const box = document.getElementById('solve-b');
+  let html = '';
+  html += '<div class="solve-step"><span class="n">Paso 1</span><span class="b">' +
+    'El papel añade los márgenes a cada dimensión del texto:' +
+    '<ul style="margin:8px 0 0 20px;">' +
+    '<li>ancho del papel: $x + 2 \\cdot ' + fmt(MLR) + ' = x + ' + fmt(2*MLR) + '$</li>' +
+    '<li>alto del papel: $h + 2 \\cdot ' + fmt(MTB) + ' = \\dfrac{' + fmt(S) + '}{x} + ' + fmt(2*MTB) + '$</li>' +
+    '</ul></span></div>';
+  html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+    'El área total es el producto:' +
+    '$$A(x) = \\left(x + ' + fmt(2*MLR) + '\\right)\\left(\\dfrac{' + fmt(S) + '}{x} + ' + fmt(2*MTB) + '\\right)$$</span></div>';
+  html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+    'Expandiendo el producto:' +
+    '$$A(x) = ' + A_expandedTex() + '$$' +
+    'Los cuatro términos son: el área de texto ($' + fmt(S) + '$), los márgenes que crecen con $x$ ' +
+    '($' + fmt(2*MTB) + 'x$), los que decrecen con $x$ ($' + fmt(2*MLR*S) + '/x$) y las esquinas ' +
+    '($' + fmt(4*MTB*MLR) + '$).</span></div>';
+  box.innerHTML = html;
+  renderMath(box);
+
+  document.getElementById('note-b').innerHTML =
+    'Observa la <strong>tensión</strong>: si $x$ crece, el término $' + fmt(2*MTB) + 'x$ sube pero ' +
+    '$' + fmt(2*MLR*S) + '/x$ baja. El mínimo está donde ambos efectos se equilibran.';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — c) DERIVADA Y ÓPTIMO
+   ═══════════════════════════════════════════════ */
+function renderSolveC(){
+  const box = document.getElementById('solve-c');
+  const o = optimum();
+  let html = '';
+  html += '<div class="solve-step"><span class="n">Derivar</span><span class="b">' +
+    'Derivamos término a término. El término constante desaparece; ' +
+    '$\\tfrac{' + fmt(2*MLR*S) + '}{x}$ deriva como $-\\tfrac{' + fmt(2*MLR*S) + '}{x^{2}}$:' +
+    '$$A\'(x) = ' + Ap_Tex() + '$$</span></div>';
+  html += '<div class="solve-step"><span class="n">Igualar a 0</span><span class="b">' +
+    '$$' + fmt(2*MTB) + ' - \\dfrac{' + fmt(2*MLR*S) + '}{x^{2}} = 0 ' +
+    '\\;\\Longrightarrow\\; x^{2} = \\dfrac{' + fmt(2*MLR*S) + '}{' + fmt(2*MTB) + '} = ' + fmt(MLR*S/MTB, 3) + '$$</span></div>';
+  html += '<div class="solve-step"><span class="n">Resolver</span><span class="b">' +
+    'Tomamos la raíz positiva (un ancho no puede ser negativo):' +
+    '$$x^{*} = \\sqrt{\\dfrac{' + fmt(MLR) + '\\cdot ' + fmt(S) + '}{' + fmt(MTB) + '}} = ' + fmt(o.x, 4) + '\\text{ cm}$$</span></div>';
+  box.innerHTML = html;
+  document.getElementById('score-c').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyC(){
+  const badge = document.getElementById('score-c');
+  /* Compara el x del slider con el óptimo */
+  const truth = xStar();
+  if (Math.abs(XCUR - truth) <= Math.max(truth*5e-3, 0.05)){
+    badge.textContent = '✓ Estás en el óptimo (x* = ' + fmt(truth,3) + ')';
+    badge.className = 'score-badge show perfect';
+  } else {
+    badge.textContent = 'x actual = ' + fmt(XCUR,2) + ' · óptimo x* = ' + fmt(truth,3);
+    badge.className = 'score-badge show';
+  }
+}
+function fillC(){ setX(xStar()); verifyC(); }
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — d) VERIFICAR MÍNIMO
+   ═══════════════════════════════════════════════ */
+function renderVerify(){
+  const el = document.getElementById('verify-panel');
+  const o = optimum();
+  let html = '<div class="verdict"><span class="vk">Verificación · dos criterios</span>' +
+    '<div class="vt">Es un MÍNIMO ✓</div>';
+
+  html += '<div class="vb"><p style="margin-bottom:10px;"><strong>Criterio 1 · segunda derivada.</strong> ' +
+    'Derivamos otra vez:</p>' +
+    '<p style="text-align:center;">$$A\'\'(x) = ' + App_Tex() + '$$</p>' +
+    '<p style="margin-bottom:10px;">Como $' + fmt(4*MLR*S) + ' &gt; 0$ y $x^{*} &gt; 0$, se tiene ' +
+    '$A\'\'(x^{*}) = ' + fmt(o.App, 4) + ' &gt; 0$. Segunda derivada positiva ⟹ concavidad hacia arriba ⟹ ' +
+    '<strong>mínimo</strong>. De hecho $A\'\' &gt; 0$ para <em>todo</em> $x &gt; 0$: la función es convexa ' +
+    'en todo el dominio, así que el mínimo local es además <strong>global</strong>.</p>' +
+
+    '<p style="margin-bottom:10px;"><strong>Criterio 2 · cambio de signo de $A\'$.</strong> ' +
+    'A la izquierda del óptimo ($x &lt; x^{*}$), el término $' + fmt(2*MLR*S) + '/x^{2}$ domina y ' +
+    '$A\' &lt; 0$ (el área baja). A la derecha, $A\' &gt; 0$ (el área sube). ' +
+    'El cambio de $-$ a $+$ confirma el mínimo.</p>' +
+
+    '<p>Ambos criterios coinciden. El área mínima es ' +
+    '$A(x^{*}) = ' + fmt(o.A, 3) + '$ cm².</p></div></div>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — e) DIMENSIONES
+   ═══════════════════════════════════════════════ */
+function renderDims(){
+  const el = document.getElementById('dims-panel');
+  const o = optimum();
+  let html = '<p style="font-size:.95rem;margin-bottom:6px;">' +
+    'Con $x^{*} = ' + fmt(o.x,3) + '$ cm, calculamos las dimensiones reales del <strong>papel</strong> ' +
+    '(texto más márgenes):</p>';
+
+  html += '<div class="dims-final">' +
+    '<div class="dim-card"><span class="k">ancho del afiche</span>' +
+      '<div class="v">' + fmt(o.pw,2) + '<span class="u"> cm</span></div></div>' +
+    '<div class="dim-card"><span class="k">alto del afiche</span>' +
+      '<div class="v">' + fmt(o.ph,2) + '<span class="u"> cm</span></div></div>' +
+    '<div class="dim-card"><span class="k">área total mínima</span>' +
+      '<div class="v">' + fmt(o.A,1) + '<span class="u"> cm²</span></div></div>' +
+    '</div>';
+
+  html += '<p style="font-size:.93rem;margin-top:14px;">' +
+    'El área de texto interna mide $x^{*} \\times h = ' + fmt(o.x,2) + ' \\times ' + fmt(o.h,2) +
+    ' = ' + fmt(o.x*o.h,1) + '$ cm² (coincide con los $' + fmt(S) + '$ pedidos ✓). ' +
+    'Añadiendo los márgenes de $' + fmt(MLR) + '$ cm a los lados y $' + fmt(MTB) + '$ cm arriba/abajo, ' +
+    'el afiche completo mide $' + fmt(o.pw,2) + ' \\times ' + fmt(o.ph,2) + '$ cm.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DIAGRAMA DEL AFICHE
+   ═══════════════════════════════════════════════ */
+function drawPoster(){
+  const box = document.getElementById('poster-box');
+  d3.select('#poster-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 400, H = box.clientHeight || 420;
+  const pad = 54;
+
+  const pw = paperW(XCUR), ph = paperH(XCUR);
+  /* Escala para que el papel quepa manteniendo proporción */
+  const sc = Math.min((W - 2*pad) / pw, (H - 2*pad) / ph);
+  const PW = pw * sc, PH = ph * sc;
+  const x0 = (W - PW)/2, y0 = (H - PH)/2;
+
+  const mlrPx = MLR * sc, mtbPx = MTB * sc;
+
+  const svg = d3.select('#poster-box').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+
+  /* Papel (con sombra) */
+  svg.append('rect')
+    .attr('x', x0+3).attr('y', y0+4).attr('width', PW).attr('height', PH)
+    .attr('fill','rgba(0,0,0,.10)');
+  svg.append('rect')
+    .attr('x', x0).attr('y', y0).attr('width', PW).attr('height', PH)
+    .attr('fill','var(--paper)').attr('stroke','var(--navy)').attr('stroke-width',1.5);
+
+  /* Área de texto (interior) */
+  svg.append('rect')
+    .attr('x', x0 + mlrPx).attr('y', y0 + mtbPx)
+    .attr('width', Math.max(0, PW - 2*mlrPx)).attr('height', Math.max(0, PH - 2*mtbPx))
+    .attr('fill','var(--textarea)').attr('stroke','var(--navy)')
+    .attr('stroke-width',1).attr('stroke-dasharray','4,3');
+
+  /* Líneas de texto simuladas */
+  const tW = PW - 2*mlrPx, tH = PH - 2*mtbPx;
+  if (tW > 10 && tH > 10){
+    const nLines = Math.max(2, Math.floor(tH / 14));
+    for (let i = 1; i < nLines; i++){
+      const yy = y0 + mtbPx + (tH/nLines)*i;
+      svg.append('line')
+        .attr('x1', x0 + mlrPx + 6).attr('x2', x0 + mlrPx + tW - 6)
+        .attr('y1', yy).attr('y2', yy)
+        .attr('stroke','var(--navy)').attr('stroke-width',1).attr('opacity',.28);
+    }
+  }
+
+  /* Cotas: ancho del texto (x) */
+  svg.append('text').attr('class','dim-lbl')
+    .attr('x', x0 + PW/2).attr('y', y0 + PH/2)
+    .attr('text-anchor','middle').attr('fill','var(--navy)')
+    .text('texto ' + fmt(XCUR,1) + '×' + fmt(textHeight(XCUR),1));
+
+  /* Cota inferior: ancho papel */
+  const yb = y0 + PH + 22;
+  svg.append('line').attr('class','dim-line').attr('x1', x0).attr('x2', x0+PW).attr('y1', yb).attr('y2', yb);
+  svg.append('line').attr('class','dim-line').attr('x1', x0).attr('x2', x0).attr('y1', yb-4).attr('y2', yb+4);
+  svg.append('line').attr('class','dim-line').attr('x1', x0+PW).attr('x2', x0+PW).attr('y1', yb-4).attr('y2', yb+4);
+  svg.append('text').attr('class','dim-lbl')
+    .attr('x', x0+PW/2).attr('y', yb+15).attr('text-anchor','middle')
+    .text(fmt(pw,1) + ' cm');
+
+  /* Cota lateral: alto papel */
+  const xl = x0 - 20;
+  svg.append('line').attr('class','dim-line').attr('x1', xl).attr('x2', xl).attr('y1', y0).attr('y2', y0+PH);
+  svg.append('line').attr('class','dim-line').attr('x1', xl-4).attr('x2', xl+4).attr('y1', y0).attr('y2', y0);
+  svg.append('line').attr('class','dim-line').attr('x1', xl-4).attr('x2', xl+4).attr('y1', y0+PH).attr('y2', y0+PH);
+  svg.append('text').attr('class','dim-lbl')
+    .attr('transform','translate(' + (xl-8) + ',' + (y0+PH/2) + ') rotate(-90)')
+    .attr('text-anchor','middle').text(fmt(ph,1) + ' cm');
+
+  /* Marca de óptimo */
+  if (Math.abs(XCUR - xStar()) < Math.max(xStar()*5e-3, 0.05)){
+    svg.append('text').attr('class','dim-lbl').attr('fill','#8a6f1e')
+      .attr('x', x0+PW/2).attr('y', y0-14).attr('text-anchor','middle')
+      .text('◆ ÓPTIMO · papel mínimo');
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO A(x)
+   ═══════════════════════════════════════════════ */
+function drawAreaChart(){
+  const box = document.getElementById('chart-A');
+  d3.select('#chart-A').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 400, H = box.clientHeight || 420;
+  const m = {top:20, right:20, bottom:40, left:64};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const sl = document.getElementById('x-slider');
+  const xMin = parseFloat(sl.min), xMax = parseFloat(sl.max);
+
+  const N = 400, step = (xMax - xMin)/N;
+  const pts = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (x <= 0) continue;
+    const y = A(x);
+    if (isFinite(y)) pts.push([x, y]);
+  }
+
+  const o = optimum();
+  const vals = pts.map(d => d[1]).filter(isFinite);
+  let yMin = Math.min(...vals, o.A), yMax = d3.quantile(vals.slice().sort(d3.ascending), 0.92);
+  yMax = Math.max(yMax, o.A * 1.4);
+  const pad = (yMax - yMin)*0.1;
+  yMin = Math.max(0, yMin - pad); yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-A').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-A-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 33).attr('text-anchor','end').text('x (ancho texto)');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -7).attr('text-anchor','end').text('A(x) papel');
+
+  /* Vertical y horizontal en el óptimo */
+  if (o.x >= xMin && o.x <= xMax){
+    plot.append('line').attr('class','opt-line')
+      .attr('x1', xs(o.x)).attr('x2', xs(o.x)).attr('y1', 0).attr('y2', ih);
+    if (o.A >= yMin && o.A <= yMax){
+      plot.append('line').attr('class','asym-line')
+        .attr('x1', 0).attr('x2', iw).attr('y1', ys(o.A)).attr('y2', ys(o.A));
+    }
+  }
+
+  /* Curva */
+  const line = d3.line().x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]) && d[1] >= yMin && d[1] <= yMax)
+    .curve(d3.curveCatmullRom.alpha(.5));
+  plot.append('path').datum(pts).attr('class','curve').attr('d', line);
+
+  /* Punto mínimo */
+  if (o.x >= xMin && o.x <= xMax && o.A >= yMin && o.A <= yMax){
+    plot.append('circle').attr('class','min-dot')
+      .attr('cx', xs(o.x)).attr('cy', ys(o.A)).attr('r', 6.5);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', xs(o.x) + 9).attr('y', ys(o.A) - 10)
+      .text('mín · A = ' + fmt(o.A,1));
+  }
+
+  /* Punto actual del slider */
+  const yc = A(XCUR);
+  if (XCUR >= xMin && XCUR <= xMax && yc >= yMin && yc <= yMax){
+    plot.append('line').attr('class','probe-line')
+      .attr('x1', xs(XCUR)).attr('x2', xs(XCUR)).attr('y1', ys(yc)).attr('y2', ih);
+    plot.append('circle').attr('class','probe-dot')
+      .attr('cx', xs(XCUR)).attr('cy', ys(yc)).attr('r', 6);
+  }
+
+  const tip = document.getElementById('tip-A');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (x <= 0){ tip.classList.remove('show'); return; }
+      const y = A(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      tip.innerHTML = 'x = ' + fmt(x,2) + '<br>A = ' + fmt(y,1) + ' cm²';
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (x > 0) setX(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO A'(x)
+   ═══════════════════════════════════════════════ */
+function drawDerivChart(){
+  const box = document.getElementById('chart-dA');
+  d3.select('#chart-dA').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 280;
+  const m = {top:18, right:20, bottom:38, left:60};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const sl = document.getElementById('x-slider');
+  const xMin = parseFloat(sl.min), xMax = parseFloat(sl.max);
+
+  const N = 400, step = (xMax - xMin)/N;
+  const pts = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (x <= 0) continue;
+    const y = Ap(x);
+    if (isFinite(y)) pts.push([x, y]);
+  }
+
+  const o = optimum();
+  const vals = pts.map(d => d[1]).filter(isFinite);
+  const srt = vals.slice().sort(d3.ascending);
+  let yMin = d3.quantile(srt, 0.05), yMax = d3.quantile(srt, 0.95);
+  yMin = Math.min(yMin, 0); yMax = Math.max(yMax, 0);
+  const pad = (yMax - yMin)*0.15;
+  yMin -= pad; yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-dA').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-dA-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 31).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -6).attr('text-anchor','end').text("A '(x)");
+
+  /* Eje y=0 */
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','var(--muted)').attr('stroke-width',1.6);
+
+  /* Vertical en el óptimo */
+  if (o.x >= xMin && o.x <= xMax)
+    plot.append('line').attr('class','opt-line')
+      .attr('x1', xs(o.x)).attr('x2', xs(o.x)).attr('y1', 0).attr('y2', ih);
+
+  const line = d3.line().x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]) && d[1] >= yMin && d[1] <= yMax)
+    .curve(d3.curveCatmullRom.alpha(.5));
+  plot.append('path').datum(pts).attr('class','dcurve').attr('d', line);
+
+  /* Cruce por cero: cerrado */
+  if (o.x >= xMin && o.x <= xMax){
+    plot.append('circle').attr('class','min-dot')
+      .attr('cx', xs(o.x)).attr('cy', ys(0)).attr('r', 6);
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', xs(o.x) + 8).attr('y', ys(0) - 8)
+      .text("A ' = 0 en x* = " + fmt(o.x,2));
+  }
+
+  /* Punto actual */
+  const yc = Ap(XCUR);
+  if (XCUR >= xMin && XCUR <= xMax && yc >= yMin && yc <= yMax){
+    plot.append('circle').attr('class','probe-dot')
+      .attr('cx', xs(XCUR)).attr('cy', ys(yc)).attr('r', 5);
+  }
+
+  const tip = document.getElementById('tip-dA');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (x <= 0){ tip.classList.remove('show'); return; }
+      const y = Ap(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      tip.innerHTML = 'x = ' + fmt(x,2) + "<br>A ' = " + fmt(y,3) +
+        '<br>' + (y < -1e-9 ? 'área baja ↘' : (y > 1e-9 ? 'área sube ↗' : 'óptimo'));
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (x > 0) setX(x);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const o = optimum();
+  document.getElementById('lv-x').textContent  = fmt(XCUR, 2) + ' cm';
+  document.getElementById('lv-h').textContent  = fmt(textHeight(XCUR), 2) + ' cm';
+  document.getElementById('lv-dim').textContent = fmt(paperW(XCUR),1) + ' × ' + fmt(paperH(XCUR),1);
+  document.getElementById('lv-A').textContent  = fmt(A(XCUR), 1) + ' cm²';
+  document.getElementById('lv-min').textContent = fmt(o.A, 1) + ' cm²';
+}
+
+function setX(x){
+  const sl = document.getElementById('x-slider');
+  const lo = parseFloat(sl.min), hi = parseFloat(sl.max);
+  XCUR = Math.max(lo, Math.min(hi, x));
+  sl.value = XCUR;
+  document.getElementById('x-val').textContent = fmt(XCUR);
+  updateLive();
+  drawPoster();
+  drawAreaChart();
+  drawDerivChart();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Barrer x y encontrar el mínimo';
+}
+function startAnim(){
+  stopAnim();
+  const sl = document.getElementById('x-slider');
+  const lo = parseFloat(sl.min), hi = parseFloat(sl.max);
+  let t = 0; const steps = 150;
+  document.getElementById('btn-anim').textContent = '● Barriendo…';
+  ANIM = setInterval(() => {
+    t++;
+    setX(lo + (hi - lo)*(t/steps));
+    if (t >= steps){ stopAnim(); setX(xStar()); }  // termina en el óptimo
+  }, 28);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const o = optimum();
+  const qs = [
+    {
+      q: '¿Por qué podemos escribir el área total como función de <em>una sola</em> variable $x$?',
+      opts: [
+        'Porque el alto es siempre igual al ancho.',
+        'Porque la restricción $x\\cdot h = ' + fmt(S) + '$ permite despejar $h = ' + fmt(S) + '/x$ y sustituir.',
+        'Porque los márgenes son constantes.'
+      ],
+      ok: 1,
+      fb: 'La clave de todo problema de optimización con restricción: hay dos variables ($x$ y $h$), ' +
+          'pero la condición del problema las <strong>liga</strong>. Despejando una y sustituyendo, ' +
+          'el área queda en términos de $x$ solamente, y ya podemos derivar respecto de una variable.'
+    },
+    {
+      q: '$A\'(x^{*}) = 0$ nos da un candidato. ¿Cómo sabemos que es un <em>mínimo</em> y no un máximo?',
+      opts: [
+        'Porque $x^{*}$ es positivo.',
+        'Porque $A\'\'(x^{*}) = ' + fmt(o.App,3) + ' &gt; 0$: concavidad hacia arriba.',
+        'Porque el enunciado pide minimizar.'
+      ],
+      ok: 1,
+      fb: 'El enunciado pida lo que pida, hay que <strong>demostrarlo</strong>. ' +
+          'Aquí $A\'\'(x) = ' + fmt(4*MLR*S) + '/x^{3} &gt; 0$ para todo $x&gt;0$: la función es convexa ' +
+          'en todo el dominio. Eso garantiza que el punto crítico es un mínimo, y además <strong>global</strong>. ' +
+          'También sirve ver que $A\'$ pasa de $-$ a $+$.'
+    },
+    {
+      q: '¿Qué pasaría con el área si $x \\to 0$ o $x \\to \\infty$?',
+      opts: [
+        'El área tendería a su valor mínimo en ambos casos.',
+        'El área tendería a $+\\infty$ en ambos extremos: por eso el mínimo está en medio.',
+        'El área se mantendría constante.'
+      ],
+      ok: 1,
+      fb: 'Si $x \\to 0$, el afiche es altísimo y flaco: el término $' + fmt(2*MLR*S) + '/x \\to \\infty$. ' +
+          'Si $x \\to \\infty$, es larguísimo y bajo: el término $' + fmt(2*MTB) + 'x \\to \\infty$. ' +
+          'La función baja, toca fondo y vuelve a subir — forma de valle. ' +
+          'Esa es la razón geométrica de que exista un mínimo interior.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o2, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o2 + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o2 => o2.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÉTODO Y AM–GM
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\textbf{1. Variable} \\;\\to\\; \\textbf{2. Restricción} \\;\\to\\; \\textbf{3. Función de una variable}$$' +
+    '$$\\textbf{4. Derivar e igualar a 0} \\;\\to\\; \\textbf{5. Verificar (segunda derivada)} \\;\\to\\; \\textbf{6. Interpretar}$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const o = optimum();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1-3 · Construir la función</span>' +
+    'Variable libre: el ancho $x$. Restricción: $x\\,h = ' + fmt(S) + '$, de donde $h = ' + fmt(S) + '/x$. ' +
+    'El papel mide $(x+' + fmt(2*MLR) + ')(h+' + fmt(2*MTB) + ')$, y al sustituir queda' +
+    '$$A(x) = ' + A_expandedTex() + ', \\qquad x &gt; 0.$$</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Punto crítico</span>' +
+    '$$A\'(x) = ' + Ap_Tex() + ' = 0 \\;\\Longrightarrow\\; x^{*} = \\sqrt{\\dfrac{' + fmt(MLR) + '\\cdot' + fmt(S) + '}{' + fmt(MTB) + '}} = ' + fmt(o.x,4) + '.$$</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 5 · Verificar</span>' +
+    '$A\'\'(x) = ' + App_Tex() + ' &gt; 0$ para todo $x&gt;0$, luego el crítico es un mínimo <strong>global</strong>.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Atajo · Desigualdad AM–GM</span>' +
+    'Hay una vía sin cálculo. Los dos términos variables de $A(x)$ son $' + fmt(2*MTB) + 'x$ y ' +
+    '$' + fmt(2*MLR*S) + '/x$. Por la <strong>media aritmética–geométrica</strong>, para $u,v&gt;0$: ' +
+    '$u + v \\geq 2\\sqrt{uv}$, con igualdad si y solo si $u = v$. Aquí' +
+    '$$' + fmt(2*MTB) + 'x + \\dfrac{' + fmt(2*MLR*S) + '}{x} \\;\\geq\\; 2\\sqrt{' + fmt(2*MTB) + '\\cdot' + fmt(2*MLR*S) + '} = ' + fmt(2*Math.sqrt(2*MTB*2*MLR*S), 3) + '.$$' +
+    'La igualdad (el mínimo) se alcanza cuando $' + fmt(2*MTB) + 'x = ' + fmt(2*MLR*S) + '/x$, ' +
+    'es decir $x^{2} = ' + fmt(MLR*S/MTB,3) + '$ — <strong>exactamente el mismo</strong> $x^{*}$. ' +
+    'El cálculo y la desigualdad coinciden.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Observación · La proporción óptima</span>' +
+    'En el óptimo, el ancho del texto es $x^{*} = ' + fmt(o.x,3) + '$ y el alto $h^{*} = ' + fmt(o.h,3) + '$. ' +
+    'Su razón es $x^{*}/h^{*} = ' + fmt(o.x/o.h, 3) + ' = ' + fmt(MLR,0) + '/' + fmt(MTB,0) + '$: ' +
+    'el rectángulo óptimo reparte sus lados en la <strong>misma proporción que los márgenes</strong>. ' +
+    'No es casualidad — sale de igualar los dos términos variables.</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'Todo problema de optimización aplicada sigue el mismo esqueleto: una cantidad a optimizar, ' +
+    'una restricción que elimina variables, y la derivada que localiza el equilibrio.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const o = optimum();
+  let html = '';
+
+  html += '<p><strong>a)</strong> El alto del texto en función del ancho: $h(x) = ' + fmt(S) + '/x$.</p>';
+
+  html += '<p><strong>b)</strong> El área total del papel:</p>';
+  html += '<p style="text-align:center;">$$A(x) = \\left(x+' + fmt(2*MLR) + '\\right)\\left(\\dfrac{' + fmt(S) + '}{x}+' + fmt(2*MTB) + '\\right) = ' + A_expandedTex() + '$$</p>';
+
+  html += '<p><strong>c)</strong> Derivando e igualando a cero:</p>';
+  html += '<p style="text-align:center;">$$A\'(x) = ' + Ap_Tex() + ' = 0 \\quad\\Longrightarrow\\quad x^{*} = ' + fmt(o.x,3) + '\\text{ cm}$$</p>';
+
+  html += '<p><strong>d)</strong> Como $A\'\'(x) = ' + App_Tex() + ' &gt; 0$ para todo $x&gt;0$, el punto es un ' +
+    '<strong>mínimo global</strong>. (El signo de $A\'$ también cambia de $-$ a $+$.)</p>';
+
+  html += '<p><strong>e)</strong> Las dimensiones del afiche que gastan el menor papel:</p>';
+  html += '<p style="text-align:center;">$$\\text{ancho} = ' + fmt(o.pw,2) + '\\text{ cm} \\qquad \\text{alto} = ' + fmt(o.ph,2) + '\\text{ cm} \\qquad \\text{área} = ' + fmt(o.A,1) + '\\text{ cm}^{2}$$</p>';
+  html += '<p>El área de texto se mantiene en $' + fmt(S) + '$ cm² (ancho $' + fmt(o.x,2) + '$ × alto $' + fmt(o.h,2) + '$), ' +
+    'y al añadir los márgenes se obtiene el afiche mínimo. Cualquier otra forma con los mismos $' + fmt(S) + '$ cm² ' +
+    'de texto gastaría <strong>más</strong> papel.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-S','p-mtb','p-mlr'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') refreshAll(); });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-S').value = 300;
+    document.getElementById('p-mtb').value = 2;
+    document.getElementById('p-mlr').value = 1;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-S').value   = p[0].trim();
+      document.getElementById('p-mtb').value = p[1].trim();
+      document.getElementById('p-mlr').value = p[2].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-a').addEventListener('click', verifyA);
+  document.getElementById('btn-fill-a').addEventListener('click', fillA);
+  document.getElementById('btn-hint-a').addEventListener('click', toggleHintA);
+  document.getElementById('btn-verify-c').addEventListener('click', verifyC);
+  document.getElementById('btn-fill-c').addEventListener('click', fillC);
+
+  document.getElementById('x-slider').addEventListener('input', ev => {
+    stopAnim();
+    setX(parseFloat(ev.target.value));
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+  document.getElementById('btn-goto').addEventListener('click', () => { stopAnim(); setX(xStar()); });
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { drawPoster(); drawAreaChart(); drawDerivChart(); }, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading' && window.d3 && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

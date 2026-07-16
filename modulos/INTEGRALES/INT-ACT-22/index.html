@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 22 — Costo Total Acumulado · Cursillo de Actualización Docente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--light);color:var(--text);font-family:'Source Serif 4',serif;font-size:16px;line-height:1.65;}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 2px 18px rgba(200,169,81,.18);
+  padding:18px 32px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:24px;
+}
+.header-logos{display:flex;align-items:center;gap:14px;}
+.header-logos img{height:52px;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));}
+.header-center{text-align:center;}
+.header-seminar{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
+.header-title{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--white);font-weight:700;line-height:1.2;}
+.header-subtitle{font-size:.82rem;color:rgba(255,255,255,.65);margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:rgba(200,169,81,.7);letter-spacing:.1em;text-transform:uppercase;}
+.header-author .name{font-family:'Playfair Display',serif;font-size:.95rem;color:var(--white);font-weight:600;}
+
+@media(max-width:640px){
+  header{grid-template-columns:1fr;text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+}
+
+/* ── MAIN ── */
+main{max-width:880px;margin:0 auto;padding:50px 22px 80px;}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── ACTIVITY CARD ── */
+.activity-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09);
+  animation:fadeUp .5s ease both;
+  overflow:hidden;
+}
+.card-header{
+  background:var(--navy);
+  padding:16px 28px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.activity-badge{
+  background:var(--crimson);
+  color:var(--white);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;
+  font-weight:500;
+  border-radius:50%;
+  width:42px;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.card-title{font-family:'Playfair Display',serif;color:var(--white);font-size:1.2rem;font-weight:600;}
+.card-body{padding:32px 28px;}
+
+/* ── OBJETIVO BOX ── */
+.objetivo-box{
+  border-left:4px solid var(--crimson);
+  background:var(--accent-bg);
+  padding:14px 18px;
+  margin-bottom:28px;
+  border-radius:0 3px 3px 0;
+}
+.objetivo-box .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--crimson);text-transform:uppercase;margin-bottom:4px;}
+
+/* ── FUNCTION DISPLAY ── */
+.function-display{
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:18px;
+  text-align:center;
+  margin-bottom:28px;
+}
+.function-display .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.function-display .formula{font-size:1.25rem;}
+
+/* ── PARAMS PANEL ── */
+.params-panel{
+  background:var(--accent-bg);
+  border:1px solid #c9d4e8;
+  border-radius:3px;
+  padding:20px 22px;
+  margin-bottom:28px;
+}
+.params-panel h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1rem;margin-bottom:14px;}
+.params-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.param-group{display:flex;flex-direction:column;gap:4px;}
+.param-group label{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;}
+.param-group input{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:7px 10px;
+  background:var(--white);
+  color:var(--text);
+  width:100%;
+}
+.param-group input:focus{outline:2px solid var(--navy);outline-offset:1px;}
+.params-preview{
+  margin-top:14px;
+  font-size:.85rem;
+  color:var(--muted);
+  padding:10px 14px;
+  background:var(--white);
+  border-radius:3px;
+  border:1px solid var(--border);
+}
+
+/* ── PRESETS ── */
+.presets-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.preset-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  padding:5px 12px;
+  border:1px solid var(--navy);
+  border-radius:3px;
+  background:transparent;
+  color:var(--navy);
+  cursor:pointer;
+  transition:all .18s;
+}
+.preset-btn:hover{background:var(--navy);color:var(--white);}
+
+/* ── BUTTONS ── */
+.btn-verify{background:var(--crimson);color:var(--white);border:none;border-radius:3px;padding:9px 20px;font-family:'JetBrains Mono',monospace;font-size:.78rem;cursor:pointer;transition:transform .15s;}
+.btn-primary{background:var(--navy);color:var(--white);border:none;border-radius:3px;padding:9px 20px;font-family:'JetBrains Mono',monospace;font-size:.78rem;cursor:pointer;transition:transform .15s;}
+.btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--navy);border-radius:3px;padding:8px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;cursor:pointer;transition:transform .15s;}
+.btn-verify:hover,.btn-primary:hover,.btn-ghost:hover{transform:translateY(-1px);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;}
+
+/* ── TABLE ── */
+.table-section{margin-bottom:32px;}
+.table-section h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.05rem;margin-bottom:12px;border-bottom:2px solid var(--border);padding-bottom:6px;}
+.score-badge{display:inline-block;background:var(--success);color:var(--white);font-family:'JetBrains Mono',monospace;font-size:.72rem;padding:4px 12px;border-radius:12px;margin-left:10px;}
+.score-badge.bad{background:var(--crimson);}
+table{width:100%;border-collapse:collapse;overflow-x:auto;display:block;}
+thead tr{background:var(--navy);}
+thead th{color:var(--white);font-family:'JetBrains Mono',monospace;font-size:.75rem;padding:10px 14px;text-align:center;white-space:nowrap;}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+tbody td{padding:8px 14px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;}
+.cell-input{
+  width:100%;font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  border:1px solid var(--border);border-radius:2px;padding:4px 6px;
+  text-align:center;background:var(--white);
+}
+.cell-input.correct{border-color:var(--success);background:#eafaf1;}
+.cell-input.wrong{border-color:var(--crimson);background:#fdeaea;}
+
+/* ── HINT BOX ── */
+.hint-box{
+  background:#fff8e6;
+  border-left:3px solid var(--gold);
+  padding:10px 14px;
+  font-size:.85rem;
+  margin-top:10px;
+  border-radius:0 3px 3px 0;
+}
+
+/* ── CHART ── */
+.chart-section{margin-bottom:32px;}
+.chart-section h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.05rem;margin-bottom:12px;border-bottom:2px solid var(--border);padding-bottom:6px;}
+.chart-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:12px;font-size:.82rem;}
+.chart-controls label{display:flex;align-items:center;gap:5px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);}
+.chart-box{
+  border:1px solid var(--border);
+  border-radius:3px;
+  background:var(--white);
+  cursor:crosshair;
+  overflow:hidden;
+  position:relative;
+}
+.tooltip-d3{
+  position:absolute;
+  background:var(--navy);
+  color:var(--white);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  padding:6px 10px;
+  border-radius:3px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s;
+  white-space:nowrap;
+}
+.tooltip-d3::after{
+  content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--navy);border-bottom:none;
+}
+
+/* ── RIEMANN PANEL ── */
+.riemann-section{margin-bottom:32px;}
+.riemann-section h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.05rem;margin-bottom:12px;border-bottom:2px solid var(--border);padding-bottom:6px;}
+.riemann-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.slider-group{display:flex;flex-direction:column;gap:4px;}
+.slider-group label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+.slider-group input[type=range]{width:180px;accent-color:var(--navy);}
+.slider-val{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--navy);font-weight:500;}
+.method-select{font-family:'JetBrains Mono',monospace;font-size:.78rem;border:1px solid var(--border);border-radius:3px;padding:6px 10px;background:var(--white);}
+
+/* ── RESULTS PANEL ── */
+.results-panel{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:14px;
+  margin-bottom:24px;
+}
+.result-card{
+  background:var(--white);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:14px 16px;
+  text-align:center;
+}
+.result-card .r-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.result-card .r-value{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--navy);font-weight:500;}
+.result-card.highlight{border-color:var(--navy);background:var(--accent-bg);}
+.result-card.highlight .r-value{color:var(--crimson);font-size:1.3rem;}
+
+/* ── CONCLUSION ── */
+.conclusion-box{
+  background:var(--accent-bg);
+  border:1px solid #c9d4e8;
+  border-left:4px solid var(--navy);
+  border-radius:0 3px 3px 0;
+  padding:18px 22px;
+  margin-bottom:28px;
+}
+.conclusion-box .label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:var(--navy);text-transform:uppercase;margin-bottom:8px;}
+
+/* ── TFC SECTION ── */
+.tfc-section{margin-bottom:32px;}
+.tfc-section h3{font-family:'Playfair Display',serif;color:var(--navy);font-size:1.05rem;margin-bottom:12px;border-bottom:2px solid var(--border);padding-bottom:6px;}
+.tfc-box{
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:18px 22px;
+}
+.proof-step{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:10px 0;
+  border-bottom:1px solid #ece9e2;
+}
+.proof-step:last-child{border-bottom:none;}
+.step-num{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+  background:var(--navy);color:var(--white);
+  border-radius:50%;width:24px;height:24px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-content{flex:1;}
+
+/* ── ANIMATION PANEL ── */
+.anim-panel{
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:14px 18px;
+  margin-top:12px;
+  font-size:.85rem;
+}
+.anim-reading{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--navy);margin-top:8px;}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  margin-top:48px;
+  padding-top:18px;
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;
+  letter-spacing:.1em;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-logos">
+    <img src="logo_ubb.png" alt="UBB" onerror="this.style.display='none'">
+    <img src="logo_seminario.png" alt="Seminario" onerror="this.style.display='none'">
+    <img src="logo_cmm.png" alt="CMM" onerror="this.style.display='none'">
+  </div>
+  <div class="header-center">
+    <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+    <div class="header-title">Cálculo Integral</div>
+    <div class="header-subtitle">Actividad interactiva con simuladores gráficos</div>
+  </div>
+  <div class="header-author">
+    <div class="label">Material de</div>
+    <div class="name">Dr. Eligio Colmenares</div>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main>
+<div class="activity-card">
+
+  <!-- Cabecera -->
+  <div class="card-header">
+    <div class="activity-badge">22</div>
+    <div class="card-title">Costo Total Acumulado</div>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Objetivo -->
+    <div class="objetivo-box">
+      <div class="label">Objetivo</div>
+      <p>Calcular e interpretar el <strong>costo total acumulado</strong> de una conexión a internet mediante la integral definida de una función de costo instantáneo, y visualizar el área bajo la curva como representación geométrica del total.</p>
+    </div>
+
+    <!-- Function display -->
+    <div class="function-display">
+      <div class="label">Función de costo instantáneo</div>
+      <div class="formula" id="fn-display"></div>
+    </div>
+
+    <!-- Params panel -->
+    <div class="params-panel">
+      <h3>Parámetros generalizables</h3>
+      <div class="params-grid">
+        <div class="param-group">
+          <label for="p-c0">Costo base c₀ ($/hr)</label>
+          <input type="number" id="p-c0" value="100" step="10" min="0" aria-label="Costo base">
+        </div>
+        <div class="param-group">
+          <label for="p-c1">Coef. lineal c₁ ($/hr²)</label>
+          <input type="number" id="p-c1" value="20" step="5" min="0" aria-label="Coeficiente lineal">
+        </div>
+        <div class="param-group">
+          <label for="p-a">Límite inferior a (hr)</label>
+          <input type="number" id="p-a" value="0" step="0.5" aria-label="Límite inferior">
+        </div>
+        <div class="param-group">
+          <label for="p-b">Límite superior b (hr)</label>
+          <input type="number" id="p-b" value="5" step="0.5" min="0.1" aria-label="Límite superior">
+        </div>
+      </div>
+      <div class="params-preview" id="params-preview"></div>
+      <div class="btn-row" style="margin-top:12px;">
+        <button class="btn-primary" onclick="readParams();updateAll();" aria-label="Aplicar parámetros">Aplicar parámetros</button>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div style="margin-bottom:24px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Casos pedagógicos</div>
+      <div class="presets-row">
+        <button class="preset-btn" onclick="applyPreset(100,20,0,5)">Original (100+20t, [0,5])</button>
+        <button class="preset-btn" onclick="applyPreset(50,30,0,8)">c₀=50, c₁=30, [0,8]</button>
+        <button class="preset-btn" onclick="applyPreset(200,10,1,6)">c₀=200, c₁=10, [1,6]</button>
+        <button class="preset-btn" onclick="applyPreset(0,40,0,4)">Solo lineal (40t, [0,4])</button>
+      </div>
+    </div>
+
+    <!-- ── TABLA ── -->
+    <div class="table-section">
+      <h3>a) Valores de <span id="tbl-fn-label"></span> en <span id="tbl-interval-label"></span> <span id="score-badge-span"></span></h3>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">Completa los valores de la función en los puntos indicados y verifica tu respuesta.</p>
+      <div style="overflow-x:auto;">
+        <table id="values-table">
+          <thead>
+            <tr>
+              <th>t (hr)</th>
+              <th>C(t) ($/hr) — ingresa tu valor</th>
+              <th>Correcto</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="hint-box" id="hint-box" style="display:none;">
+        <strong>Pista:</strong> Evalúa <span id="hint-formula"></span> sustituyendo cada valor de <em>t</em> directamente.
+      </div>
+      <div class="btn-row">
+        <button class="btn-verify" onclick="verifyTable()">Verificar</button>
+        <button class="btn-primary" onclick="fillTable()">Rellenar</button>
+        <button class="btn-ghost" onclick="clearTable()">Limpiar</button>
+        <button class="btn-ghost" onclick="toggleHint()">Pista</button>
+      </div>
+    </div>
+
+    <!-- ── GRÁFICO ── -->
+    <div class="chart-section">
+      <h3>a) Gráfica de <span id="chart-fn-label"></span> en el intervalo <span id="chart-interval-label"></span></h3>
+      <div class="chart-controls">
+        <label><input type="checkbox" id="chk-grid" checked onchange="drawChart()"> Grilla</label>
+        <label><input type="checkbox" id="chk-pts" checked onchange="drawChart()"> Puntos tabla</label>
+        <label><input type="checkbox" id="chk-area" checked onchange="drawChart()"> Área bajo curva</label>
+      </div>
+      <div class="chart-box" id="chart-box" style="height:340px;">
+        <div class="tooltip-d3" id="chart-tooltip"></div>
+      </div>
+    </div>
+
+    <!-- ── RIEMANN ── -->
+    <div class="riemann-section">
+      <h3>b) Suma de Riemann — aproximación del área</h3>
+      <div class="riemann-controls">
+        <div class="slider-group">
+          <label for="slider-n">Subdivisiones n = <span id="n-val" class="slider-val">4</span></label>
+          <input type="range" id="slider-n" min="1" max="100" value="4" oninput="updateNVal(this.value);drawRiemann();" aria-label="Número de subdivisiones">
+        </div>
+        <div class="slider-group">
+          <label>Método</label>
+          <select class="method-select" id="method-sel" onchange="drawRiemann();" aria-label="Método de Riemann">
+            <option value="left">Suma izquierda</option>
+            <option value="right">Suma derecha</option>
+            <option value="mid" selected>Punto medio</option>
+            <option value="trap">Trapecios</option>
+          </select>
+        </div>
+        <button class="btn-primary" id="btn-anim" onclick="toggleAnimation()">▶ Animar n→∞</button>
+      </div>
+      <div class="chart-box" id="riemann-box" style="height:320px;"></div>
+      <div class="anim-panel" id="anim-panel">
+        <strong>Lectura en vivo:</strong>
+        <div class="anim-reading" id="anim-reading">—</div>
+      </div>
+    </div>
+
+    <!-- ── RESULTS ── -->
+    <div class="results-panel" id="results-panel">
+      <div class="result-card">
+        <div class="r-label">Suma de Riemann (n subdivisiones)</div>
+        <div class="r-value" id="res-riemann">—</div>
+      </div>
+      <div class="result-card highlight">
+        <div class="r-label">Integral exacta ∫ C(t) dt</div>
+        <div class="r-value" id="res-exact">—</div>
+      </div>
+      <div class="result-card">
+        <div class="r-label">Error absoluto</div>
+        <div class="r-value" id="res-error">—</div>
+      </div>
+    </div>
+
+    <!-- ── TFC ── -->
+    <div class="tfc-section">
+      <h3>b–c) Cálculo exacto — Teorema Fundamental del Cálculo</h3>
+      <div class="tfc-box" id="tfc-box"></div>
+    </div>
+
+    <!-- ── CONCLUSIÓN ── -->
+    <div class="conclusion-box">
+      <div class="label">c) Interpretación del resultado</div>
+      <div id="conclusion-text"></div>
+    </div>
+
+  </div><!-- /card-body -->
+</div><!-- /activity-card -->
+</main>
+
+<footer>
+  Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 22 · Dr. Eligio Colmenares
+</footer>
+
+<!-- ── CDN SCRIPTS ── -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+
+<script>
+/* ── GLOBALS ── */
+let PC0=100, PC1=20, PA=0, PB=5;
+let animRunning=false, animTimer=null;
+let tablePoints=[];
+
+/* ── SAFE MATH ── */
+const r6 = v => Math.round(v*1e6)/1e6;
+function fmt(v){ const s=r6(v); return Number.isInteger(s)?s.toFixed(0):+s.toFixed(4)+''; }
+function C(t){ return PC0 + PC1*t; }
+function exactIntegral(a,b){ return PC0*(b-a) + PC1*(b*b - a*a)/2; }
+
+/* ── READ PARAMS ── */
+function readParams(){
+  PC0 = parseFloat(document.getElementById('p-c0').value)||100;
+  PC1 = parseFloat(document.getElementById('p-c1').value)||0;
+  PA  = parseFloat(document.getElementById('p-a').value)||0;
+  PB  = parseFloat(document.getElementById('p-b').value)||5;
+  if(PB<=PA) PB=PA+1;
+  document.getElementById('p-b').value=PB;
+  tablePoints = buildTablePoints();
+}
+
+function buildTablePoints(){
+  const pts=[];
+  const step = (PB-PA)/5;
+  for(let i=0;i<=5;i++) pts.push(r6(PA+i*step));
+  return pts;
+}
+
+function applyPreset(c0,c1,a,b){
+  document.getElementById('p-c0').value=c0;
+  document.getElementById('p-c1').value=c1;
+  document.getElementById('p-a').value=a;
+  document.getElementById('p-b').value=b;
+  readParams(); updateAll();
+}
+
+/* ── RENDER MATH ── */
+function renderMath(){
+  renderMathInElement(document.body,{
+    delimiters:[
+      {left:'$$',right:'$$',display:true},
+      {left:'$',right:'$',display:false}
+    ],
+    throwOnError:false
+  });
+}
+
+/* ── UPDATE LABELS ── */
+function updateLabels(){
+  const cStr = PC1===0 ? `${fmt(PC0)}` : (PC1===1?`${fmt(PC0)}+t`:`${fmt(PC0)}+${fmt(PC1)}t`);
+  const intStr = `[${fmt(PA)},\\,${fmt(PB)}]`;
+
+  document.getElementById('fn-display').innerHTML = `$$C(t)=${cStr}$$`;
+  document.getElementById('tbl-fn-label').innerHTML = `$C(t)$`;
+  document.getElementById('tbl-interval-label').innerHTML = `$${intStr}$`;
+  document.getElementById('chart-fn-label').innerHTML = `$C(t)$`;
+  document.getElementById('chart-interval-label').innerHTML = `$${intStr}$`;
+  document.getElementById('hint-formula').innerHTML = `$C(t)=${cStr}$`;
+
+  const dur = fmt(PB-PA);
+  document.getElementById('params-preview').innerHTML =
+    `Caso actual: $C(t)=${cStr}$, servicio de $${fmt(PA)}$ a $${fmt(PB)}$ hr (duración: $${dur}$ hr)`;
+
+  setTimeout(renderMath,0);
+}
+
+/* ── TABLE ── */
+function buildTable(){
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML='';
+  tablePoints.forEach((t,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>$${fmt(t)}$</td>
+      <td><input class="cell-input" id="cell-${i}" type="number" step="any" aria-label="C(${fmt(t)})"></td>
+      <td id="cell-check-${i}" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;">—</td>`;
+    tbody.appendChild(tr);
+  });
+  setTimeout(renderMath,0);
+}
+
+function verifyTable(){
+  let correct=0,total=tablePoints.length;
+  tablePoints.forEach((t,i)=>{
+    const inp=document.getElementById(`cell-${i}`);
+    const check=document.getElementById(`cell-check-${i}`);
+    const val=parseFloat(inp.value);
+    const expected=r6(C(t));
+    if(isNaN(val)){ inp.className='cell-input'; check.textContent='—'; return; }
+    const ok=Math.abs(val-expected)<0.05;
+    inp.className=ok?'cell-input correct':'cell-input wrong';
+    check.textContent=ok?'✓':'✗';
+    check.style.color=ok?'var(--success)':'var(--crimson)';
+    if(ok) correct++;
+  });
+  const badge=document.getElementById('score-badge-span');
+  badge.innerHTML=`<span class="score-badge${correct<total?' bad':''}">${correct}/${total}</span>`;
+  setTimeout(renderMath,0);
+}
+
+function fillTable(){
+  tablePoints.forEach((t,i)=>{
+    const inp=document.getElementById(`cell-${i}`);
+    inp.value=fmt(C(t));
+    inp.className='cell-input correct';
+    const check=document.getElementById(`cell-check-${i}`);
+    check.textContent='✓'; check.style.color='var(--success)';
+  });
+  const badge=document.getElementById('score-badge-span');
+  badge.innerHTML=`<span class="score-badge">${tablePoints.length}/${tablePoints.length}</span>`;
+}
+
+function clearTable(){
+  tablePoints.forEach((_,i)=>{
+    const inp=document.getElementById(`cell-${i}`);
+    inp.value=''; inp.className='cell-input';
+    const check=document.getElementById(`cell-check-${i}`);
+    check.textContent='—'; check.style.color='';
+  });
+  document.getElementById('score-badge-span').innerHTML='';
+}
+
+let hintVisible=false;
+function toggleHint(){
+  hintVisible=!hintVisible;
+  const hb=document.getElementById('hint-box');
+  hb.style.display=hintVisible?'block':'none';
+  if(hintVisible) setTimeout(renderMath,0);
+}
+
+/* ── CHART D3 ── */
+function drawChart(){
+  const box=document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+
+  const W=box.clientWidth||600, H=box.clientHeight||340;
+  const margin={top:20,right:24,bottom:44,left:60};
+  const iW=W-margin.left-margin.right;
+  const iH=H-margin.top-margin.bottom;
+
+  const showGrid=document.getElementById('chk-grid').checked;
+  const showPts=document.getElementById('chk-pts').checked;
+  const showArea=document.getElementById('chk-area').checked;
+
+  /* domain */
+  const pad=(PB-PA)*0.1||0.5;
+  const xMin=PA-pad, xMax=PB+pad;
+  const xVals=d3.range(xMin,xMax,(xMax-xMin)/300);
+  const allY=xVals.map(t=>C(t));
+  const yPad=0.12;
+  let yMin=Math.min(...(allY.length?allY:[-10]));
+  let yMax=Math.max(...(allY.length?allY:[10]));
+  const yRange=yMax-yMin||1;
+  yMin=yMin-yRange*yPad;
+  yMax=yMax+yRange*yPad;
+
+  const xScale=d3.scaleLinear().domain([xMin,xMax]).range([0,iW]);
+  const yScale=d3.scaleLinear().domain([yMin,yMax]).range([iH,0]);
+
+  const svg=d3.select('#chart-box').append('svg')
+    .attr('width',W).attr('height',H)
+    .append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  /* clip */
+  svg.append('defs').append('clipPath').attr('id','clip-chart')
+    .append('rect').attr('width',iW).attr('height',iH);
+
+  /* grid */
+  if(showGrid){
+    svg.append('g').attr('class','grid')
+      .call(d3.axisLeft(yScale).ticks(6).tickSize(-iW).tickFormat(''))
+      .call(g=>{g.selectAll('line').attr('stroke','#e0ddd7').attr('stroke-dasharray','3,3');g.select('.domain').remove();});
+    svg.append('g').attr('class','grid').attr('transform',`translate(0,${iH})`)
+      .call(d3.axisBottom(xScale).ticks(8).tickSize(-iH).tickFormat(''))
+      .call(g=>{g.selectAll('line').attr('stroke','#e0ddd7').attr('stroke-dasharray','3,3');g.select('.domain').remove();});
+  }
+
+  /* axes */
+  svg.append('g').attr('transform',`translate(0,${iH})`)
+    .call(d3.axisBottom(xScale).ticks(8).tickFormat(d=>fmt(d)))
+    .call(g=>{g.selectAll('text').style('font-family','JetBrains Mono,monospace').style('font-size','11px');});
+  svg.append('g')
+    .call(d3.axisLeft(yScale).ticks(6).tickFormat(d=>fmt(d)))
+    .call(g=>{g.selectAll('text').style('font-family','JetBrains Mono,monospace').style('font-size','11px');});
+
+  /* axis labels */
+  svg.append('text').attr('x',iW/2).attr('y',iH+36).attr('text-anchor','middle')
+    .style('font-family','JetBrains Mono,monospace').style('font-size','12px').style('fill','var(--muted)').text('t (horas)');
+  svg.append('text').attr('transform','rotate(-90)').attr('x',-iH/2).attr('y',-48).attr('text-anchor','middle')
+    .style('font-family','JetBrains Mono,monospace').style('font-size','12px').style('fill','var(--muted)').text('C(t) ($/hr)');
+
+  /* area fill */
+  if(showArea){
+    const areaVals=d3.range(PA,PB,(PB-PA)/200);
+    if(areaVals[areaVals.length-1]<PB) areaVals.push(PB);
+    const areaGen=d3.area()
+      .x(t=>xScale(t)).y0(yScale(0)).y1(t=>yScale(C(t)))
+      .curve(d3.curveCatmullRom);
+    svg.append('path').datum(areaVals)
+      .attr('d',areaGen)
+      .attr('clip-path','url(#clip-chart)')
+      .attr('fill','rgba(0,59,117,0.13)')
+      .attr('stroke','none');
+  }
+
+  /* interval markers */
+  svg.append('line').attr('x1',xScale(PA)).attr('x2',xScale(PA))
+    .attr('y1',0).attr('y2',iH).attr('stroke','var(--crimson)').attr('stroke-width',1.5).attr('stroke-dasharray','5,3');
+  svg.append('line').attr('x1',xScale(PB)).attr('x2',xScale(PB))
+    .attr('y1',0).attr('y2',iH).attr('stroke','var(--crimson)').attr('stroke-width',1.5).attr('stroke-dasharray','5,3');
+
+  /* curve */
+  const lineGen=d3.line().x(t=>xScale(t)).y(t=>yScale(C(t))).curve(d3.curveCatmullRom);
+  svg.append('path').datum(xVals)
+    .attr('d',lineGen)
+    .attr('clip-path','url(#clip-chart)')
+    .attr('fill','none').attr('stroke','var(--navy)').attr('stroke-width',2.5);
+
+  /* table points */
+  if(showPts){
+    svg.selectAll('.tpt').data(tablePoints).enter().append('circle')
+      .attr('class','tpt')
+      .attr('cx',t=>xScale(t)).attr('cy',t=>yScale(C(t)))
+      .attr('r',5).attr('fill','var(--crimson)').attr('stroke','white').attr('stroke-width',1.5)
+      .style('cursor','pointer')
+      .append('title').text(t=>`t=${fmt(t)}, C(t)=${fmt(C(t))}`);
+  }
+
+  /* tooltip overlay */
+  const tooltip=document.getElementById('chart-tooltip');
+  svg.append('rect')
+    .attr('width',iW).attr('height',iH).attr('fill','none').attr('pointer-events','all')
+    .on('mousemove',function(event){
+      const [mx]=d3.pointer(event,this);
+      const t=xScale.invert(mx);
+      if(t<xMin||t>xMax){tooltip.style.opacity=0;return;}
+      const ct=C(t);
+      tooltip.textContent=`t = ${fmt(t)} hr,  C(t) = ${fmt(ct)} $/hr`;
+      tooltip.style.opacity=1;
+      const bx=box.getBoundingClientRect();
+      const ex=event.clientX-bx.left;
+      const ey=event.clientY-bx.top;
+      tooltip.style.left=(ex-tooltip.offsetWidth/2)+'px';
+      tooltip.style.top=(ey-tooltip.offsetHeight-14)+'px';
+    })
+    .on('mouseleave',()=>{tooltip.style.opacity=0;});
+}
+
+/* ── RIEMANN D3 ── */
+function riemannSum(n,method){
+  const safeN=n<=0?1:n;
+  const h=(PB-PA)/safeN;
+  let sum=0;
+  for(let i=0;i<safeN;i++){
+    const xl=PA+i*h, xr=PA+(i+1)*h;
+    let x;
+    if(method==='left') x=xl;
+    else if(method==='right') x=xr;
+    else if(method==='mid') x=(xl+xr)/2;
+    else x=xl; // trapecio handled separately
+    if(method==='trap') sum+=h*(C(xl)+C(xr))/2;
+    else sum+=h*C(x);
+  }
+  return r6(sum);
+}
+
+function drawRiemann(){
+  const box=document.getElementById('riemann-box');
+  d3.select('#riemann-box').selectAll('svg').remove();
+
+  const n=parseInt(document.getElementById('slider-n').value)||4;
+  const method=document.getElementById('method-sel').value;
+  const W=box.clientWidth||600, H=box.clientHeight||320;
+  const margin={top:16,right:20,bottom:44,left:60};
+  const iW=W-margin.left-margin.right;
+  const iH=H-margin.top-margin.bottom;
+
+  const pad=(PB-PA)*0.08||0.3;
+  const xMin=PA-pad, xMax=PB+pad;
+  const xVals=d3.range(xMin,xMax,(xMax-xMin)/300);
+  const allY=xVals.map(t=>C(t));
+  const yPad=0.15;
+  let yMin=0;
+  let yMax=Math.max(...(allY.length?allY:[10]));
+  yMax=yMax+yMax*yPad;
+
+  const xScale=d3.scaleLinear().domain([xMin,xMax]).range([0,iW]);
+  const yScale=d3.scaleLinear().domain([yMin,yMax]).range([iH,0]);
+
+  const svg=d3.select('#riemann-box').append('svg')
+    .attr('width',W).attr('height',H)
+    .append('g').attr('transform',`translate(${margin.left},${margin.top})`);
+
+  svg.append('defs').append('clipPath').attr('id','clip-riemann')
+    .append('rect').attr('width',iW).attr('height',iH);
+
+  /* axes */
+  svg.append('g').attr('transform',`translate(0,${iH})`)
+    .call(d3.axisBottom(xScale).ticks(8).tickFormat(d=>fmt(d)))
+    .call(g=>g.selectAll('text').style('font-family','JetBrains Mono,monospace').style('font-size','10px'));
+  svg.append('g')
+    .call(d3.axisLeft(yScale).ticks(5).tickFormat(d=>fmt(d)))
+    .call(g=>g.selectAll('text').style('font-family','JetBrains Mono,monospace').style('font-size','10px'));
+  svg.append('text').attr('x',iW/2).attr('y',iH+36).attr('text-anchor','middle')
+    .style('font-family','JetBrains Mono,monospace').style('font-size','11px').style('fill','var(--muted)').text('t (horas)');
+
+  /* rectangles / trapezoids */
+  const safeN=n<=0?1:n;
+  const h=(PB-PA)/safeN;
+  for(let i=0;i<safeN;i++){
+    const xl=PA+i*h, xr=PA+(i+1)*h;
+    let x;
+    if(method==='left') x=xl;
+    else if(method==='right') x=xr;
+    else if(method==='mid') x=(xl+xr)/2;
+    else x=xl;
+
+    if(method==='trap'){
+      const pts=[[xScale(xl),yScale(0)],[xScale(xl),yScale(C(xl))],[xScale(xr),yScale(C(xr))],[xScale(xr),yScale(0)]];
+      svg.append('polygon')
+        .attr('points',pts.map(p=>p.join(',')).join(' '))
+        .attr('fill','rgba(155,24,69,0.22)').attr('stroke','var(--crimson)').attr('stroke-width',0.8)
+        .attr('clip-path','url(#clip-riemann)');
+    } else {
+      const cy=C(x);
+      svg.append('rect')
+        .attr('x',xScale(xl)).attr('y',yScale(Math.max(cy,0)))
+        .attr('width',Math.max(xScale(xr)-xScale(xl)-0.5,1))
+        .attr('height',Math.abs(yScale(0)-yScale(cy)))
+        .attr('fill','rgba(155,24,69,0.22)').attr('stroke','var(--crimson)').attr('stroke-width',0.8)
+        .attr('clip-path','url(#clip-riemann)');
+    }
+  }
+
+  /* curve */
+  const lineGen=d3.line().x(t=>xScale(t)).y(t=>yScale(C(t))).curve(d3.curveCatmullRom);
+  svg.append('path').datum(xVals)
+    .attr('d',lineGen)
+    .attr('clip-path','url(#clip-riemann)')
+    .attr('fill','none').attr('stroke','var(--navy)').attr('stroke-width',2.2);
+
+  /* update results */
+  const approx=riemannSum(n,method);
+  const exact=r6(exactIntegral(PA,PB));
+  const err=r6(Math.abs(exact-approx));
+  document.getElementById('res-riemann').textContent=`$${fmt(approx)}`;
+  document.getElementById('res-exact').textContent=`$${fmt(exact)}`;
+  document.getElementById('res-error').textContent=`$${fmt(err)}`;
+
+  const methodName={'left':'izquierda','right':'derecha','mid':'punto medio','trap':'trapecio'}[method];
+  document.getElementById('anim-reading').textContent=
+    `n = ${n} subdivisiones, método ${methodName} → S ≈ ${fmt(approx)} $  |  Exacto: ${fmt(exact)} $  |  Error: ${fmt(err)} $`;
+}
+
+function updateNVal(v){
+  document.getElementById('n-val').textContent=v;
+}
+
+/* ── ANIMATION ── */
+function toggleAnimation(){
+  const btn=document.getElementById('btn-anim');
+  if(animRunning){
+    clearInterval(animTimer);
+    animRunning=false;
+    btn.textContent='▶ Animar n→∞';
+    return;
+  }
+  animRunning=true;
+  btn.textContent='■ Detener';
+  let n=1;
+  const slider=document.getElementById('slider-n');
+  animTimer=setInterval(()=>{
+    if(n>100){ clearInterval(animTimer); animRunning=false; btn.textContent='▶ Animar n→∞'; return; }
+    slider.value=n;
+    updateNVal(n);
+    drawRiemann();
+    n+=n<10?1:n<30?2:5;
+  },120);
+}
+
+/* ── TFC ── */
+function updateTFC(){
+  const c0s=fmt(PC0), c1s=fmt(PC1), as=fmt(PA), bs=fmt(PB);
+  const exact=r6(exactIntegral(PA,PB));
+  const antideriv = PC1===0
+    ? `${c0s}t`
+    : (PC1===1 ? `${c0s}t + \\dfrac{t^2}{2}` : `${c0s}t + \\dfrac{${c1s}t^2}{2}`);
+  const Fb = r6(PC0*PB + PC1*PB*PB/2);
+  const Fa = r6(PC0*PA + PC1*PA*PA/2);
+  const fnStr = PC1===0?`${c0s}`:PC1===1?`${c0s}+t`:`${c0s}+${c1s}t`;
+
+  document.getElementById('tfc-box').innerHTML=`
+  <div class="proof-step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      <strong>Planteamiento:</strong><br>
+      $$\\text{Costo total} = \\int_{${as}}^{${bs}} C(t)\\,dt = \\int_{${as}}^{${bs}} (${fnStr})\\,dt$$
+    </div>
+  </div>
+  <div class="proof-step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      <strong>Antiderivada:</strong><br>
+      $$F(t) = ${antideriv}$$
+    </div>
+  </div>
+  <div class="proof-step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      <strong>Evaluación por el TFC:</strong><br>
+      $$\\int_{${as}}^{${bs}} C(t)\\,dt = F(${bs}) - F(${as}) = ${fmt(Fb)} - ${fmt(Fa)} = ${fmt(exact)}$$
+    </div>
+  </div>
+  <div class="proof-step" style="background:#f0f5ff;">
+    <div class="step-num" style="background:var(--success);">✓</div>
+    <div class="step-content">
+      <strong>Resultado exacto:</strong>
+      $$\\boxed{\\int_{${as}}^{${bs}} C(t)\\,dt = ${fmt(exact)}\\text{ pesos}}$$
+    </div>
+  </div>`;
+  setTimeout(renderMath,0);
+}
+
+/* ── CONCLUSION ── */
+function updateConclusion(){
+  const exact=r6(exactIntegral(PA,PB));
+  const dur=fmt(PB-PA), as=fmt(PA), bs=fmt(PB);
+  const c0s=fmt(PC0), c1s=fmt(PC1);
+  const fnStr = PC1===0?`${c0s}`:PC1===1?`${c0s}+t`:`${c0s}+${c1s}t`;
+
+  document.getElementById('conclusion-text').innerHTML=`
+  <p>El área bajo la curva $C(t)=${fnStr}$ en el intervalo $[${as},\\,${bs}]$ representa el <strong>costo total acumulado</strong> pagado durante ${dur} horas de servicio.</p>
+  <p style="margin-top:10px;">Geométricamente, integrar la función de costo instantáneo sobre el tiempo transforma una <em>tasa</em> (pesos por hora) en un <em>total</em> (pesos). El resultado:</p>
+  <p style="margin-top:10px;text-align:center;">$$\\int_{${as}}^{${bs}}(${fnStr})\\,dt = ${fmt(exact)}\\text{ pesos}$$</p>
+  <p style="margin-top:10px;">significa que, bajo las condiciones dadas, contratar este servicio por ${dur} horas cuesta en total <strong>$${fmt(exact)} pesos</strong>. A mayor coeficiente lineal $c_1$, más rápido crece el costo y mayor es el impacto del tiempo en el total acumulado.</p>`;
+  setTimeout(renderMath,0);
+}
+
+/* ── UPDATE ALL ── */
+function updateAll(){
+  updateLabels();
+  buildTable();
+  drawChart();
+  drawRiemann();
+  updateTFC();
+  updateConclusion();
+}
+
+/* ── RESIZE ── */
+window.addEventListener('resize',()=>{ drawChart(); drawRiemann(); });
+
+/* ── INIT ── */
+function initPage(){
+  readParams();
+  updateAll();
+}
+
+window.addEventListener('DOMContentLoaded', initPage);
+</script>
+</body>
+</html>

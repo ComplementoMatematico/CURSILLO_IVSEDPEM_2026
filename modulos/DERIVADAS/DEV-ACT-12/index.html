@@ -1,0 +1,2067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 12 — Extremos locales · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --up:#2e7d52; --down:#9b1845;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text], select{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus, select:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+/* ── ECUACIÓN PASO A PASO (parte a) ── */
+.solve-box{
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin-top:6px;
+}
+.solve-step{
+  display:flex; align-items:baseline; gap:12px;
+  padding:9px 0; border-bottom:1px dashed var(--border);
+}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:56px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:150px;}
+
+/* ── TABLA DE SIGNOS ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:520px;}
+th, td{
+  border:1px solid var(--border); padding:9px 8px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+thead th{background:var(--navy); color:#fff; font-weight:500; letter-spacing:.05em; font-size:.78rem;}
+thead th.critcol{background:var(--gold); color:#3a2f0b;}
+tbody td.rowlbl{
+  background:#f4f2ec; font-weight:700; color:var(--navy);
+  text-align:left; padding-left:12px; white-space:nowrap;
+}
+tbody td.critcell{background:#fdf7e3; font-weight:700; color:#8a6f1e;}
+tbody tr:hover td:not(.rowlbl):not(.critcell){background:#f7f5f0;}
+select.cell, input.cell{
+  width:100%; min-width:92px; border:1px solid var(--border);
+  background:#fff; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.83rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+select.cell{cursor:pointer;}
+select.cell.correct, input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+select.cell.wrong, input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── VEREDICTO ── */
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--muted);
+  background:#fbfaf7;
+}
+.verdict.max{border-left-color:var(--up); background:#f2f8f4;}
+.verdict.min{border-left-color:var(--down); background:#fdf3f6;}
+.verdict.none{border-left-color:var(--gold); background:#fdfaf0;}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:8px;
+}
+.verdict .vt{
+  font-family:'Playfair Display',serif; font-weight:700; font-size:1.35rem;
+  margin-bottom:8px;
+}
+.verdict.max .vt{color:var(--up);}
+.verdict.min .vt{color:var(--down);}
+.verdict.none .vt{color:#8a6f1e;}
+.verdict .vb{font-size:.94rem;}
+.arrow-pair{
+  display:flex; gap:20px; justify-content:center; margin:14px 0 6px;
+  font-family:'JetBrains Mono',monospace;
+}
+.arrow-pair .ap{
+  text-align:center; padding:10px 18px; border-radius:3px;
+  background:#fff; border:1px solid var(--border); min-width:110px;
+}
+.arrow-pair .ap .s{font-size:1.5rem; font-weight:700; line-height:1;}
+.arrow-pair .ap .l{font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-top:6px;}
+.arrow-pair .ap.pos .s{color:var(--up);}
+.arrow-pair .ap.neg .s{color:var(--down);}
+.arrow-pair .ap.zero .s{color:#8a6f1e;}
+
+/* ── GRÁFICOS ── */
+.chart-box{
+  position:relative; width:100%; height:430px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; margin-top:6px; overflow:hidden;
+}
+.chart-box.small{height:290px;}
+.chart-box.zoom{height:320px;}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+.range-field{display:flex; align-items:center; gap:9px; flex:1; min-width:240px;}
+.range-field span{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted); white-space:nowrap;}
+input[type=range]{flex:1; accent-color:var(--navy); cursor:pointer; min-width:90px;}
+.probe-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.probe-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:9px;
+}
+.probe-wrap .hval{color:var(--crimson); font-weight:700;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke-width:2.6;}
+.curve-up{stroke:var(--up);}
+.curve-down{stroke:var(--down);}
+.curve-plain{stroke:var(--navy);}
+.dcurve{fill:none; stroke:var(--crimson); stroke-width:2.2;}
+.band-up{fill:var(--up); opacity:.09;}
+.band-down{fill:var(--down); opacity:.08;}
+.crit-line{stroke:var(--gold); stroke-width:2; stroke-dasharray:6,4;}
+.htan{stroke:var(--gold); stroke-width:2.6;}
+.probe-tan{stroke-width:2.4;}
+.test-tan{stroke-width:2; stroke-dasharray:6,3;}
+.closed-dot{stroke:#fff; stroke-width:1.4;}
+.crit-dot{fill:var(--gold); stroke:var(--navy); stroke-width:1.8;}
+.test-dot{stroke:#fff; stroke-width:1.3;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell .v.up{color:var(--up);}
+.live-cell .v.down{color:var(--down);}
+.live-cell .v.zero{color:#8a6f1e;}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .chart-box.small,.chart-box.zoom{height:250px;}
+  .btn-row button{flex:1 1 auto;}
+  .arrow-pair{flex-direction:column; gap:10px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 12 — Extremos locales</div>
+      <div class="header-sub">El criterio de la primera derivada: el signo antes y después</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">12</div>
+      <h2>Extremos locales</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Resolver $f'(x)=0$ para hallar los <strong>puntos críticos</strong>, aplicar el
+        <strong>criterio de la primera derivada</strong> evaluando el signo de $f'$ inmediatamente
+        antes y después, e interpretar el resultado sobre la gráfica. Comprender que un punto
+        crítico es un <em>candidato</em> a extremo, no una garantía.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función y su derivada</span>
+        <div id="func-katex">$$f(x)=-x^{2}+4x \qquad\Longrightarrow\qquad f'(x)=-2x+4$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Cambia la familia y los coeficientes. Los puntos críticos se resuelven
+          <strong>algebraicamente</strong> y el veredicto se recalcula solo: nada está escrito a mano.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-fam">familia</label>
+            <select id="p-fam">
+              <option value="quad" selected>cuadrática · ax² + bx + c</option>
+              <option value="cubic">cúbica · ax³ + bx² + cx + d</option>
+              <option value="quartic">cuártica · ax⁴ + bx² + c</option>
+              <option value="sin">seno · a·sen(bx) + c</option>
+              <option value="expq">gaussiana · a·e^(−bx²) + c</option>
+            </select>
+          </div>
+          <div class="param-field"><label for="p-a">a</label><input type="number" id="p-a" value="-1" step="any"></div>
+          <div class="param-field"><label for="p-b">b</label><input type="number" id="p-b" value="4" step="any"></div>
+          <div class="param-field"><label for="p-c">c</label><input type="number" id="p-c" value="0" step="any"></div>
+          <div class="param-field"><label for="p-d">d</label><input type="number" id="p-d" value="0" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="quad,-1,4,0,0">Original · −x²+4x</button>
+          <button class="btn-ghost" data-preset="quad,1,-6,5,0">x²−6x+5 · mínimo</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,-3,0">x³−3x · máx y mín</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,0,0">x³ · ¡crítico sin extremo!</button>
+          <button class="btn-ghost" data-preset="cubic,2,-3,5,-3">2x³−3x²+5x−3 · sin críticos</button>
+          <button class="btn-ghost" data-preset="quartic,1,-2,0,0">x⁴−2x² · tres críticos</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) RESOLVER f'(x) = 0 ── -->
+      <div class="sec-title">a) Encuentre el valor de $x$ tal que $f'(x) = 0$</div>
+      <div class="solve-box" id="solve-box"></div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-a">Verificar respuesta</button>
+        <button class="btn-primary" id="btn-fill-a">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-a">Pista</button>
+        <span class="score-badge" id="score-a"></span>
+      </div>
+      <div class="hint-box" id="hint-a"></div>
+
+      <!-- ── b) CRITERIO DE LA PRIMERA DERIVADA ── -->
+      <div class="sec-title">b) ¿Es máximo o mínimo? Evalúe el signo de $f'$ antes y después</div>
+      <p style="font-size:.93rem;margin-bottom:6px;">
+        Elige un punto de prueba a cada lado del crítico —cerca, pero sin cruzar otro crítico—,
+        evalúa $f'$ allí y lee el signo. El <strong>cambio</strong> de signo es lo que decide.
+      </p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-test"></tr>
+            <tr id="row-val"></tr>
+            <tr id="row-sign"></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-b">Verificar signos</button>
+        <button class="btn-primary" id="btn-fill-b">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-clear-b">Limpiar</button>
+        <span class="score-badge" id="score-b"></span>
+      </div>
+
+      <div id="verdict-panel"></div>
+
+      <!-- ── c) INTERPRETACIÓN GRÁFICA ── -->
+      <div class="sec-title">c) Interprete el resultado gráficamente</div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-color" checked> colorear por monotonía</label>
+        <label><input type="checkbox" id="opt-htan" checked> tangente horizontal</label>
+        <label><input type="checkbox" id="opt-test" checked> tangentes de prueba</label>
+        <label><input type="checkbox" id="opt-probe" checked> tangente móvil</label>
+        <div class="range-field">
+          <span>zoom</span>
+          <input type="range" id="opt-zoom" min="1" max="12" step="0.5" value="5">
+          <span id="zoom-val">5</span>
+        </div>
+      </div>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="probe-wrap">
+        <span class="hlbl">Tangente móvil en x = <span class="hval" id="probe-val">0</span></span>
+        <input type="range" id="probe-slider" min="-5" max="5" step="0.01" value="0">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Cruzar el crítico y ver girar la tangente</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">x</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell"><span class="k">f(x)</span><span class="v" id="lv-fx">—</span></div>
+        <div class="live-cell crim"><span class="k">f ′(x)</span><span class="v" id="lv-fp">—</span></div>
+        <div class="live-cell gold"><span class="k">signo</span><span class="v" id="lv-sig">—</span></div>
+        <div class="live-cell"><span class="k">la curva…</span><span class="v" id="lv-mono" style="font-size:.84rem;">—</span></div>
+      </div>
+
+      <!-- ── LUPA ── -->
+      <div class="sec-title">Lupa sobre el punto crítico</div>
+      <p style="font-size:.93rem;margin-bottom:4px;">
+        Acercamiento extremo alrededor del crítico. Aquí se ve que la tangente es
+        <strong>exactamente horizontal</strong> y cómo la curva se dobla a su alrededor.
+      </p>
+      <div class="chart-box zoom" id="chart-zoom">
+        <div class="tooltip" id="tooltip-z"></div>
+      </div>
+      <div class="probe-wrap">
+        <span class="hlbl">radio de la lupa: <span class="hval" id="lens-val">1</span></span>
+        <input type="range" id="lens-slider" min="0.05" max="3" step="0.01" value="1">
+      </div>
+
+      <!-- ── GRÁFICO DE f' ── -->
+      <div class="sec-title">La gráfica de $f'$: el cruce por cero</div>
+      <div class="chart-box small" id="chart-d">
+        <div class="tooltip" id="tooltip-d"></div>
+      </div>
+      <p class="note">
+        Un extremo requiere que $f'$ <strong>atraviese</strong> el eje (cambie de signo).
+        Si la curva roja solo <em>toca</em> el eje y vuelve por el mismo lado, hay tangente
+        horizontal pero <strong>no</strong> hay extremo.
+      </p>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Teorema de Fermat y el criterio de la primera derivada</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box">
+            <span class="lbl">Criterio de la primera derivada</span>
+            <div id="def-katex"></div>
+          </div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div id="conclusion"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 12 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════ */
+let FAM = 'quad';
+let A = -1, B = 4, C = 0, D = 0;
+let ZOOM = 5;
+let LENS = 1;        // radio de la lupa
+let PROBE = 0;
+let ANIM = null;
+let CRITS = [];      // puntos críticos ordenados
+let FOCUS = 0;       // índice del crítico bajo análisis
+let TESTS = [];      // [{x, val, sign}] puntos de prueba: izq y der del foco
+
+const TOL = 1e-9;
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — FUNCIONES PURAS
+   ═══════════════════════════════════════════════ */
+function f(x){
+  switch(FAM){
+    case 'quad':    return A*x*x + B*x + C;
+    case 'cubic':   return A*x*x*x + B*x*x + C*x + D;
+    case 'quartic': return A*x*x*x*x + B*x*x + C;
+    case 'sin':     return A*Math.sin(B*x) + C;
+    case 'expq':    return A*Math.exp(-B*x*x) + C;
+    default:        return NaN;
+  }
+}
+function fp(x){
+  switch(FAM){
+    case 'quad':    return 2*A*x + B;
+    case 'cubic':   return 3*A*x*x + 2*B*x + C;
+    case 'quartic': return 4*A*x*x*x + 2*B*x;
+    case 'sin':     return A*B*Math.cos(B*x);
+    case 'expq':    return -2*A*B*x*Math.exp(-B*x*x);
+    default:        return NaN;
+  }
+}
+
+/* ── PUNTOS CRÍTICOS: resueltos algebraicamente ── */
+function criticalPoints(){
+  const out = [];
+  const lo = center() - ZOOM, hi = center() + ZOOM;
+
+  switch(FAM){
+    case 'quad':
+      if (Math.abs(A) > TOL) out.push(-B / (2*A));
+      break;
+
+    case 'cubic': {
+      if (Math.abs(A) < TOL){
+        if (Math.abs(B) > TOL) out.push(-C / (2*B));
+      } else {
+        const aa = 3*A, bb = 2*B, cc = C;
+        const disc = bb*bb - 4*aa*cc;
+        if (disc > TOL){
+          const s = Math.sqrt(disc);
+          out.push((-bb - s)/(2*aa), (-bb + s)/(2*aa));
+        } else if (Math.abs(disc) <= TOL){
+          out.push(-bb/(2*aa));   // raíz doble → f'=0 SIN cambio de signo
+        }
+        /* disc < 0 → ninguna raíz real → ningún crítico */
+      }
+      break;
+    }
+
+    case 'quartic': {
+      out.push(0);
+      if (Math.abs(A) > TOL){
+        const r2 = -B/(2*A);
+        if (r2 > TOL) out.push(-Math.sqrt(r2), Math.sqrt(r2));
+      }
+      break;
+    }
+
+    case 'sin': {
+      if (Math.abs(A) > TOL && Math.abs(B) > TOL){
+        const kLo = Math.floor((B*lo/Math.PI) - 0.5) - 1;
+        const kHi = Math.ceil((B*hi/Math.PI) - 0.5) + 1;
+        for (let k = kLo; k <= kHi; k++){
+          const x = (Math.PI/2 + k*Math.PI) / B;
+          if (x >= lo - 1e-6 && x <= hi + 1e-6) out.push(x);
+        }
+      }
+      break;
+    }
+
+    case 'expq':
+      if (Math.abs(A) > TOL && Math.abs(B) > TOL) out.push(0);
+      break;
+  }
+
+  return out
+    .filter(x => isFinite(x))
+    .sort((u, v) => u - v)
+    .filter((x, i, arr) => i === 0 || Math.abs(x - arr[i-1]) > 1e-7);
+}
+
+function center(){
+  if (!CRITS.length) return 0;
+  return CRITS.reduce((s, v) => s + v, 0) / CRITS.length;
+}
+
+/* ── PUNTOS DE PRUEBA: a un lado y otro del crítico enfocado.
+      El paso se elige para NO cruzar un crítico vecino. ── */
+function buildTests(){
+  if (!CRITS.length) return [];
+  const x0 = CRITS[FOCUS];
+
+  /* Distancia segura: la mitad del hueco al vecino más próximo, acotada */
+  let gapL = Infinity, gapR = Infinity;
+  if (FOCUS > 0)               gapL = x0 - CRITS[FOCUS - 1];
+  if (FOCUS < CRITS.length-1)  gapR = CRITS[FOCUS + 1] - x0;
+
+  const stepL = Math.min(isFinite(gapL) ? gapL * 0.45 : 1, 1);
+  const stepR = Math.min(isFinite(gapR) ? gapR * 0.45 : 1, 1);
+
+  const xL = x0 - Math.max(stepL, 1e-3);
+  const xR = x0 + Math.max(stepR, 1e-3);
+
+  return [xL, xR].map(x => {
+    const v = fp(x);
+    return {x, val: v, sign: Math.abs(v) < 1e-9 ? 0 : (v > 0 ? 1 : -1)};
+  });
+}
+
+/* ── VEREDICTO: derivado del cambio de signo, nunca escrito a mano ── */
+function verdict(){
+  if (!CRITS.length) return {kind:'nocrit'};
+  const t = TESTS;
+  if (t.length < 2) return {kind:'nocrit'};
+  const sL = t[0].sign, sR = t[1].sign;
+  const x0 = CRITS[FOCUS];
+  if (sL > 0 && sR < 0) return {kind:'max',  x:x0, y:f(x0), sL, sR};
+  if (sL < 0 && sR > 0) return {kind:'min',  x:x0, y:f(x0), sL, sR};
+  return {kind:'none', x:x0, y:f(x0), sL, sR};
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 4 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+function sigGlyph(s){ return s > 0 ? '+' : (s < 0 ? '−' : '0'); }
+
+/* ── LaTeX ── */
+function fTex(){
+  const lead = a => Math.abs(a-1)<TOL ? '' : (Math.abs(a+1)<TOL ? '-' : fmt(a));
+  switch(FAM){
+    case 'quad': {
+      let s = lead(A) + 'x^{2}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'cubic': {
+      let s = lead(A) + 'x^{3}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x^{2}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C) + 'x';
+      if (Math.abs(D)>TOL) s += ' ' + signTerm(D);
+      return s;
+    }
+    case 'quartic': {
+      let s = lead(A) + 'x^{4}';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B) + 'x^{2}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'sin': {
+      let s = lead(A) + '\\operatorname{sen}(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'expq': {
+      let s = lead(A) + 'e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+      if (Math.abs(C)>TOL) s += ' ' + signTerm(C);
+      return s;
+    }
+    default: return 'x';
+  }
+}
+function fpTex(){
+  switch(FAM){
+    case 'quad': {
+      let s = fmt(2*A) + 'x';
+      if (Math.abs(B)>TOL) s += ' ' + signTerm(B);
+      return s;
+    }
+    case 'cubic': {
+      let s = fmt(3*A) + 'x^{2}';
+      if (Math.abs(2*B)>TOL) s += ' ' + signTerm(2*B) + 'x';
+      if (Math.abs(C)>TOL)   s += ' ' + signTerm(C);
+      return s;
+    }
+    case 'quartic': {
+      let s = fmt(4*A) + 'x^{3}';
+      if (Math.abs(2*B)>TOL) s += ' ' + signTerm(2*B) + 'x';
+      return s;
+    }
+    case 'sin':
+      return fmt(A*B) + '\\cos(' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x)';
+    case 'expq':
+      return fmt(-2*A*B) + 'x\\,e^{-' + (Math.abs(B-1)<TOL ? '' : fmt(B)) + 'x^{2}}';
+    default: return '';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  FAM = document.getElementById('p-fam').value;
+  const a = parseFloat(document.getElementById('p-a').value);
+  const b = parseFloat(document.getElementById('p-b').value);
+  const c = parseFloat(document.getElementById('p-c').value);
+  const d = parseFloat(document.getElementById('p-d').value);
+  A = isFinite(a) ? a : 1;
+  B = isFinite(b) ? b : 0;
+  C = isFinite(c) ? c : 0;
+  D = isFinite(d) ? d : 0;
+  ZOOM = parseFloat(document.getElementById('opt-zoom').value) || 5;
+  LENS = parseFloat(document.getElementById('lens-slider').value) || 1;
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+
+  CRITS = criticalPoints();
+  FOCUS = Math.min(FOCUS, Math.max(0, CRITS.length - 1));
+  if (!CRITS.length) FOCUS = 0;
+  TESTS = buildTests();
+
+  const ps = document.getElementById('probe-slider');
+  const c  = center();
+  const lo = c - ZOOM, hi = c + ZOOM;
+  ps.min = lo; ps.max = hi; ps.step = (hi - lo) / 800;
+  PROBE = CRITS.length ? CRITS[FOCUS] - Math.min(1, ZOOM*0.3) : c;
+  PROBE = Math.max(lo, Math.min(hi, PROBE));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolve();
+  buildTable();
+  renderVerdict();
+  drawChart();
+  drawZoom();
+  drawDeriv();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + ' \\qquad\\Longrightarrow\\qquad f\'(x)=' + fpTex() + '$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  let html = '';
+  if (!CRITS.length){
+    html = 'Caso actual: la ecuación $f\'(x) = 0$ <strong>no tiene solución real</strong>. ' +
+      'Sin punto crítico no hay candidato a extremo: por el <strong>Teorema de Fermat</strong>, ' +
+      'todo extremo interior de una función derivable exige $f\'=0$. ' +
+      'La función es monótona y no tiene extremos locales.';
+  } else {
+    html = 'Caso actual: hay ' + (CRITS.length === 1 ? '<strong>un punto crítico</strong>' :
+      '<strong>' + CRITS.length + ' puntos críticos</strong>') + ' en ' +
+      '$x = ' + CRITS.map(x => fmt(x,3)).join(',\\; ') + '$. ' +
+      (CRITS.length > 1
+        ? 'Usa el selector de abajo para analizar cada uno por separado. '
+        : '') +
+      'Cada uno es solo un <em>candidato</em>: hay que verificar el cambio de signo.';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — a) RESOLVER f'(x)=0, PASO A PASO
+   ═══════════════════════════════════════════════ */
+function renderSolve(){
+  const box = document.getElementById('solve-box');
+  let html = '';
+
+  html += '<div class="solve-step"><span class="n">Paso 1</span><span class="b">' +
+    'Planteamos la ecuación: $$' + fpTex() + ' = 0$$</span></div>';
+
+  if (!CRITS.length){
+    /* Ningún crítico: hay que explicar POR QUÉ, no solo decir "no hay" */
+    let razon;
+    if (FAM === 'cubic' && Math.abs(A) > TOL){
+      const disc = 4*B*B - 12*A*C;
+      razon = 'Es una cuadrática en $x$. Su discriminante vale ' +
+        '$$\\Delta = (' + fmt(2*B) + ')^{2} - 4(' + fmt(3*A) + ')(' + fmt(C) + ') = ' + fmt(disc, 3) + ' &lt; 0.$$' +
+        'Al ser <strong>negativo</strong>, no hay raíces reales: $f\'$ nunca se anula.';
+    } else if (FAM === 'quad'){
+      razon = 'Con $a = 0$ la «derivada» es constante y no depende de $x$: o es siempre nula o nunca lo es.';
+    } else {
+      razon = 'La ecuación no admite solución real con los coeficientes actuales.';
+    }
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' + razon + '</span></div>';
+    html += '<div class="solve-step"><span class="n">Conclusión</span><span class="b">' +
+      '<strong>No hay puntos críticos.</strong> Por tanto no existe candidato a extremo, ' +
+      'y la parte (b) no tiene nada que clasificar.</span></div>';
+    box.innerHTML = html;
+    document.getElementById('score-a').className = 'score-badge';
+    renderMath(box);
+    return;
+  }
+
+  /* Desarrollo algebraico según familia */
+  if (FAM === 'quad'){
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+      'Despejamos $x$: $$' + fmt(2*A) + 'x = ' + fmt(-B) + ' \\quad\\Longrightarrow\\quad ' +
+      'x = \\dfrac{' + fmt(-B) + '}{' + fmt(2*A) + '} = ' + fmt(CRITS[0], 4) + '$$</span></div>';
+  } else if (FAM === 'cubic' && Math.abs(A) > TOL){
+    const disc = 4*B*B - 12*A*C;
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+      'Es una cuadrática. Discriminante: $$\\Delta = (' + fmt(2*B) + ')^{2} - 4(' + fmt(3*A) + ')(' + fmt(C) + ') = ' + fmt(disc, 3) + '$$' +
+      (Math.abs(disc) <= TOL
+        ? 'Es <strong>cero</strong>: hay una <strong>raíz doble</strong>. Anticipo: allí $f\'$ se anula pero <em>no cambiará de signo</em>.'
+        : 'Es <strong>positivo</strong>: dos raíces reales distintas.') +
+      '</span></div>';
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'Fórmula cuadrática: $$x = \\dfrac{' + fmt(-2*B) + ' \\pm \\sqrt{' + fmt(disc,3) + '}}{' + fmt(6*A) + '} ' +
+      '\\quad\\Longrightarrow\\quad x = ' + CRITS.map(x => fmt(x,4)).join(', \\quad x = ') + '$$</span></div>';
+  } else if (FAM === 'quartic'){
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+      'Factorizamos: $$' + fpTex() + ' = 2x\\left(' + fmt(2*A) + 'x^{2} ' + signTerm(B) + '\\right) = 0$$' +
+      'El producto se anula si $x = 0$ o si el paréntesis se anula.</span></div>';
+    html += '<div class="solve-step"><span class="n">Paso 3</span><span class="b">' +
+      'Raíces: $$x = ' + CRITS.map(x => fmt(x,4)).join(', \\quad x = ') + '$$</span></div>';
+  } else if (FAM === 'sin'){
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+      'El coseno se anula en $\\tfrac{\\pi}{2} + k\\pi$: ' +
+      '$$\\cos(' + fmt(B) + 'x) = 0 \\;\\Longleftrightarrow\\; ' + fmt(B) + 'x = \\tfrac{\\pi}{2} + k\\pi$$' +
+      'Hay <strong>infinitos</strong> críticos. En la ventana visible: ' +
+      '$x = ' + CRITS.map(x => fmt(x,3)).join(',\\; ') + '$.</span></div>';
+  } else {
+    html += '<div class="solve-step"><span class="n">Paso 2</span><span class="b">' +
+      'Como $e^{-bx^{2}} &gt; 0$ siempre, el único modo de anular el producto es $x = 0$: ' +
+      '$$x = 0$$</span></div>';
+  }
+
+  /* Verificación: sustituir de vuelta */
+  const x0 = CRITS[FOCUS];
+  html += '<div class="solve-step"><span class="n">Chequeo</span><span class="b">' +
+    'Sustituimos de vuelta: $f\'(' + fmt(x0,3) + ') = ' + fmt(fp(x0), 6) + ' \\approx 0$ ✓ &nbsp;·&nbsp; ' +
+    'Y la altura ahí es $f(' + fmt(x0,3) + ') = ' + fmt(f(x0), 4) + '$.</span></div>';
+
+  /* Selector de foco cuando hay varios críticos */
+  if (CRITS.length > 1){
+    html += '<div class="answer-check"><label for="focus-sel">crítico a analizar en (b)</label>' +
+      '<select id="focus-sel" style="max-width:180px;">';
+    CRITS.forEach((x, i) => {
+      html += '<option value="' + i + '"' + (i === FOCUS ? ' selected' : '') + '>x = ' + fmt(x,3) + '</option>';
+    });
+    html += '</select></div>';
+  }
+
+  /* Campo de respuesta autoverificable */
+  html += '<div class="answer-check">' +
+    '<label for="ans-a">tu respuesta · x =</label>' +
+    '<input type="text" id="ans-a" class="cell" inputmode="decimal" placeholder="?">' +
+    '</div>';
+
+  box.innerHTML = html;
+
+  const sel = document.getElementById('focus-sel');
+  if (sel){
+    sel.addEventListener('change', ev => {
+      FOCUS = parseInt(ev.target.value, 10);
+      TESTS = buildTests();
+      buildTable(); renderVerdict();
+      drawChart(); drawZoom(); drawDeriv();
+      renderConclusion();
+      setProbe(CRITS[FOCUS] - Math.min(1, ZOOM*0.3));
+      setTimeout(() => renderMath(document.body), 0);
+    });
+  }
+
+  document.getElementById('score-a').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyA(){
+  const inp = document.getElementById('ans-a');
+  const badge = document.getElementById('score-a');
+  if (!inp){
+    badge.textContent = 'No hay crítico que verificar';
+    badge.className = 'score-badge show';
+    return;
+  }
+  const raw = inp.value.trim().replace(',', '.');
+  inp.classList.remove('correct','wrong');
+  if (raw === ''){
+    badge.textContent = 'Escribe un valor';
+    badge.className = 'score-badge show';
+    return;
+  }
+  const val = parseFloat(raw);
+  /* Correcto si coincide con CUALQUIER crítico, no solo el enfocado */
+  const hit = CRITS.some(x => Math.abs(val - x) <= Math.max(Math.abs(x)*1e-3, 1e-3));
+  if (hit){
+    inp.classList.add('correct');
+    badge.textContent = '✓ Correcto';
+    badge.className = 'score-badge show perfect';
+  } else {
+    inp.classList.add('wrong');
+    badge.textContent = '✗ Revisa el despeje';
+    badge.className = 'score-badge show';
+  }
+}
+
+function fillA(){
+  const inp = document.getElementById('ans-a');
+  if (!inp) return;
+  inp.value = fmt(CRITS[FOCUS], 4);
+  inp.classList.remove('wrong');
+  inp.classList.add('correct');
+  const badge = document.getElementById('score-a');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function toggleHintA(){
+  const box = document.getElementById('hint-a');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  let html = '<strong>Pista.</strong> Un <strong>punto crítico</strong> es un $x$ del dominio donde ' +
+    '$f\'(x) = 0$ (o donde $f\'$ no existe). Aquí basta con <strong>igualar la derivada a cero y despejar</strong>.';
+  if (FAM === 'quad'){
+    html += '<p style="margin-top:8px;">Es una ecuación lineal: $' + fmt(2*A) + 'x ' + signTerm(B) + ' = 0$. ' +
+      'Pasa el término independiente al otro lado y divide.</p>';
+  } else if (FAM === 'cubic'){
+    html += '<p style="margin-top:8px;">La derivada es una <strong>cuadrática</strong>. ' +
+      'Calcula primero el discriminante $\\Delta = b^{2} - 4ac$ para saber <em>cuántas</em> ' +
+      'soluciones esperar, antes de aplicar la fórmula.</p>';
+  } else if (FAM === 'quartic'){
+    html += '<p style="margin-top:8px;">Saca factor común $x$: te queda ' +
+      '$2x(\\,\\cdot\\,) = 0$. Un producto es cero cuando alguno de sus factores lo es.</p>';
+  }
+  box.innerHTML = html;
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) TABLA DE SIGNOS ANTES/DESPUÉS
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const th = document.getElementById('thead-row');
+  const r1 = document.getElementById('row-test');
+  const r2 = document.getElementById('row-val');
+  const r3 = document.getElementById('row-sign');
+
+  if (!CRITS.length){
+    th.innerHTML = '<th style="background:var(--navy)">—</th>';
+    r1.innerHTML = '<td class="rowlbl" colspan="2">Sin punto crítico: no hay nada que clasificar.</td>';
+    r2.innerHTML = '';
+    r3.innerHTML = '';
+    document.getElementById('score-b').className = 'score-badge';
+    return;
+  }
+
+  const x0 = CRITS[FOCUS];
+
+  th.innerHTML =
+    '<th style="background:var(--navy)">zona</th>' +
+    '<th>antes · x &lt; ' + fmt(x0,3) + '</th>' +
+    '<th class="critcol">crítico · x = ' + fmt(x0,3) + '</th>' +
+    '<th>después · x &gt; ' + fmt(x0,3) + '</th>';
+
+  r1.innerHTML =
+    '<td class="rowlbl">punto de prueba</td>' +
+    '<td>x = ' + fmt(TESTS[0].x, 3) + '</td>' +
+    '<td class="critcell">x = ' + fmt(x0, 3) + '</td>' +
+    '<td>x = ' + fmt(TESTS[1].x, 3) + '</td>';
+
+  r2.innerHTML =
+    '<td class="rowlbl">f ′(punto)</td>' +
+    '<td>' + fmt(TESTS[0].val, 4) + '</td>' +
+    '<td class="critcell">0</td>' +
+    '<td>' + fmt(TESTS[1].val, 4) + '</td>';
+
+  r3.innerHTML =
+    '<td class="rowlbl">signo de f ′</td>' +
+    '<td><select class="cell" data-i="0">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">positivo (+)</option>' +
+      '<option value="-1">negativo (−)</option>' +
+    '</select></td>' +
+    '<td class="critcell">cero</td>' +
+    '<td><select class="cell" data-i="1">' +
+      '<option value="">— elegir —</option>' +
+      '<option value="1">positivo (+)</option>' +
+      '<option value="-1">negativo (−)</option>' +
+    '</select></td>';
+
+  document.getElementById('score-b').className = 'score-badge';
+}
+
+function verifyB(){
+  const cells = document.querySelectorAll('#row-sign select.cell');
+  const badge = document.getElementById('score-b');
+  if (!cells.length){
+    badge.textContent = 'Sin crítico';
+    badge.className = 'score-badge show';
+    return;
+  }
+  let ok = 0, tried = 0;
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.classList.remove('correct','wrong');
+    if (cell.value === '') return;
+    tried++;
+    if (parseInt(cell.value, 10) === TESTS[i].sign){ cell.classList.add('correct'); ok++; }
+    else cell.classList.add('wrong');
+  });
+  badge.textContent = tried === 0 ? 'Elige los signos' : ok + ' / 2 correctos';
+  badge.className = 'score-badge show' + (ok === 2 ? ' perfect' : '');
+}
+
+function fillB(){
+  document.querySelectorAll('#row-sign select.cell').forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    cell.value = String(TESTS[i].sign);
+    cell.classList.remove('wrong');
+    cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score-b');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function clearB(){
+  document.querySelectorAll('#row-sign select.cell').forEach(cell => {
+    cell.value = '';
+    cell.classList.remove('correct','wrong');
+  });
+  document.getElementById('score-b').className = 'score-badge';
+}
+
+/* ── VEREDICTO VISUAL ── */
+function renderVerdict(){
+  const el = document.getElementById('verdict-panel');
+  const v = verdict();
+
+  if (v.kind === 'nocrit'){
+    el.innerHTML = '<div class="verdict none"><span class="vk">Veredicto</span>' +
+      '<div class="vt">No hay punto crítico</div>' +
+      '<div class="vb">Sin solución de $f\'(x)=0$ no hay candidato a extremo. ' +
+      'El <strong>Teorema de Fermat</strong> exige $f\'(a)=0$ en todo extremo interior de una función ' +
+      'derivable; como eso nunca ocurre aquí, <strong>no hay extremos locales</strong>.</div></div>';
+    renderMath(el);
+    return;
+  }
+
+  const cls = v.kind === 'max' ? 'max' : (v.kind === 'min' ? 'min' : 'none');
+  const titulo = v.kind === 'max' ? 'MÁXIMO local'
+               : (v.kind === 'min' ? 'MÍNIMO local' : 'NO es extremo');
+
+  let cuerpo;
+  if (v.kind === 'max'){
+    cuerpo = 'El signo de $f\'$ pasa de <strong>positivo a negativo</strong>. ' +
+      'La curva <em>sube</em>, se detiene con tangente horizontal, y <em>baja</em>: es una cima. ' +
+      'Valor máximo local: $f(' + fmt(v.x,3) + ') = ' + fmt(v.y,4) + '$.';
+  } else if (v.kind === 'min'){
+    cuerpo = 'El signo de $f\'$ pasa de <strong>negativo a positivo</strong>. ' +
+      'La curva <em>baja</em>, se detiene con tangente horizontal, y <em>sube</em>: es un valle. ' +
+      'Valor mínimo local: $f(' + fmt(v.x,3) + ') = ' + fmt(v.y,4) + '$.';
+  } else {
+    cuerpo = 'El signo de $f\'$ es el <strong>mismo</strong> a ambos lados: <em>no cambia</em>. ' +
+      'La tangente es horizontal, pero la curva <strong>no cambia de dirección</strong>: sigue subiendo ' +
+      '(o bajando) tras una pausa momentánea. Es un <strong>punto de inflexión con tangente horizontal</strong>, ' +
+      'no un extremo. Anular la derivada es <em>necesario</em>, pero no <em>suficiente</em>.';
+  }
+
+  el.innerHTML =
+    '<div class="verdict ' + cls + '"><span class="vk">Veredicto en x = ' + fmt(v.x,3) + '</span>' +
+    '<div class="vt">' + titulo + '</div>' +
+    '<div class="arrow-pair">' +
+      '<div class="ap ' + (v.sL > 0 ? 'pos' : 'neg') + '">' +
+        '<div class="s">' + sigGlyph(v.sL) + '</div>' +
+        '<div class="l">antes · ' + (v.sL > 0 ? 'sube ↗' : 'baja ↘') + '</div></div>' +
+      '<div class="ap zero"><div class="s">0</div><div class="l">crítico · plano →</div></div>' +
+      '<div class="ap ' + (v.sR > 0 ? 'pos' : 'neg') + '">' +
+        '<div class="s">' + sigGlyph(v.sR) + '</div>' +
+        '<div class="l">después · ' + (v.sR > 0 ? 'sube ↗' : 'baja ↘') + '</div></div>' +
+    '</div>' +
+    '<div class="vb">' + cuerpo + '</div></div>';
+
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL
+   ═══════════════════════════════════════════════ */
+function drawCurveInto(sel, W, H, xMin, xMax, opts){
+  d3.select(sel).selectAll('svg').remove();
+  const m = {top:20, right:24, bottom:38, left:60};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  /* Segmentos por SIGNO de f' → colorear monotonía */
+  const N = 700, step = (xMax - xMin) / N;
+  const segs = [];
+  let cur = null;
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    const y = f(x);
+    if (!isFinite(y)){ cur = null; continue; }
+    const d = fp(x);
+    const s = (!isFinite(d) || Math.abs(d) < 1e-12) ? 0 : (d > 0 ? 1 : -1);
+    if (!cur || cur.sign !== s){
+      if (cur && cur.pts.length) cur.pts.push([x, y]);
+      cur = {sign:s, pts:[]};
+      segs.push(cur);
+    }
+    cur.pts.push([x, y]);
+  }
+
+  const allY = segs.flatMap(s => s.pts).map(d => d[1]).filter(isFinite);
+  const extra = [];
+  CRITS.forEach(x => { if (x >= xMin && x <= xMax){ const v = f(x); if (isFinite(v)) extra.push(v); } });
+  const cand = [...allY, ...extra];
+  let yMin = cand.length ? Math.min(...cand) : -1;
+  let yMax = cand.length ? Math.max(...cand) :  1;
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const pad = (yMax - yMin) * 0.14;
+  yMin -= pad; yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select(sel).append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox', '0 0 ' + W + ' ' + H);
+  const cid = 'clip-' + sel.replace('#','') + '-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  if (opts.grid){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 31).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -7).attr('text-anchor','end').text('f(x)');
+
+  /* Vertical en el crítico enfocado */
+  if (CRITS.length){
+    const x0 = CRITS[FOCUS];
+    if (x0 >= xMin && x0 <= xMax){
+      plot.append('line').attr('class','crit-line')
+        .attr('x1', xs(x0)).attr('x2', xs(x0)).attr('y1', 0).attr('y2', ih);
+    }
+  }
+
+  /* Curva coloreada por monotonía */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  segs.forEach(s => {
+    if (s.pts.length < 2) return;
+    let cls = 'curve curve-plain';
+    if (opts.color) cls = 'curve ' + (s.sign > 0 ? 'curve-up' : (s.sign < 0 ? 'curve-down' : 'curve-plain'));
+    plot.append('path').datum(s.pts).attr('class', cls).attr('d', line);
+  });
+
+  /* TANGENTE HORIZONTAL en el crítico: la firma visual de f'=0 */
+  if (opts.htan && CRITS.length){
+    const x0 = CRITS[FOCUS], y0 = f(x0);
+    if (isFinite(y0) && x0 >= xMin && x0 <= xMax){
+      const dx = (xMax - xMin) * 0.22;
+      plot.append('line').attr('class','htan')
+        .attr('x1', xs(Math.max(xMin, x0 - dx))).attr('x2', xs(Math.min(xMax, x0 + dx)))
+        .attr('y1', ys(y0)).attr('y2', ys(y0));
+      plot.append('circle').attr('class','crit-dot')
+        .attr('cx', xs(x0)).attr('cy', ys(y0)).attr('r', 6.5);
+      plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+        .attr('x', xs(x0) + 9).attr('y', ys(y0) - 11)
+        .text("f ' = 0");
+    }
+  }
+
+  /* TANGENTES DE PRUEBA: la evidencia del cambio de signo */
+  if (opts.tests && TESTS.length === 2){
+    TESTS.forEach(t => {
+      if (t.x < xMin || t.x > xMax) return;
+      const y0 = f(t.x), mS = t.val;
+      if (!isFinite(y0) || !isFinite(mS)) return;
+      const col = mS > 0 ? 'var(--up)' : 'var(--down)';
+      const dx = (xMax - xMin) * 0.16;
+      plot.append('line').attr('class','test-tan').attr('stroke', col)
+        .attr('x1', xs(t.x - dx)).attr('y1', ys(y0 - mS*dx))
+        .attr('x2', xs(t.x + dx)).attr('y2', ys(y0 + mS*dx));
+      plot.append('circle').attr('class','test-dot').attr('fill', col)
+        .attr('cx', xs(t.x)).attr('cy', ys(y0)).attr('r', 5);
+      plot.append('text').attr('class','curve-lbl').attr('fill', col)
+        .attr('x', xs(t.x)).attr('y', ys(y0) + (mS > 0 ? 22 : -14))
+        .attr('text-anchor','middle')
+        .text(sigGlyph(t.sign));
+    });
+  }
+
+  /* Tangente móvil */
+  if (opts.probe && PROBE >= xMin && PROBE <= xMax){
+    const y0 = f(PROBE), mS = fp(PROBE);
+    if (isFinite(y0) && isFinite(mS)){
+      const col = mS > 1e-9 ? 'var(--up)' : (mS < -1e-9 ? 'var(--down)' : 'var(--gold)');
+      plot.append('line').attr('class','probe-tan').attr('stroke', col)
+        .attr('x1', xs(xMin)).attr('y1', ys(y0 + mS*(xMin - PROBE)))
+        .attr('x2', xs(xMax)).attr('y2', ys(y0 + mS*(xMax - PROBE)));
+      plot.append('circle').attr('class','closed-dot').attr('fill', col)
+        .attr('cx', xs(PROBE)).attr('cy', ys(y0)).attr('r', 6);
+    }
+  }
+
+  return {svg, plot, xs, ys, m, iw, ih, yMin, yMax};
+}
+
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  if (!window.d3) return;
+  const W = box.clientWidth || 800, H = box.clientHeight || 430;
+  const c = center();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+
+  const ctx = drawCurveInto('#chart-box', W, H, xMin, xMax, {
+    grid:  document.getElementById('opt-grid').checked,
+    color: document.getElementById('opt-color').checked,
+    htan:  document.getElementById('opt-htan').checked,
+    tests: document.getElementById('opt-test').checked,
+    probe: document.getElementById('opt-probe').checked
+  });
+  if (!ctx) return;
+
+  const {svg, plot, xs, ys, m, iw, ih, yMin, yMax} = ctx;
+  const tip = document.getElementById('tooltip');
+  const hover = plot.append('line')
+    .attr('stroke','var(--navy)').attr('stroke-width',1)
+    .attr('stroke-dasharray','3,3').attr('opacity',0).attr('y1',0).attr('y2',ih);
+
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x), d = fp(x);
+      if (!isFinite(y) || y < yMin || y > yMax){
+        tip.classList.remove('show'); hover.attr('opacity',0); return;
+      }
+      hover.attr('opacity',.5).attr('x1', xs(x)).attr('x2', xs(x));
+      tip.innerHTML = 'x = ' + fmt(x,3) + '<br>f(x) = ' + fmt(y,3) +
+        "<br>f '(x) = " + fmt(d,3) + '<br>' +
+        (d > 1e-9 ? '↗ sube' : (d < -1e-9 ? '↘ baja' : '→ horizontal'));
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top  = (m.top  + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => { tip.classList.remove('show'); hover.attr('opacity',0); })
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      setProbe(xs.invert(mx - m.left));
+    });
+}
+
+/* ── LUPA sobre el crítico ── */
+function drawZoom(){
+  const box = document.getElementById('chart-zoom');
+  d3.select('#chart-zoom').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  if (!CRITS.length){
+    d3.select('#chart-zoom').append('svg')
+      .attr('width', box.clientWidth || 800).attr('height', box.clientHeight || 320)
+      .append('text')
+      .attr('x', (box.clientWidth||800)/2).attr('y', (box.clientHeight||320)/2)
+      .attr('text-anchor','middle').attr('class','curve-lbl').attr('fill','var(--muted)')
+      .text('Sin punto crítico: no hay nada que ampliar.');
+    return;
+  }
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 320;
+  const x0 = CRITS[FOCUS];
+  const xMin = x0 - LENS, xMax = x0 + LENS;
+
+  const ctx = drawCurveInto('#chart-zoom', W, H, xMin, xMax, {
+    grid:true, color:true, htan:true, tests:false, probe:false
+  });
+  if (!ctx) return;
+
+  const {svg, plot, xs, ys, m, iw, ih, yMin, yMax} = ctx;
+
+  /* Etiqueta del valor extremo */
+  const y0 = f(x0);
+  if (isFinite(y0)){
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--navy)')
+      .attr('x', xs(x0)).attr('y', ys(y0) + 26).attr('text-anchor','middle')
+      .text('f(' + fmt(x0,3) + ') = ' + fmt(y0,4));
+  }
+
+  const tipz = document.getElementById('tooltip-z');
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x), d = fp(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tipz.classList.remove('show'); return; }
+      tipz.innerHTML = 'x = ' + fmt(x,4) + "<br>f '(x) = " + fmt(d,5);
+      tipz.style.left = (m.left + xs(x)) + 'px';
+      tipz.style.top  = (m.top  + ys(y)) + 'px';
+      tipz.classList.add('show');
+    })
+    .on('mouseleave', () => tipz.classList.remove('show'));
+}
+
+/* ── GRÁFICO DE f' ── */
+function drawDeriv(){
+  const box = document.getElementById('chart-d');
+  d3.select('#chart-d').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 290;
+  const m = {top:18, right:24, bottom:36, left:60};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const c = center();
+  const xMin = c - ZOOM, xMax = c + ZOOM;
+
+  const N = 600, step = (xMax - xMin)/N;
+  const pts = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    const v = fp(x);
+    if (isFinite(v)) pts.push([x, v]);
+  }
+
+  const vals = pts.map(d => d[1]);
+  let yMin = vals.length ? Math.min(...vals, 0) : -1;
+  let yMax = vals.length ? Math.max(...vals, 0) :  1;
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const pad = (yMax - yMin)*0.16;
+  yMin -= pad; yMax += pad;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-d').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-d-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  /* Bandas: verde donde f'>0, granate donde f'<0 */
+  if (TESTS.length === 2 && CRITS.length){
+    const x0 = CRITS[FOCUS];
+    plot.append('rect').attr('class', TESTS[0].sign > 0 ? 'band-up' : 'band-down')
+      .attr('x', 0).attr('y', 0)
+      .attr('width', Math.max(0, xs(x0))).attr('height', ih);
+    plot.append('rect').attr('class', TESTS[1].sign > 0 ? 'band-up' : 'band-down')
+      .attr('x', xs(x0)).attr('y', 0)
+      .attr('width', Math.max(0, iw - xs(x0))).attr('height', ih);
+  }
+
+  g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(7));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 29).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -6).attr('text-anchor','end').text("f '(x)");
+
+  /* Eje y=0: la frontera del signo */
+  if (0 >= yMin && 0 <= yMax){
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','var(--muted)').attr('stroke-width',1.6);
+  }
+
+  const line = d3.line().x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1])).curve(d3.curveCatmullRom.alpha(.5));
+  if (pts.length > 1) plot.append('path').datum(pts).attr('class','dcurve').attr('d', line);
+
+  /* Cruce por cero: CERRADO, porque f' sí vale exactamente 0 ahí */
+  CRITS.forEach((x, i) => {
+    if (x < xMin || x > xMax) return;
+    plot.append('circle').attr('class','crit-dot')
+      .attr('cx', xs(x)).attr('cy', ys(0)).attr('r', i === FOCUS ? 6.5 : 4.5)
+      .attr('opacity', i === FOCUS ? 1 : .45);
+  });
+
+  /* Puntos de prueba sobre f' */
+  TESTS.forEach(t => {
+    if (t.x < xMin || t.x > xMax || !isFinite(t.val)) return;
+    const col = t.val > 0 ? 'var(--up)' : 'var(--down)';
+    plot.append('line')
+      .attr('x1', xs(t.x)).attr('x2', xs(t.x))
+      .attr('y1', ys(t.val)).attr('y2', ys(0))
+      .attr('stroke', col).attr('stroke-width',1.4)
+      .attr('stroke-dasharray','3,3').attr('opacity',.75);
+    plot.append('circle').attr('class','test-dot').attr('fill', col)
+      .attr('cx', xs(t.x)).attr('cy', ys(t.val)).attr('r', 5.4);
+    plot.append('text').attr('class','curve-lbl').attr('fill', col)
+      .attr('x', xs(t.x)).attr('y', ys(t.val) + (t.val > 0 ? -10 : 18))
+      .attr('text-anchor','middle')
+      .text(sigGlyph(t.sign));
+  });
+
+  const tipd = document.getElementById('tooltip-d');
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const v = fp(x);
+      if (!isFinite(v) || v < yMin || v > yMax){ tipd.classList.remove('show'); return; }
+      tipd.innerHTML = 'x = ' + fmt(x,3) + "<br>f '(x) = " + fmt(v,4) + '<br>' +
+        (v > 1e-9 ? 'positivo → f sube' : (v < -1e-9 ? 'negativo → f baja' : 'cero → crítico'));
+      tipd.style.left = (m.left + xs(x)) + 'px';
+      tipd.style.top  = (m.top  + ys(v)) + 'px';
+      tipd.classList.add('show');
+    })
+    .on('mouseleave', () => tipd.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      setProbe(xs.invert(mx - m.left));
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const y = f(PROBE), d = fp(PROBE);
+  document.getElementById('lv-x').textContent  = fmt(PROBE, 4);
+  document.getElementById('lv-fx').textContent = fmt(y, 4);
+  document.getElementById('lv-fp').textContent = fmt(d, 4);
+
+  const sg = document.getElementById('lv-sig');
+  const mo = document.getElementById('lv-mono');
+
+  if (!isFinite(d)){
+    sg.textContent = '—'; sg.className = 'v';
+    mo.textContent = '—'; mo.className = 'v';
+  } else if (d > 1e-9){
+    sg.textContent = 'POSITIVO'; sg.className = 'v up';
+    mo.textContent = '↗ sube';   mo.className = 'v up';
+  } else if (d < -1e-9){
+    sg.textContent = 'NEGATIVO'; sg.className = 'v down';
+    mo.textContent = '↘ baja';   mo.className = 'v down';
+  } else {
+    sg.textContent = 'CERO';        sg.className = 'v zero';
+    mo.textContent = '→ horizontal'; mo.className = 'v zero';
+  }
+  mo.style.fontSize = '.84rem';
+}
+
+function setProbe(x){
+  const ps = document.getElementById('probe-slider');
+  const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+  PROBE = Math.max(lo, Math.min(hi, x));
+  ps.value = PROBE;
+  document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+  updateLive();
+  drawChart();
+  drawDeriv();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN: CRUZAR EL CRÍTICO
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Cruzar el crítico y ver girar la tangente';
+}
+
+function startAnim(){
+  stopAnim();
+  if (!CRITS.length){
+    /* Sin crítico, la animación recorre la ventana igual */
+    const ps = document.getElementById('probe-slider');
+    const lo = parseFloat(ps.min), hi = parseFloat(ps.max);
+    let t = 0; const steps = 140;
+    document.getElementById('btn-anim').textContent = '● Recorriendo…';
+    ANIM = setInterval(() => {
+      t++;
+      setProbe(lo + (hi - lo) * (t/steps));
+      if (t >= steps) stopAnim();
+    }, 30);
+    return;
+  }
+
+  /* Con crítico: barre de un punto de prueba al otro, PASANDO por el crítico */
+  const x0 = CRITS[FOCUS];
+  const span = Math.max(Math.abs(TESTS[0].x - x0), Math.abs(TESTS[1].x - x0)) * 1.35;
+  const from = x0 - span, to = x0 + span;
+  let t = 0; const steps = 150;
+
+  document.getElementById('btn-anim').textContent = '● Cruzando…';
+
+  ANIM = setInterval(() => {
+    t++;
+    setProbe(from + (to - from) * (t/steps));
+    if (t >= steps){
+      stopAnim();
+      /* Estado final: DESPUÉS del crítico, para que se vea el signo invertido */
+      setProbe(TESTS[1].x);
+    }
+  }, 30);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const v = verdict();
+  const hasCrit = CRITS.length > 0;
+  const x0 = hasCrit ? CRITS[FOCUS] : 0;
+
+  /* La opción correcta de la Q1 se DERIVA del veredicto */
+  let ok1;
+  if (v.kind === 'max')      ok1 = 0;
+  else if (v.kind === 'min') ok1 = 1;
+  else                       ok1 = 2;
+
+  const qs = [
+    {
+      q: hasCrit
+         ? 'b) En $x = ' + fmt(x0,3) + '$, ¿qué tenemos?'
+         : 'b) Sin punto crítico, ¿qué podemos afirmar?',
+      opts: hasCrit
+        ? ['Un <strong>máximo</strong> local.',
+           'Un <strong>mínimo</strong> local.',
+           '<strong>Ningún extremo</strong>: $f\'$ se anula pero no cambia de signo.']
+        : ['Que hay un máximo en alguna parte.',
+           'Que hay un mínimo en alguna parte.',
+           'Que <strong>no hay extremos locales</strong>: sin $f\'=0$ no hay candidato.'],
+      ok: hasCrit ? ok1 : 2,
+      fb: hasCrit
+        ? ('El signo de $f\'$ pasa de $' + sigGlyph(v.sL) + '$ a $' + sigGlyph(v.sR) + '$. ' +
+           (v.kind === 'none'
+             ? 'Como <strong>no cambia</strong>, la curva no invierte su dirección: es un punto de ' +
+               'inflexión con tangente horizontal, no un extremo.'
+             : 'Ese <strong>cambio</strong> es exactamente lo que define el ' +
+               (v.kind === 'max' ? 'máximo' : 'mínimo') + '.'))
+        : 'Por el <strong>Teorema de Fermat</strong>, si $f$ tuviera un extremo local en un punto ' +
+          'interior donde es derivable, allí forzosamente $f\'=0$. Como esa ecuación no tiene ' +
+          'solución, no hay extremos.'
+    },
+    {
+      q: '¿Basta con que $f\'(a) = 0$ para asegurar que hay un extremo en $a$?',
+      opts: [
+        'Sí: tangente horizontal significa máximo o mínimo.',
+        'No: además $f\'$ debe <strong>cambiar de signo</strong> al pasar por $a$.',
+        'Solo si además $f(a) = 0$.'
+      ],
+      ok: 1,
+      fb: 'El contraejemplo canónico es $f(x) = x^{3}$ en $a=0$: allí $f\'(0)=0$, pero ' +
+          '$f\'(x) = 3x^{2} \\geq 0$ a ambos lados. La tangente es horizontal y la función ' +
+          '<strong>sigue creciendo</strong>. Pruébalo con el preset «x³ · ¡crítico sin extremo!». ' +
+          'La condición $f\'(a)=0$ es <em>necesaria</em> (Fermat) pero <strong>no suficiente</strong>.'
+    },
+    {
+      q: 'c) ¿Cómo se ve un máximo en la gráfica de $f\'$?',
+      opts: [
+        'La curva de $f\'$ alcanza su valor más alto.',
+        'La curva de $f\'$ <strong>cruza el eje de arriba hacia abajo</strong> (de $+$ a $-$).',
+        'La curva de $f\'$ es tangente al eje.'
+      ],
+      ok: 1,
+      fb: 'Cuidado con la primera opción: un máximo de $f$ <em>no</em> es un máximo de $f\'$. ' +
+          'En un máximo de $f$, la derivada <strong>desciende atravesando el cero</strong>: viene de ser ' +
+          'positiva (subida) y pasa a ser negativa (bajada). En la tercera opción, si $f\'$ solo ' +
+          '<em>toca</em> el eje sin cruzarlo, no hay cambio de signo y por tanto no hay extremo.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TEOREMA Y DEMOSTRACIÓN
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\text{Sea } f\'(a) = 0 \\text{ y sea } f\' \\text{ continua cerca de } a.$$' +
+    '$$\\text{Si } f\' \\text{ pasa de } (+) \\text{ a } (-) \\text{ en } a ' +
+    '\\;\\Longrightarrow\\; f \\text{ tiene un } \\textbf{máximo local} \\text{ en } a.$$' +
+    '$$\\text{Si } f\' \\text{ pasa de } (-) \\text{ a } (+) \\text{ en } a ' +
+    '\\;\\Longrightarrow\\; f \\text{ tiene un } \\textbf{mínimo local} \\text{ en } a.$$' +
+    '$$\\text{Si } f\' \\textbf{ no cambia de signo} \\;\\Longrightarrow\\; \\text{no hay extremo en } a.$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const v = verdict();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Teorema de Fermat (por qué buscamos f′=0)</span>' +
+    'Si $f$ tiene un extremo local en un punto <strong>interior</strong> $a$ y es derivable allí, ' +
+    'entonces $f\'(a) = 0$. La idea: si $f\'(a) &gt; 0$, la función crece en $a$ y hay puntos a la derecha ' +
+    'con valor mayor —luego $a$ no puede ser máximo—; si $f\'(a) &lt; 0$, ocurre lo simétrico. ' +
+    'La única salida es $f\'(a) = 0$. ' +
+    '<strong>Ojo:</strong> el teorema dice «extremo $\\Rightarrow$ derivada nula», <em>no</em> al revés.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 2 · Por qué el recíproco es falso</span>' +
+    'La implicación inversa <strong>no vale</strong>. En $f(x)=x^{3}$ tenemos $f\'(0)=0$, ' +
+    'pero $f\'(x)=3x^{2} \\geq 0$ en todo punto: la función nunca deja de crecer. ' +
+    'Hay tangente horizontal sin extremo. Por eso los críticos son solo <strong>candidatos</strong>, ' +
+    'y hace falta un criterio adicional para clasificarlos.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 3 · El criterio, vía monotonía</span>' +
+    'Supongamos $f\'(x) &gt; 0$ en $(a-\\delta,\\,a)$ y $f\'(x) &lt; 0$ en $(a,\\,a+\\delta)$. ' +
+    'Por el teorema de monotonía (consecuencia del Valor Medio): ' +
+    '<ul style="margin:8px 0 0 20px;">' +
+    '<li>$f$ es <strong>creciente</strong> en $(a-\\delta,\\,a)$, luego $f(x) &lt; f(a)$ para $x &lt; a$.</li>' +
+    '<li>$f$ es <strong>decreciente</strong> en $(a,\\,a+\\delta)$, luego $f(a) &gt; f(x)$ para $x &gt; a$.</li>' +
+    '</ul>' +
+    '<p style="margin-top:8px;">Combinando: $f(x) \\leq f(a)$ para todo $x$ en el entorno. ' +
+    'Eso es <em>exactamente</em> la definición de máximo local. El caso del mínimo es simétrico.</p></div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · Aplicación al caso actual</span>';
+  if (!CRITS.length){
+    steps += 'La ecuación $f\'(x)=0$ no tiene solución. Sin candidato, Fermat cierra el caso: ' +
+      '<strong>no hay extremos locales</strong>.';
+  } else {
+    steps += 'En $x = ' + fmt(v.x, 3) + '$ verificamos $f\'(' + fmt(v.x,3) + ') = 0$. ' +
+      'Los puntos de prueba dan $f\'(' + fmt(TESTS[0].x,3) + ') = ' + fmt(TESTS[0].val,3) + '$ ' +
+      '(signo $' + sigGlyph(v.sL) + '$) y $f\'(' + fmt(TESTS[1].x,3) + ') = ' + fmt(TESTS[1].val,3) + '$ ' +
+      '(signo $' + sigGlyph(v.sR) + '$). ' +
+      (v.kind === 'none'
+        ? 'Como el signo <strong>no cambia</strong>, el criterio concluye que <strong>no hay extremo</strong>.'
+        : 'El cambio de $' + sigGlyph(v.sL) + '$ a $' + sigGlyph(v.sR) + '$ identifica un <strong>' +
+          (v.kind === 'max' ? 'máximo' : 'mínimo') + ' local</strong>, con valor $f(' + fmt(v.x,3) + ') = ' +
+          fmt(v.y,4) + '$.');
+  }
+  steps += '</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'Lo que clasifica un punto crítico no es que $f\'$ <em>se anule</em> —eso ya se sabía—, ' +
+    'sino <strong>cómo</strong> se anula: cruzando el cero, o solo tocándolo.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const v = verdict();
+  let html = '';
+
+  /* a) */
+  html += '<p><strong>a)</strong> Resolviendo $f\'(x) = 0$ con $f\'(x) = ' + fpTex() + '$:</p>';
+  if (!CRITS.length){
+    html += '<p style="text-align:center;">$$\\text{sin solución real}$$</p>';
+    html += '<p>No hay puntos críticos.</p>';
+  } else {
+    html += '<p style="text-align:center;">$$x = ' + CRITS.map(x => fmt(x,4)).join(', \\qquad x = ') + '$$</p>';
+  }
+
+  /* b) */
+  html += '<p><strong>b)</strong> ';
+  if (!CRITS.length){
+    html += 'Sin candidato, no hay nada que clasificar: por el <strong>Teorema de Fermat</strong>, ' +
+      'todo extremo interior de una función derivable exige $f\'=0$. La función <strong>no tiene ' +
+      'extremos locales</strong>.</p>';
+  } else {
+    html += 'Evaluando $f\'$ a ambos lados de $x = ' + fmt(v.x,3) + '$:</p>';
+    html += '<p style="text-align:center;">$$\\begin{aligned}' +
+      "f'(" + fmt(TESTS[0].x,3) + ') &amp;= ' + fmt(TESTS[0].val,3) +
+        ' \\quad\\Longrightarrow\\quad \\text{signo } (' + sigGlyph(v.sL) + ') \\\\ ' +
+      "f'(" + fmt(TESTS[1].x,3) + ') &amp;= ' + fmt(TESTS[1].val,3) +
+        ' \\quad\\Longrightarrow\\quad \\text{signo } (' + sigGlyph(v.sR) + ')' +
+      '\\end{aligned}$$</p>';
+
+    if (v.kind === 'max'){
+      html += '<p>El signo pasa de <strong>$+$ a $-$</strong>: la función sube y luego baja. ' +
+        'Por el criterio de la primera derivada, en $x = ' + fmt(v.x,3) + '$ hay un ' +
+        '<strong>MÁXIMO local</strong>, de valor $f(' + fmt(v.x,3) + ') = ' + fmt(v.y,4) + '$.</p>';
+    } else if (v.kind === 'min'){
+      html += '<p>El signo pasa de <strong>$-$ a $+$</strong>: la función baja y luego sube. ' +
+        'Por el criterio de la primera derivada, en $x = ' + fmt(v.x,3) + '$ hay un ' +
+        '<strong>MÍNIMO local</strong>, de valor $f(' + fmt(v.x,3) + ') = ' + fmt(v.y,4) + '$.</p>';
+    } else {
+      html += '<p>El signo <strong>no cambia</strong> ($' + sigGlyph(v.sL) + '$ antes, $' +
+        sigGlyph(v.sR) + '$ después). Aunque $f\'(' + fmt(v.x,3) + ') = 0$, ' +
+        '<strong>no hay extremo</strong>: la curva se aplana un instante y continúa en la misma ' +
+        'dirección. Es un <strong>punto de inflexión con tangente horizontal</strong>.</p>';
+    }
+  }
+
+  /* c) */
+  html += '<p><strong>c)</strong> ';
+  if (!CRITS.length){
+    html += 'La gráfica lo confirma: la curva mantiene un solo color (una sola dirección) en toda ' +
+      'la ventana, y la curva de $f\'$ <strong>nunca toca el eje horizontal</strong>.</p>';
+  } else if (v.kind === 'none'){
+    html += 'En la gráfica, la tangente en $x = ' + fmt(v.x,3) + '$ es <strong>horizontal</strong> ' +
+      '(dorada), pero la curva conserva el <em>mismo color</em> a ambos lados: no cambia de dirección. ' +
+      'Y en la gráfica de $f\'$, la curva roja <strong>toca el eje sin cruzarlo</strong> y vuelve por ' +
+      'el mismo lado. Esa es la firma visual de un crítico que no es extremo.</p>';
+  } else {
+    const sube = v.kind === 'max';
+    html += 'La gráfica muestra la curva en <span style="color:var(--up);font-weight:700;">verde</span> ' +
+      'donde sube y en <span style="color:var(--down);font-weight:700;">granate</span> donde baja; ' +
+      'el cambio de color ocurre <em>exactamente</em> en $x = ' + fmt(v.x,3) + '$, donde la tangente es ' +
+      '<strong>horizontal</strong>. La lupa lo confirma con un acercamiento extremo. ' +
+      'Y en la gráfica de $f\'$, la curva roja <strong>atraviesa el eje</strong> ' +
+      (sube ? 'descendiendo (de $+$ a $-$)' : 'ascendiendo (de $-$ a $+$)') + ': ese cruce ' +
+      '<em>es</em> el ' + (sube ? 'máximo' : 'mínimo') + '.</p>';
+  }
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', () => { FOCUS = 0; refreshAll(); });
+  document.getElementById('p-fam').addEventListener('change', () => { FOCUS = 0; refreshAll(); });
+  ['p-a','p-b','p-c','p-d'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter'){ FOCUS = 0; refreshAll(); }
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-fam').value = 'quad';
+    document.getElementById('p-a').value = -1;
+    document.getElementById('p-b').value = 4;
+    document.getElementById('p-c').value = 0;
+    document.getElementById('p-d').value = 0;
+    document.getElementById('opt-zoom').value = 5;
+    document.getElementById('zoom-val').textContent = '5';
+    document.getElementById('lens-slider').value = 1;
+    document.getElementById('lens-val').textContent = '1';
+    FOCUS = 0;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-fam').value = p[0].trim();
+      document.getElementById('p-a').value   = p[1].trim();
+      document.getElementById('p-b').value   = p[2].trim();
+      document.getElementById('p-c').value   = p[3].trim();
+      document.getElementById('p-d').value   = p[4] !== undefined ? p[4].trim() : 0;
+      FOCUS = 0;
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-a').addEventListener('click', verifyA);
+  document.getElementById('btn-fill-a').addEventListener('click', fillA);
+  document.getElementById('btn-hint-a').addEventListener('click', toggleHintA);
+
+  document.getElementById('btn-verify-b').addEventListener('click', verifyB);
+  document.getElementById('btn-fill-b').addEventListener('click', fillB);
+  document.getElementById('btn-clear-b').addEventListener('click', clearB);
+
+  ['opt-grid','opt-color','opt-htan','opt-test','opt-probe'].forEach(id => {
+    document.getElementById(id).addEventListener('change', drawChart);
+  });
+
+  document.getElementById('opt-zoom').addEventListener('input', ev => {
+    ZOOM = parseFloat(ev.target.value);
+    document.getElementById('zoom-val').textContent = ZOOM;
+    /* El zoom puede revelar críticos nuevos (caso seno): recalcular todo */
+    CRITS = criticalPoints();
+    FOCUS = Math.min(FOCUS, Math.max(0, CRITS.length - 1));
+    TESTS = buildTests();
+    const ps = document.getElementById('probe-slider');
+    const c  = center();
+    const lo = c - ZOOM, hi = c + ZOOM;
+    ps.min = lo; ps.max = hi; ps.step = (hi - lo)/800;
+    PROBE = Math.max(lo, Math.min(hi, PROBE));
+    ps.value = PROBE;
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    renderSolve(); buildTable(); renderVerdict();
+    updateLive(); drawChart(); drawZoom(); drawDeriv();
+    renderConclusion();
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  document.getElementById('lens-slider').addEventListener('input', ev => {
+    LENS = parseFloat(ev.target.value);
+    document.getElementById('lens-val').textContent = fmt(LENS, 2);
+    drawZoom();
+  });
+
+  document.getElementById('probe-slider').addEventListener('input', ev => {
+    stopAnim();
+    PROBE = parseFloat(ev.target.value);
+    document.getElementById('probe-val').textContent = fmt(PROBE, 3);
+    updateLive(); drawChart(); drawDeriv();
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { drawChart(); drawZoom(); drawDeriv(); }, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading' && window.d3 && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

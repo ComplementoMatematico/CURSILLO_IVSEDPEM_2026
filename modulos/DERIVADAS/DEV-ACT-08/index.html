@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 8 — Razón de cambio promedio · Cursillo de Actualización Docente</title>
+
+<!-- ── FUENTES ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ── KaTeX (CSS) ── -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+/* ═══════════ IDENTIDAD VISUAL ═══════════ */
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+header{
+  background:var(--navy);
+  border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28);
+  padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{
+  height:52px; width:auto; object-fit:contain;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));
+}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.66rem; letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:5px;
+}
+.header-title{
+  font-family:'Playfair Display',serif; font-weight:700;
+  font-size:1.5rem; color:#fff; line-height:1.25;
+}
+.header-sub{
+  font-size:.86rem; color:rgba(255,255,255,.72);
+  font-style:italic; margin-top:3px;
+}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.58rem; letter-spacing:.17em;
+  color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{
+  font-family:'Playfair Display',serif;
+  font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;
+}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+/* ── TARJETA ── */
+.activity-card{
+  background:var(--white); border:1px solid var(--border);
+  border-radius:3px; box-shadow:0 4px 28px rgba(0,59,117,.09);
+  margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{
+  background:var(--navy); color:#fff;
+  padding:15px 24px; display:flex; align-items:center; gap:15px;
+}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1.16rem; letter-spacing:.01em;
+}
+.card-body{padding:26px 28px 30px;}
+
+/* ── OBJETIVO ── */
+.objetivo-box{
+  border-left:4px solid var(--crimson);
+  background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+/* ── FUNCIÓN ── */
+.func-display{
+  background:#fafaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px 20px; text-align:center;
+  margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted); display:block; margin-bottom:10px;
+}
+
+/* ── SELECTOR DE PARÁMETROS ── */
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-radius:3px; padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{
+  font-size:.85rem; color:var(--muted); margin-bottom:14px;
+}
+.param-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr));
+  gap:14px; align-items:end;
+}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], select{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border);
+  border-radius:3px; background:#fff; color:var(--text); width:100%;
+}
+input[type=number]:focus, select:focus{
+  outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);
+}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem;
+  letter-spacing:.06em; padding:9px 15px; border-radius:3px;
+  border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0;
+  font-size:.9rem;
+}
+
+/* ── TABLA ── */
+.table-scroll{overflow-x:auto; margin:6px 0 4px; -webkit-overflow-scrolling:touch;}
+table{border-collapse:collapse; width:100%; min-width:560px;}
+th, td{
+  border:1px solid var(--border); padding:9px 8px; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+}
+thead th{
+  background:var(--navy); color:#fff; font-weight:500;
+  letter-spacing:.05em; font-size:.78rem;
+}
+tbody tr:nth-child(even){background:#faf9f6;}
+tbody tr:hover{background:#f0eee9;}
+tbody td.rowlbl{background:#f4f2ec; font-weight:700; color:var(--navy);}
+td input.cell{
+  width:100%; min-width:82px; border:1px solid transparent;
+  background:transparent; text-align:center;
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  padding:5px 3px; border-radius:2px; color:var(--text);
+}
+td input.cell:focus{outline:none; border-color:var(--navy); background:#fff;}
+td input.cell.correct{background:#e5f3ec; border-color:var(--success); color:#1d5c3b; font-weight:700;}
+td input.cell.wrong{background:#fbe9ee; border-color:var(--crimson); color:#7d1338; font-weight:700;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── GRÁFICO ── */
+.chart-box{
+  position:relative; width:100%; height:430px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; margin-top:6px; overflow:hidden;
+}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer;
+  color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+.range-field{display:flex; align-items:center; gap:9px; flex:1; min-width:250px;}
+.range-field span{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--muted);
+  white-space:nowrap;
+}
+input[type=range]{flex:1; accent-color:var(--navy); cursor:pointer; min-width:90px;}
+.h-slider-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:14px 16px; margin-top:14px;
+}
+.h-slider-wrap .hlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:9px;
+}
+.h-slider-wrap .hval{color:var(--crimson); font-weight:700;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.4;}
+.secant{stroke:var(--crimson); stroke-width:2.1;}
+.tangent{stroke:var(--gold); stroke-width:2.4; stroke-dasharray:8,4;}
+.ghost-sec{stroke:var(--crimson); stroke-width:1.1; opacity:.22;}
+.delta-line{stroke:var(--muted); stroke-width:1.2; stroke-dasharray:3,3; opacity:.8;}
+.delta-lbl{
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  fill:var(--muted); font-weight:500;
+}
+.closed-dot{fill:var(--crimson); stroke:#fff; stroke-width:1.4;}
+.open-dot{fill:#fff; stroke:var(--navy); stroke-width:2.2;}
+.anchor-dot{fill:var(--navy); stroke:#fff; stroke-width:1.5;}
+.tbl-dot{fill:var(--gold); stroke:var(--navy); stroke-width:1.3; cursor:pointer;}
+.tbl-dot:hover{r:6.5;}
+.axis-label{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  fill:var(--muted); font-weight:500;
+}
+.curve-lbl{
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  font-weight:700;
+}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px;
+  transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+/* ── PANELES DE LECTURA ── */
+.live-panel{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px; margin-top:16px;
+}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border);
+  border-top:3px solid var(--navy); border-radius:3px;
+  padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.02rem;
+  font-weight:700; color:var(--navy); word-break:break-all;
+}
+.live-cell.crim .v{color:var(--crimson);}
+.live-cell.gold .v{color:#8a6f1e;}
+
+/* ── DESPLEGABLE ── */
+.ed-section{
+  border:1px solid var(--border); border-radius:3px;
+  margin-top:26px; overflow:hidden; background:#fff;
+}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem; letter-spacing:0;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{
+  font-family:'JetBrains Mono',monospace; font-size:.85rem;
+  color:var(--gold); transition:transform .25s ease;
+}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0;
+  font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy);
+  border-radius:3px; padding:14px 18px; margin-top:14px;
+  font-size:.93rem; display:flex; justify-content:space-between;
+  align-items:center; gap:14px;
+}
+.qed-box .qed{
+  font-family:'JetBrains Mono',monospace; font-size:1.25rem;
+  color:var(--navy); font-weight:700;
+}
+
+/* ── REFLEXIÓN ── */
+.reflect-q{
+  border:1px solid var(--border); border-radius:3px;
+  padding:15px 18px; margin-bottom:12px; background:#fff;
+}
+.reflect-q .qt{
+  font-family:'Playfair Display',serif; font-weight:600;
+  font-size:1rem; margin-bottom:10px; color:var(--navy);
+}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px;
+  padding:9px 12px; border:1px solid var(--border); border-radius:3px;
+  cursor:pointer; font-size:.9rem; transition:background .14s, border-color .14s;
+  background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+/* ── CONCLUSIÓN ── */
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem;
+  letter-spacing:.19em; text-transform:uppercase;
+  color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px;
+  padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{
+  border-top:1px solid var(--border); background:#efece5;
+  padding:24px 22px; text-align:center;
+}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 8 — Razón de cambio promedio</div>
+      <div class="header-sub">De la recta secante a la recta tangente</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">8</div>
+      <h2>Razón de cambio promedio</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Calcular la <strong>razón de cambio promedio</strong> de una función entre dos puntos,
+        observar su comportamiento cuando el segundo punto se acerca al primero, e interpretarla
+        geométricamente como la <strong>pendiente de una recta secante</strong> que converge a la
+        <strong>recta tangente</strong>.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función</span>
+        <div id="func-katex">$$f(x)=x^{2}$$</div>
+      </div>
+
+      <!-- ── PARÁMETROS ── -->
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Elige la familia de funciones, el <strong>punto base $a$</strong> y los coeficientes.
+          Todo — tabla, gráfico, fórmulas y conclusiones — se recalcula de forma coherente.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field">
+            <label for="p-fam">familia</label>
+            <select id="p-fam">
+              <option value="quad" selected>cuadrática · px² + qx + r</option>
+              <option value="cubic">cúbica · px³ + qx + r</option>
+              <option value="sqrt">raíz · p·√x + r</option>
+              <option value="recip">recíproca · p/x + r</option>
+              <option value="sin">seno · p·sen(qx) + r</option>
+              <option value="exp">exponencial · p·e^(qx) + r</option>
+            </select>
+          </div>
+          <div class="param-field">
+            <label for="p-p">p</label>
+            <input type="number" id="p-p" value="1" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-q">q</label>
+            <input type="number" id="p-q" value="0" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-r">r</label>
+            <input type="number" id="p-r" value="0" step="any">
+          </div>
+          <div class="param-field">
+            <label for="p-a">punto base a</label>
+            <input type="number" id="p-a" value="1" step="any">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="quad,1,0,0,1">Original · f(x)=x², a=1</button>
+          <button class="btn-ghost" data-preset="quad,1,0,0,2">x² en a=2</button>
+          <button class="btn-ghost" data-preset="cubic,1,0,0,1">x³ en a=1</button>
+          <button class="btn-ghost" data-preset="sqrt,1,0,0,4">√x en a=4</button>
+          <button class="btn-ghost" data-preset="recip,1,0,0,2">1/x en a=2</button>
+          <button class="btn-ghost" data-preset="sin,1,1,0,0">sen x en a=0</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) TABLA ── -->
+      <div class="sec-title">a) Calcule la razón de cambio promedio</div>
+      <p style="font-size:.93rem;margin-bottom:6px;">
+        Para cada segundo punto $x$, calcula el cociente
+        $\;\dfrac{f(x)-f(a)}{x-a}\;$ (equivalentemente
+        $\;\dfrac{f(a+h)-f(a)}{h}\;$ con $h = x - a$). Escribe los valores
+        con <strong>4 decimales</strong>.
+      </p>
+
+      <div class="table-scroll">
+        <table id="tabla">
+          <thead><tr id="thead-row"></tr></thead>
+          <tbody>
+            <tr id="row-h"></tr>
+            <tr id="row-m"></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify">Verificar</button>
+        <button class="btn-primary" id="btn-fill">Rellenar solución</button>
+        <button class="btn-ghost" id="btn-clear">Limpiar</button>
+        <button class="btn-ghost" id="btn-hint">Pista</button>
+        <span class="score-badge" id="score"></span>
+      </div>
+
+      <div class="hint-box" id="hint"></div>
+
+      <!-- ── b) SECANTE → TANGENTE ── -->
+      <div class="sec-title">b) ¿Qué sucede cuando los puntos se acercan a $a$?</div>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-sec" checked> recta secante</label>
+        <label><input type="checkbox" id="opt-tan" checked> recta tangente</label>
+        <label><input type="checkbox" id="opt-ghost" checked> secantes previas</label>
+        <label><input type="checkbox" id="opt-delta" checked> triángulo Δy/Δx</label>
+        <label><input type="checkbox" id="opt-pts" checked> puntos de la tabla</label>
+        <div class="range-field">
+          <span>zoom</span>
+          <input type="range" id="opt-zoom" min="1" max="12" step="0.5" value="4">
+          <span id="zoom-val">4</span>
+        </div>
+      </div>
+
+      <div class="chart-box" id="chart-box">
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="h-slider-wrap">
+        <span class="hlbl">Incremento h = x − a &nbsp;·&nbsp;
+          <span class="hval" id="h-val">2</span></span>
+        <input type="range" id="h-slider" min="-2" max="2" step="0.001" value="2">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Animar secante → tangente</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+        <button class="btn-ghost" id="btn-side">Lado: derecho (h &gt; 0)</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell"><span class="k">h</span><span class="v" id="lv-h">—</span></div>
+        <div class="live-cell"><span class="k">x = a + h</span><span class="v" id="lv-x">—</span></div>
+        <div class="live-cell crim"><span class="k">pendiente secante</span><span class="v" id="lv-msec">—</span></div>
+        <div class="live-cell gold"><span class="k">f ′(a) · tangente</span><span class="v" id="lv-mtan">—</span></div>
+        <div class="live-cell"><span class="k">|m<sub>sec</sub> − f ′(a)|</span><span class="v" id="lv-err">—</span></div>
+      </div>
+
+      <p class="note">
+        La razón de cambio promedio <strong>no está definida en $h = 0$</strong> (daría $0/0$).
+        Por eso, en el gráfico del cociente incremental el valor $f'(a)$ se marca con un
+        <strong>punto abierto</strong> (blanco): es el valor al que el cociente <em>tiende</em>,
+        pero que no alcanza en $h=0$.
+      </p>
+
+      <!-- ── GRÁFICO DEL COCIENTE ── -->
+      <div class="sec-title">Gráfico del cociente incremental $\;m(h)=\dfrac{f(a+h)-f(a)}{h}$</div>
+      <div class="chart-box" id="chart-q" style="height:300px;">
+        <div class="tooltip" id="tooltip-q"></div>
+      </div>
+      <p class="note">
+        Cada rama ($h&lt;0$ y $h&gt;0$) se dibuja por separado, sin cruzar $h=0$.
+        La recta punteada dorada es $y=f'(a)$.
+      </p>
+
+      <!-- ── c) INTERPRETACIÓN ── -->
+      <div class="sec-title">c) Interpretación geométrica</div>
+      <div id="interp"></div>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>Definición por límite y cálculo simbólico de $f'(a)$</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box">
+            <span class="lbl">Definición de derivada</span>
+            <div id="def-katex"></div>
+          </div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box">
+        <span class="lbl">Conclusión esperada</span>
+        <div id="conclusion"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 8 · Dr. Eligio Colmenares</p>
+</footer>
+
+<!-- ═══════════ CDN (sin onload) ═══════════ -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL (única fuente de verdad)
+   ═══════════════════════════════════════════════ */
+let FAM  = 'quad';   // familia de función
+let PP   = 1;        // coeficiente p
+let PQ   = 0;        // coeficiente q
+let PR   = 0;        // coeficiente r
+let PA   = 1;        // punto base a
+let PH   = 2;        // incremento h actual
+let ZOOM = 4;        // semiancho de la ventana x alrededor de a
+let SIDE = 1;        // 1 = h > 0 ; -1 = h < 0
+let ANIM = null;     // handle de animación
+let GHOSTS = [];     // secantes previas (fantasma)
+
+const TOL = 1e-9;
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — FUNCIONES PURAS DE CÁLCULO
+   ═══════════════════════════════════════════════ */
+function f(x){
+  switch(FAM){
+    case 'quad':  return PP*x*x + PQ*x + PR;
+    case 'cubic': return PP*x*x*x + PQ*x + PR;
+    case 'sqrt':  return x < 0 ? NaN : PP*Math.sqrt(x) + PR;
+    case 'recip': return Math.abs(x) < 1e-12 ? NaN : PP/x + PR;
+    case 'sin':   return PP*Math.sin(PQ*x) + PR;
+    case 'exp':   return PP*Math.exp(PQ*x) + PR;
+    default:      return NaN;
+  }
+}
+
+/* Derivada exacta (analítica) */
+function fp(x){
+  switch(FAM){
+    case 'quad':  return 2*PP*x + PQ;
+    case 'cubic': return 3*PP*x*x + PQ;
+    case 'sqrt':  return x <= 0 ? NaN : PP/(2*Math.sqrt(x));
+    case 'recip': return Math.abs(x) < 1e-12 ? NaN : -PP/(x*x);
+    case 'sin':   return PP*PQ*Math.cos(PQ*x);
+    case 'exp':   return PP*PQ*Math.exp(PQ*x);
+    default:      return NaN;
+  }
+}
+
+/* Cociente incremental — GUARDA contra división por cero */
+function mSec(h){
+  const safeH = (Math.abs(h) < 1e-12) ? (h >= 0 ? 1e-9 : -1e-9) : h;
+  const y1 = f(PA);
+  const y2 = f(PA + safeH);
+  if (!isFinite(y1) || !isFinite(y2)) return NaN;
+  return (y2 - y1) / safeH;
+}
+
+/* Recta secante y tangente como funciones de x */
+function secLine(h){
+  const m = mSec(h), y0 = f(PA);
+  return x => (isFinite(m) && isFinite(y0)) ? y0 + m*(x - PA) : NaN;
+}
+function tanLine(){
+  const m = fp(PA), y0 = f(PA);
+  return x => (isFinite(m) && isFinite(y0)) ? y0 + m*(x - PA) : NaN;
+}
+
+/* Dominio válido de la familia */
+function domainOK(x){
+  if (FAM === 'sqrt')  return x >= 0;
+  if (FAM === 'recip') return Math.abs(x) > 1e-9;
+  return true;
+}
+
+function r6(v){ return Math.round(v * 1e6) / 1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 4 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){
+  return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v));
+}
+
+/* ── LaTeX de la función según la familia ── */
+function fTex(){
+  const q = Math.abs(PQ) < 1e-12;
+  const r = Math.abs(PR) < 1e-12;
+  const pc = (Math.abs(PP - 1) < 1e-12) ? '' : (Math.abs(PP + 1) < 1e-12 ? '-' : fmt(PP));
+  let base;
+  switch(FAM){
+    case 'quad':
+      base = pc + 'x^{2}';
+      if (!q) base += ' ' + signTerm(PQ) + 'x';
+      break;
+    case 'cubic':
+      base = pc + 'x^{3}';
+      if (!q) base += ' ' + signTerm(PQ) + 'x';
+      break;
+    case 'sqrt':
+      base = pc + '\\sqrt{x}';
+      break;
+    case 'recip':
+      base = '\\dfrac{' + fmt(PP) + '}{x}';
+      break;
+    case 'sin':
+      base = pc + '\\operatorname{sen}(' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x)';
+      break;
+    case 'exp':
+      base = pc + 'e^{' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x}';
+      break;
+    default: base = 'x';
+  }
+  if (!r) base += ' ' + signTerm(PR);
+  return base;
+}
+
+/* ── LaTeX de la derivada ── */
+function fpTex(){
+  switch(FAM){
+    case 'quad':
+      return fmt(2*PP) + 'x' + (Math.abs(PQ)<1e-12 ? '' : ' ' + signTerm(PQ));
+    case 'cubic':
+      return fmt(3*PP) + 'x^{2}' + (Math.abs(PQ)<1e-12 ? '' : ' ' + signTerm(PQ));
+    case 'sqrt':
+      return '\\dfrac{' + fmt(PP) + '}{2\\sqrt{x}}';
+    case 'recip':
+      return '-\\dfrac{' + fmt(PP) + '}{x^{2}}';
+    case 'sin':
+      return fmt(PP*PQ) + '\\cos(' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x)';
+    case 'exp':
+      return fmt(PP*PQ) + 'e^{' + (Math.abs(PQ-1)<1e-12 ? '' : fmt(PQ)) + 'x}';
+    default: return '';
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$',  right:'$',  display:false}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* degrada sin romper */ }
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — LECTURA DE PARÁMETROS
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  FAM = document.getElementById('p-fam').value;
+  const p = parseFloat(document.getElementById('p-p').value);
+  const q = parseFloat(document.getElementById('p-q').value);
+  const r = parseFloat(document.getElementById('p-r').value);
+  const a = parseFloat(document.getElementById('p-a').value);
+  PP = isFinite(p) ? p : 1;
+  PQ = isFinite(q) ? q : 0;
+  PR = isFinite(r) ? r : 0;
+  PA = isFinite(a) ? a : 1;
+  ZOOM = parseFloat(document.getElementById('opt-zoom').value) || 4;
+}
+
+/* Valores de x de la tabla (réplica del enunciado: a+2, a+1, a+0.5, …) */
+function tableHs(){
+  const base = [2, 1, 0.5, 0.1, 0.01, 0.001];
+  return base.map(h => SIDE * h).filter(h => {
+    const x = PA + h;
+    return domainOK(x) && isFinite(f(x));
+  });
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+  GHOSTS = [];
+  /* Ajusta el rango del slider h al zoom y al lado activo */
+  const hs = document.getElementById('h-slider');
+  const lim = Math.max(0.2, ZOOM * 0.6);
+  hs.min = -lim; hs.max = lim; hs.step = lim / 2000;
+  PH = SIDE * Math.min(2, lim);
+  hs.value = PH;
+  document.getElementById('h-val').textContent = fmt(PH, 4);
+
+  renderFuncDisplay();
+  renderPreview();
+  buildTable();
+  drawChart();
+  drawQuotient();
+  renderInterp();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY Y PREVIEW
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + '\\qquad\\text{punto base } a = ' + fmt(PA) + '$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const d = fp(PA);
+  const bad = !isFinite(f(PA)) || !isFinite(d);
+  el.innerHTML = bad
+    ? '<strong>Atención:</strong> la función no está definida (o no es derivable) en $a = ' + fmt(PA) +
+      '$. Elige otro punto base dentro del dominio.'
+    : 'Caso actual: $f(x) = ' + fTex() + '$, con $f(' + fmt(PA) + ') = ' + fmt(f(PA)) + '$. ' +
+      'La razón de cambio promedio entre $a$ y $x$ es la <strong>pendiente de la secante</strong> ' +
+      'que une $(' + fmt(PA) + ',\\, ' + fmt(f(PA)) + ')$ con $(x,\\, f(x))$. ' +
+      'Su valor límite es $f\'(' + fmt(PA) + ') = ' + fmt(d) + '$, la <strong>pendiente de la tangente</strong>.';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — TABLA EDITABLE AUTOVERIFICABLE
+   ═══════════════════════════════════════════════ */
+function buildTable(){
+  const hs = tableHs();
+  const th = document.getElementById('thead-row');
+  const rh = document.getElementById('row-h');
+  const rm = document.getElementById('row-m');
+
+  let head = '<th style="background:var(--navy)">segundo punto x</th>';
+  hs.forEach(h => { head += '<th>' + fmt(PA + h, 4) + '</th>'; });
+  th.innerHTML = head;
+
+  let a = '<td class="rowlbl">h = x − a</td>';
+  hs.forEach(h => { a += '<td style="color:var(--muted)">' + fmt(h, 4) + '</td>'; });
+  rh.innerHTML = a;
+
+  let b = '<td class="rowlbl">[f(x) − f(a)] / (x − a)</td>';
+  hs.forEach((h, i) => {
+    b += '<td><input class="cell" type="text" inputmode="decimal" data-i="' + i + '" ' +
+         'aria-label="razon de cambio con h igual ' + fmt(h,4) + '" placeholder="?"></td>';
+  });
+  rm.innerHTML = b;
+
+  document.getElementById('score').className = 'score-badge';
+  document.getElementById('hint').className = 'hint-box';
+}
+
+function verifyTable(){
+  const hs = tableHs();
+  const cells = document.querySelectorAll('#row-m input.cell');
+  let ok = 0, tried = 0;
+
+  cells.forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    const raw = cell.value.trim().replace(',', '.');
+    cell.classList.remove('correct','wrong');
+    if (raw === '') return;
+    tried++;
+    const val = parseFloat(raw);
+    const truth = mSec(hs[i]);
+    const tolAbs = Math.max(Math.abs(truth) * 5e-4, 5e-4);
+    if (isFinite(val) && isFinite(truth) && Math.abs(val - truth) <= tolAbs){
+      cell.classList.add('correct'); ok++;
+    } else {
+      cell.classList.add('wrong');
+    }
+  });
+
+  const badge = document.getElementById('score');
+  badge.textContent = tried === 0
+    ? 'Completa al menos una celda'
+    : ok + ' / ' + hs.length + ' correctas';
+  badge.className = 'score-badge show' + (ok === hs.length && hs.length > 0 ? ' perfect' : '');
+}
+
+function fillTable(){
+  const hs = tableHs();
+  document.querySelectorAll('#row-m input.cell').forEach(cell => {
+    const i = parseInt(cell.dataset.i, 10);
+    const v = mSec(hs[i]);
+    cell.value = isFinite(v) ? v.toFixed(4) : '—';
+    cell.classList.remove('wrong');
+    cell.classList.add('correct');
+  });
+  const badge = document.getElementById('score');
+  badge.textContent = 'Solución mostrada';
+  badge.className = 'score-badge show perfect';
+}
+
+function clearTable(){
+  document.querySelectorAll('#row-m input.cell').forEach(cell => {
+    cell.value = '';
+    cell.classList.remove('correct','wrong');
+  });
+  document.getElementById('score').className = 'score-badge';
+}
+
+function toggleHint(){
+  const box = document.getElementById('hint');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+
+  let extra = '';
+  if (FAM === 'quad'){
+    /* Simplificación algebraica exacta para la cuadrática */
+    extra =
+      '<p style="margin-top:8px;">Para la cuadrática, el cociente se simplifica <em>exactamente</em>:</p>' +
+      '$$\\frac{f(a+h)-f(a)}{h} = ' + fmt(2*PP) + 'a ' + (Math.abs(PQ)<1e-12 ? '' : signTerm(PQ)) +
+      ' + ' + fmt(PP) + 'h \\;=\\; ' + fmt(fp(PA)) + ' + ' + fmt(PP) + 'h.$$' +
+      '<p>Es una <strong>recta en $h$</strong>: al hacer $h \\to 0$ el término $' + fmt(PP) +
+      'h$ desaparece y queda $f\'(a) = ' + fmt(fp(PA)) + '$.</p>';
+  } else {
+    extra =
+      '<p style="margin-top:8px;">Evalúa numéricamente con $h$ cada vez más pequeño ' +
+      'y compara con el valor exacto $f\'(' + fmt(PA) + ') = ' + fmt(fp(PA)) + '$.</p>';
+  }
+
+  box.innerHTML =
+    '<strong>Pista.</strong> Escribe todo en términos de $h = x - a$: ' +
+    '$$\\frac{f(x)-f(a)}{x-a} \\;=\\; \\frac{f(a+h)-f(a)}{h}, \\qquad h \\neq 0.$$' +
+    'Con $a = ' + fmt(PA) + '$ se tiene $f(a) = ' + fmt(f(PA)) + '$.' + extra;
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL (curva + secante + tangente)
+   ═══════════════════════════════════════════════ */
+function drawChart(){
+  const box = document.getElementById('chart-box');
+  d3.select('#chart-box').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 430;
+  const m = {top:22, right:26, bottom:42, left:62};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const showGrid  = document.getElementById('opt-grid').checked;
+  const showSec   = document.getElementById('opt-sec').checked;
+  const showTan   = document.getElementById('opt-tan').checked;
+  const showGhost = document.getElementById('opt-ghost').checked;
+  const showDelta = document.getElementById('opt-delta').checked;
+  const showPts   = document.getElementById('opt-pts').checked;
+
+  /* Ventana x centrada en a, ampliada para contener a+h */
+  let xMin = PA - ZOOM;
+  let xMax = PA + ZOOM;
+  const xh = PA + PH;
+  if (xh < xMin) xMin = xh - ZOOM*0.12;
+  if (xh > xMax) xMax = xh + ZOOM*0.12;
+  if (FAM === 'sqrt') xMin = Math.max(xMin, 0);
+
+  /* Muestreo de la curva — por RAMAS si hay polo (recíproca) */
+  const N = 700;
+  const step = (xMax - xMin) / N;
+  const branchL = [], branchR = [];
+  for (let i = 0; i <= N; i++){
+    const x = xMin + i*step;
+    if (!domainOK(x)) continue;
+    if (FAM === 'recip' && Math.abs(x) < step*0.8) continue;   // salta el polo
+    const y = f(x);
+    if (!isFinite(y)) continue;
+    (FAM === 'recip' && x < 0 ? branchL : branchR).push([x, y]);
+  }
+
+  /* Dominio y: curva (recortada) + secante + tangente en ambos extremos */
+  const sec = secLine(PH);
+  const tan = tanLine();
+  const curveY = [...branchL, ...branchR].map(d => d[1]).filter(isFinite);
+
+  /* Recorte de la curva para que un polo no destruya el dominio */
+  let refLo, refHi;
+  if (curveY.length){
+    const sorted = curveY.slice().sort(d3.ascending);
+    refLo = d3.quantile(sorted, 0.02);
+    refHi = d3.quantile(sorted, 0.98);
+  } else { refLo = -1; refHi = 1; }
+  const spanRef = Math.max(refHi - refLo, 1);
+  const clipped = curveY.filter(v => v > refLo - spanRef*1.4 && v < refHi + spanRef*1.4);
+
+  const lineY = [];
+  [sec, tan].forEach(fn => {
+    const v1 = fn(xMin), v2 = fn(xMax);
+    if (isFinite(v1)) lineY.push(v1);
+    if (isFinite(v2)) lineY.push(v2);
+  });
+  const anchorsY = [f(PA), f(PA + PH)].filter(isFinite);
+  const allY = [...clipped, ...lineY, ...anchorsY].filter(isFinite);
+
+  let yMin = allY.length ? Math.min(...allY) : -1;
+  let yMax = allY.length ? Math.max(...allY) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.12;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-box').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-main-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  if (showGrid){
+    g.append('g').attr('class','grid')
+      .attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid')
+      .call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(6));
+
+  /* Ejes coordenados */
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0))
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih)
+      .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  /* Vertical en a */
+  plot.append('line')
+    .attr('x1', xs(PA)).attr('x2', xs(PA)).attr('y1', 0).attr('y2', ih)
+    .attr('stroke','var(--navy)').attr('stroke-width',1.2)
+    .attr('stroke-dasharray','4,4').attr('opacity',.42);
+  plot.append('text').attr('class','curve-lbl').attr('fill','var(--navy)')
+    .attr('x', xs(PA) + 5).attr('y', 13).text('a = ' + fmt(PA));
+
+  /* Curva por ramas — nunca una sola curva a través del polo */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  if (branchL.length > 1) plot.append('path').datum(branchL).attr('class','curve').attr('d', line);
+  if (branchR.length > 1) plot.append('path').datum(branchR).attr('class','curve').attr('d', line);
+
+  /* Secantes fantasma (rastro de la animación) */
+  if (showGhost){
+    GHOSTS.forEach(gh => {
+      const s = secLine(gh);
+      const y1 = s(xMin), y2 = s(xMax);
+      if (!isFinite(y1) || !isFinite(y2)) return;
+      plot.append('line').attr('class','ghost-sec')
+        .attr('x1', xs(xMin)).attr('y1', ys(y1))
+        .attr('x2', xs(xMax)).attr('y2', ys(y2));
+    });
+  }
+
+  /* Recta tangente */
+  if (showTan && isFinite(fp(PA))){
+    plot.append('line').attr('class','tangent')
+      .attr('x1', xs(xMin)).attr('y1', ys(tan(xMin)))
+      .attr('x2', xs(xMax)).attr('y2', ys(tan(xMax)));
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', iw - 6).attr('y', ih - 26).attr('text-anchor','end')
+      .text("tangente · m = f '(a) = " + fmt(fp(PA), 4));
+  }
+
+  /* Recta secante */
+  const xB = PA + PH;
+  const yB = f(xB);
+  if (showSec && isFinite(yB) && isFinite(mSec(PH))){
+    plot.append('line').attr('class','secant')
+      .attr('x1', xs(xMin)).attr('y1', ys(sec(xMin)))
+      .attr('x2', xs(xMax)).attr('y2', ys(sec(xMax)));
+    plot.append('text').attr('class','curve-lbl').attr('fill','var(--crimson)')
+      .attr('x', iw - 6).attr('y', ih - 10).attr('text-anchor','end')
+      .text('secante · m = ' + fmt(mSec(PH), 4));
+
+    /* Triángulo Δy / Δx */
+    if (showDelta && Math.abs(PH) > 1e-6){
+      plot.append('line').attr('class','delta-line')
+        .attr('x1', xs(PA)).attr('y1', ys(f(PA)))
+        .attr('x2', xs(xB)).attr('y2', ys(f(PA)));
+      plot.append('line').attr('class','delta-line')
+        .attr('x1', xs(xB)).attr('y1', ys(f(PA)))
+        .attr('x2', xs(xB)).attr('y2', ys(yB));
+      plot.append('text').attr('class','delta-lbl')
+        .attr('x', (xs(PA) + xs(xB)) / 2).attr('y', ys(f(PA)) + 15)
+        .attr('text-anchor','middle')
+        .text('Δx = ' + fmt(PH, 3));
+      plot.append('text').attr('class','delta-lbl')
+        .attr('x', xs(xB) + (PH > 0 ? 6 : -6))
+        .attr('y', (ys(f(PA)) + ys(yB)) / 2)
+        .attr('text-anchor', PH > 0 ? 'start' : 'end')
+        .text('Δy = ' + fmt(yB - f(PA), 3));
+    }
+  }
+
+  /* Puntos de la tabla */
+  if (showPts){
+    const pts = tableHs()
+      .map(h => [PA + h, f(PA + h)])
+      .filter(d => isFinite(d[1]) && d[0] >= xMin && d[0] <= xMax);
+    plot.selectAll('.tbl-dot').data(pts).enter().append('circle')
+      .attr('class','tbl-dot')
+      .attr('cx', d => xs(d[0])).attr('cy', d => ys(d[1])).attr('r', 4.4)
+      .on('click', (ev, d) => { setH(d[0] - PA); });
+  }
+
+  /* Punto ancla (a, f(a)) — SIEMPRE cerrado: la función SÍ alcanza f(a) */
+  if (isFinite(f(PA))){
+    plot.append('circle').attr('class','anchor-dot')
+      .attr('cx', xs(PA)).attr('cy', ys(f(PA))).attr('r', 6);
+  }
+
+  /* Punto móvil (a+h, f(a+h)) — cerrado mientras h ≠ 0 (el punto existe);
+     al colapsar sobre a la secante deja de estar definida. */
+  if (isFinite(yB) && Math.abs(PH) > 1e-7){
+    plot.append('circle').attr('class','closed-dot')
+      .attr('cx', xs(xB)).attr('cy', ys(yB)).attr('r', 6);
+  }
+
+  /* Tooltip */
+  const tip = document.getElementById('tooltip');
+  const hover = plot.append('line')
+    .attr('stroke','var(--navy)').attr('stroke-width',1)
+    .attr('stroke-dasharray','3,3').attr('opacity',0)
+    .attr('y1',0).attr('y2',ih);
+  const hdot = plot.append('circle')
+    .attr('r',4.5).attr('fill','var(--navy)').attr('opacity',0);
+
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x);
+      if (!isFinite(y) || y < yMin || y > yMax){
+        tip.classList.remove('show'); hover.attr('opacity',0); hdot.attr('opacity',0);
+        return;
+      }
+      hover.attr('opacity',.5).attr('x1', xs(x)).attr('x2', xs(x));
+      hdot.attr('opacity',1).attr('cx', xs(x)).attr('cy', ys(y));
+      const hh = x - PA;
+      tip.innerHTML = 'x = ' + fmt(x, 3) + '<br>f(x) = ' + fmt(y, 4) +
+        (Math.abs(hh) > 1e-7 ? '<br>m<sub>sec</sub> = ' + fmt(mSec(hh), 4) : '<br>(punto base a)');
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top  = (m.top  + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', function(){
+      tip.classList.remove('show'); hover.attr('opacity',0); hdot.attr('opacity',0);
+    })
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      if (Math.abs(x - PA) > 1e-4) setH(x - PA);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO DEL COCIENTE INCREMENTAL m(h)
+   ═══════════════════════════════════════════════ */
+function drawQuotient(){
+  const box = document.getElementById('chart-q');
+  d3.select('#chart-q').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth  || 800;
+  const H = box.clientHeight || 300;
+  const m = {top:20, right:26, bottom:40, left:62};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const hLim = Math.max(0.3, ZOOM * 0.6);
+  const hMin = -hLim, hMax = hLim;
+
+  const N = 500;
+  const step = (hMax - hMin) / N;
+  const negBranch = [], posBranch = [];
+  for (let i = 0; i <= N; i++){
+    const h = hMin + i*step;
+    if (Math.abs(h) < step*0.9) continue;      // NUNCA cruzar h = 0
+    const x = PA + h;
+    if (!domainOK(x)) continue;
+    const v = mSec(h);
+    if (!isFinite(v)) continue;
+    (h < 0 ? negBranch : posBranch).push([h, v]);
+  }
+
+  const d0 = fp(PA);
+  const allV = [...negBranch, ...posBranch].map(d => d[1]).filter(isFinite);
+  if (isFinite(d0)) allV.push(d0);
+  let yMin = allV.length ? Math.min(...allV) : -1;
+  let yMax = allV.length ? Math.max(...allV) :  1;
+  if (Math.abs(yMax - yMin) < 1e-6){ yMin -= 1; yMax += 1; }
+  const padY = (yMax - yMin) * 0.15;
+  yMin -= padY; yMax += padY;
+
+  const xs = d3.scaleLinear().domain([hMin, hMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-q').append('svg')
+    .attr('width', W).attr('height', H)
+    .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+  const cid = 'clip-q-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid)
+    .append('rect').attr('width', iw).attr('height', ih);
+
+  const g = svg.append('g').attr('transform', 'translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path', 'url(#' + cid + ')');
+
+  g.append('g').attr('class','grid')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+  g.append('g').attr('class','grid')
+    .call(d3.axisLeft(ys).ticks(5).tickSize(-iw).tickFormat(''));
+
+  g.append('g').attr('class','axis')
+    .attr('transform','translate(0,' + ih + ')')
+    .call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis')
+    .call(d3.axisLeft(ys).ticks(5));
+
+  g.append('text').attr('class','axis-label')
+    .attr('x', iw).attr('y', ih + 32).attr('text-anchor','end').text('h');
+  g.append('text').attr('class','axis-label')
+    .attr('x', -8).attr('y', -7).attr('text-anchor','end').text('m(h)');
+
+  /* Eje vertical h = 0 */
+  plot.append('line')
+    .attr('x1', xs(0)).attr('x2', xs(0)).attr('y1', 0).attr('y2', ih)
+    .attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  /* Recta y = f'(a) */
+  if (isFinite(d0) && d0 >= yMin && d0 <= yMax){
+    plot.append('line').attr('class','tangent')
+      .attr('x1', 0).attr('x2', iw).attr('y1', ys(d0)).attr('y2', ys(d0));
+    plot.append('text').attr('class','curve-lbl').attr('fill','#8a6f1e')
+      .attr('x', 6).attr('y', ys(d0) - 7)
+      .text("y = f '(a) = " + fmt(d0, 4));
+  }
+
+  /* Ramas por separado */
+  const line = d3.line()
+    .x(d => xs(d[0])).y(d => ys(d[1]))
+    .defined(d => isFinite(d[1]))
+    .curve(d3.curveCatmullRom.alpha(.5));
+  if (negBranch.length > 1)
+    plot.append('path').datum(negBranch).attr('class','curve')
+      .attr('stroke','var(--crimson)').attr('d', line);
+  if (posBranch.length > 1)
+    plot.append('path').datum(posBranch).attr('class','curve')
+      .attr('stroke','var(--crimson)').attr('d', line);
+
+  /* PUNTO ABIERTO en (0, f'(a)): m(h) NO está definido en h = 0.
+     Criterio programático: el valor no se alcanza porque m(0) es indefinido (0/0). */
+  const mAt0 = (Math.abs(f(PA + 0) - f(PA)) < TOL) ? NaN : NaN;   // siempre indefinido
+  const reached = isFinite(mAt0) && Math.abs(mAt0 - d0) < TOL;    // → false
+  if (isFinite(d0) && d0 >= yMin && d0 <= yMax){
+    plot.append('circle')
+      .attr('class', reached ? 'closed-dot' : 'open-dot')
+      .attr('cx', xs(0)).attr('cy', ys(d0)).attr('r', 5.8);
+  }
+
+  /* Punto móvil sobre m(h) */
+  const mNow = mSec(PH);
+  if (isFinite(mNow) && PH >= hMin && PH <= hMax && Math.abs(PH) > 1e-7){
+    plot.append('circle').attr('class','closed-dot')
+      .attr('cx', xs(PH)).attr('cy', ys(mNow)).attr('r', 5.6);
+    plot.append('line')
+      .attr('x1', xs(PH)).attr('x2', xs(PH))
+      .attr('y1', ys(mNow)).attr('y2', ih)
+      .attr('stroke','var(--crimson)').attr('stroke-width',1.1)
+      .attr('stroke-dasharray','3,3').attr('opacity',.6);
+  }
+
+  /* Tooltip del cociente */
+  const tipq = document.getElementById('tooltip-q');
+  svg.append('rect')
+    .attr('x', m.left).attr('y', m.top)
+    .attr('width', iw).attr('height', ih)
+    .attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const h = xs.invert(mx - m.left);
+      const v = mSec(h);
+      if (!isFinite(v) || v < yMin || v > yMax || Math.abs(h) < 1e-6){
+        tipq.classList.remove('show'); return;
+      }
+      tipq.innerHTML = 'h = ' + fmt(h, 4) + '<br>m(h) = ' + fmt(v, 5);
+      tipq.style.left = (m.left + xs(h)) + 'px';
+      tipq.style.top  = (m.top  + ys(v)) + 'px';
+      tipq.classList.add('show');
+    })
+    .on('mouseleave', () => tipq.classList.remove('show'))
+    .on('click', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const h = xs.invert(mx - m.left);
+      if (Math.abs(h) > 1e-4) setH(h);
+    });
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const d0 = fp(PA);
+  const ms = mSec(PH);
+  document.getElementById('lv-h').textContent    = fmt(PH, 5);
+  document.getElementById('lv-x').textContent    = fmt(PA + PH, 5);
+  document.getElementById('lv-msec').textContent = fmt(ms, 6);
+  document.getElementById('lv-mtan').textContent = fmt(d0, 6);
+  document.getElementById('lv-err').textContent  =
+    (isFinite(ms) && isFinite(d0)) ? fmt(Math.abs(ms - d0), 6) : '—';
+}
+
+/* Fija h de forma coherente en todos lados */
+function setH(h){
+  const hs = document.getElementById('h-slider');
+  const lim = parseFloat(hs.max);
+  PH = Math.max(-lim, Math.min(lim, h));
+  hs.value = PH;
+  document.getElementById('h-val').textContent = fmt(PH, 4);
+  updateLive();
+  drawChart();
+  drawQuotient();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN SECANTE → TANGENTE
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Animar secante → tangente';
+}
+
+function startAnim(){
+  stopAnim();
+  GHOSTS = [];
+  const lim = parseFloat(document.getElementById('h-slider').max);
+  const h0  = SIDE * Math.min(2, lim);
+  const hEnd = SIDE * 0.002;
+  const steps = 140;
+  let t = 0;
+
+  document.getElementById('btn-anim').textContent = '● Animando…';
+
+  ANIM = setInterval(() => {
+    t++;
+    /* Decaimiento geométrico: h0 → hEnd */
+    const frac = t / steps;
+    const mag  = Math.abs(h0) * Math.pow(Math.abs(hEnd) / Math.abs(h0), frac);
+    PH = SIDE * mag;
+
+    if (t % 12 === 0 && GHOSTS.length < 14) GHOSTS.push(PH);
+
+    const hs = document.getElementById('h-slider');
+    hs.value = PH;
+    document.getElementById('h-val').textContent = fmt(PH, 5);
+    updateLive();
+    drawChart();
+    drawQuotient();
+
+    if (t >= steps){
+      stopAnim();
+      /* ESTADO FINAL: h queda muy pequeño pero NUNCA 0.
+         La secante es visualmente indistinguible de la tangente, pero el punto
+         móvil sigue siendo un punto real de la curva (cerrado), y el punto sobre
+         y = f'(a) en el gráfico del cociente permanece ABIERTO, porque m(0) no existe. */
+      PH = SIDE * 0.002;
+      const hs2 = document.getElementById('h-slider');
+      hs2.value = PH;
+      document.getElementById('h-val').textContent = fmt(PH, 5);
+      updateLive();
+      drawChart();
+      drawQuotient();
+    }
+  }, 28);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INTERPRETACIÓN (parte c)
+   ═══════════════════════════════════════════════ */
+function renderInterp(){
+  const el = document.getElementById('interp');
+  const d0 = fp(PA);
+  const y0 = f(PA);
+  const sube = d0 > 0;
+
+  let html = '';
+  html += '<div class="proof-step"><span class="sn">Lectura 1 · Pendiente de la secante</span>' +
+    'El cociente $\\dfrac{f(x)-f(a)}{x-a} = \\dfrac{\\Delta y}{\\Delta x}$ es exactamente la ' +
+    '<strong>pendiente de la recta secante</strong> que corta la curva en los puntos ' +
+    '$P = (' + fmt(PA) + ',\\, ' + fmt(y0) + ')$ y $Q = (x,\\, f(x))$. ' +
+    'Es la <em>variación media</em> de $f$ en el intervalo entre $a$ y $x$.</div>';
+
+  html += '<div class="proof-step"><span class="sn">Lectura 2 · La secante gira hacia la tangente</span>' +
+    'Al acercar $Q$ hacia $P$ (es decir, $h \\to 0$), la secante <strong>pivota</strong> alrededor de $P$ ' +
+    'y su pendiente se estabiliza. El valor límite es la ' +
+    '<strong>pendiente de la recta tangente</strong> en $P$:' +
+    '$$f\'(' + fmt(PA) + ') \\;=\\; \\lim_{h\\to 0}\\frac{f(' + fmt(PA) + '+h)-f(' + fmt(PA) + ')}{h} \\;=\\; ' + fmt(d0) + '.$$</div>';
+
+  html += '<div class="proof-step"><span class="sn">Lectura 3 · Ecuación de la tangente</span>' +
+    'Con pendiente $m = ' + fmt(d0) + '$ y punto de paso $(' + fmt(PA) + ',\\, ' + fmt(y0) + ')$:' +
+    '$$y \\;=\\; ' + fmt(y0) + ' ' + signTerm(d0) + '\\,(x - ' + fmt(PA) + ')' +
+    ' \\;=\\; ' + fmt(d0) + 'x ' + signTerm(y0 - d0*PA) + '.$$' +
+    (isFinite(d0)
+      ? (Math.abs(d0) < TOL
+          ? 'Como $f\'(a) = 0$, la tangente es <strong>horizontal</strong>: hay un punto crítico en $x = ' + fmt(PA) + '$.'
+          : 'Como $f\'(a) ' + (sube ? '&gt;' : '&lt;') + ' 0$, la función es localmente ' +
+            (sube ? '<strong>creciente</strong>' : '<strong>decreciente</strong>') + ' en $x = ' + fmt(PA) + '$.')
+      : '') +
+    '</div>';
+
+  html += '<div class="proof-step"><span class="sn">Lectura 4 · Razón de cambio instantánea</span>' +
+    'Si $f$ describe una magnitud física (posición, temperatura, población), la razón de cambio ' +
+    '<em>promedio</em> es la variación por unidad de $x$ en todo el intervalo, mientras que ' +
+    '$f\'(' + fmt(PA) + ') = ' + fmt(d0) + '$ es la <strong>razón de cambio instantánea</strong> en $a$: ' +
+    'lo que marcaría el «velocímetro» justo en ese punto.</div>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN AUTOVERIFICABLE
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const d0 = fp(PA);
+  const linear = (FAM === 'quad');
+
+  const qs = [
+    {
+      q: 'b) ¿Qué sucede con la razón de cambio a medida que los puntos se acercan a $x = ' + fmt(PA) + '$?',
+      opts: [
+        'Se hace cada vez mayor, sin cota.',
+        'Se estabiliza y tiende al valor $' + fmt(d0) + '$, la derivada $f\'(' + fmt(PA) + ')$.',
+        'Tiende a $0$, porque $\\Delta y$ y $\\Delta x$ se anulan.'
+      ],
+      ok: 1,
+      fb: 'Aunque $\\Delta y \\to 0$ y $\\Delta x \\to 0$, su <strong>cociente</strong> no tiende a $0$ ni diverge: ' +
+          'tiende a un valor finito, $f\'(' + fmt(PA) + ') = ' + fmt(d0) + '$. ' +
+          'Es una indeterminación $\\tfrac{0}{0}$ que se resuelve simplificando antes de tomar el límite.' +
+          (linear
+            ? ' Aquí, de hecho, $m(h) = ' + fmt(d0) + ' + ' + fmt(PP) + 'h$: una recta en $h$.'
+            : '')
+    },
+    {
+      q: '¿La razón de cambio promedio está definida en $h = 0$?',
+      opts: [
+        'Sí: vale exactamente $f\'(' + fmt(PA) + ')$.',
+        'No: daría $\\tfrac{0}{0}$. El valor $f\'(' + fmt(PA) + ')$ es el <em>límite</em>, no una evaluación.',
+        'No, y por eso el límite tampoco existe.'
+      ],
+      ok: 1,
+      fb: 'En $h = 0$ el cociente $\\dfrac{f(a+h)-f(a)}{h}$ es $\\tfrac{0}{0}$: <strong>indefinido</strong>. ' +
+          'Por eso, en el gráfico de $m(h)$ el punto $(0,\\, ' + fmt(d0) + ')$ se dibuja <strong>abierto</strong> (blanco): ' +
+          'es un valor al que la función tiende pero que <em>no alcanza</em>. ' +
+          'La derivada existe precisamente porque ese <em>límite</em> sí existe.'
+    },
+    {
+      q: 'c) Geométricamente, ¿qué representa cada objeto?',
+      opts: [
+        'La razón de cambio promedio es la pendiente de la <strong>tangente</strong>; la derivada, la de la secante.',
+        'Ambas son la misma recta, solo cambia la escala.',
+        'La razón de cambio promedio es la pendiente de la <strong>secante</strong> por $P$ y $Q$; su límite ($h\\to 0$) es la pendiente de la <strong>tangente</strong> en $P$.'
+      ],
+      ok: 2,
+      fb: 'Exacto. La secante necesita <em>dos</em> puntos; la tangente, uno solo más un proceso de límite. ' +
+          'Al hacer $Q \\to P$, la secante gira sobre $P$ hasta coincidir con la tangente, ' +
+          'cuya pendiente es $f\'(' + fmt(PA) + ') = ' + fmt(d0) + '$.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '">';
+    html += '<div class="qt">' + item.q + '</div>';
+    html += '<div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '">' +
+              '<input type="radio" name="r' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DEFINICIÓN FORMAL Y DEMOSTRACIÓN
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$f\'(a) \\;=\\; \\lim_{h\\to 0}\\frac{f(a+h)-f(a)}{h} ' +
+    '\\;=\\; \\lim_{x\\to a}\\frac{f(x)-f(a)}{x-a},\\qquad h \\neq 0.$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const d0 = fp(PA);
+  const y0 = f(PA);
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Cociente incremental</span>' +
+    'Con $a = ' + fmt(PA) + '$ y $h \\neq 0$, formamos' +
+    '$$m(h) \\;=\\; \\frac{f(' + fmt(PA) + '+h) - f(' + fmt(PA) + ')}{h}, \\qquad f(' + fmt(PA) + ') = ' + fmt(y0) + '.$$' +
+    'Nótese la restricción $h \\neq 0$: en $h = 0$ el cociente es $\\tfrac{0}{0}$, indefinido.</div>';
+
+  if (FAM === 'quad'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Expandir y simplificar</span>' +
+      '$$\\begin{aligned}' +
+      'f(a+h) - f(a) &= ' + fmt(PP) + '\\big[(a+h)^{2} - a^{2}\\big] + ' + fmt(PQ) + 'h \\\\' +
+      '&= ' + fmt(PP) + '\\big[2ah + h^{2}\\big] + ' + fmt(PQ) + 'h \\\\' +
+      '&= h\\Big(' + fmt(2*PP) + 'a + ' + fmt(PP) + 'h + ' + fmt(PQ) + '\\Big).' +
+      '\\end{aligned}$$' +
+      'Como $h \\neq 0$, podemos <strong>cancelar</strong> el factor $h$:' +
+      '$$m(h) \\;=\\; ' + fmt(2*PP) + 'a + ' + fmt(PQ) + ' + ' + fmt(PP) + 'h ' +
+      '\\;=\\; ' + fmt(d0) + ' + ' + fmt(PP) + 'h.$$</div>';
+
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Tomar el límite</span>' +
+      'La expresión simplificada es un polinomio en $h$, continuo en $0$. Por tanto' +
+      '$$f\'(' + fmt(PA) + ') = \\lim_{h\\to 0}\\Big(' + fmt(d0) + ' + ' + fmt(PP) + 'h\\Big) = ' + fmt(d0) + '.$$' +
+      'Obsérvese que $m(h)$ <em>no</em> se evalúa en $h=0$: se toma su <strong>límite</strong>. ' +
+      'La cancelación de $h$ solo es lícita porque $h \\neq 0$ en todo el proceso.</div>';
+  } else if (FAM === 'sqrt'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Racionalizar</span>' +
+      'Multiplicamos por el conjugado:' +
+      '$$m(h) = ' + fmt(PP) + '\\cdot\\frac{\\sqrt{a+h}-\\sqrt{a}}{h}\\cdot' +
+      '\\frac{\\sqrt{a+h}+\\sqrt{a}}{\\sqrt{a+h}+\\sqrt{a}}' +
+      '= \\frac{' + fmt(PP) + '}{\\sqrt{a+h}+\\sqrt{a}}.$$</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Tomar el límite</span>' +
+      '$$f\'(' + fmt(PA) + ') = \\lim_{h\\to 0}\\frac{' + fmt(PP) + '}{\\sqrt{a+h}+\\sqrt{a}} ' +
+      '= \\frac{' + fmt(PP) + '}{2\\sqrt{' + fmt(PA) + '}} = ' + fmt(d0) + '.$$</div>';
+  } else if (FAM === 'recip'){
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Común denominador</span>' +
+      '$$m(h) = \\frac{1}{h}\\left(\\frac{' + fmt(PP) + '}{a+h} - \\frac{' + fmt(PP) + '}{a}\\right)' +
+      '= \\frac{1}{h}\\cdot\\frac{' + fmt(-PP) + 'h}{a(a+h)} = \\frac{' + fmt(-PP) + '}{a(a+h)}.$$' +
+      'De nuevo, la cancelación de $h$ exige $h \\neq 0$.</div>';
+    steps += '<div class="proof-step"><span class="sn">Paso 3 · Tomar el límite</span>' +
+      '$$f\'(' + fmt(PA) + ') = \\lim_{h\\to 0}\\frac{' + fmt(-PP) + '}{a(a+h)} ' +
+      '= \\frac{' + fmt(-PP) + '}{' + fmt(PA*PA) + '} = ' + fmt(d0) + '.$$</div>';
+  } else {
+    steps += '<div class="proof-step"><span class="sn">Paso 2 · Regla de derivación</span>' +
+      'Aplicando las reglas de derivación se obtiene' +
+      '$$f\'(x) = ' + fpTex() + ', \\qquad\\text{luego}\\qquad f\'(' + fmt(PA) + ') = ' + fmt(d0) + '.$$' +
+      'El simulador confirma numéricamente este valor: haz $h \\to 0$ con el deslizador y ' +
+      'observa cómo la pendiente de la secante converge a él.</div>';
+  }
+
+  steps += '<div class="qed-box"><div>' +
+    'La razón de cambio promedio converge a $f\'(' + fmt(PA) + ') = ' + fmt(d0) + '$, ' +
+    'que es la <strong>pendiente de la recta tangente</strong> a $y = ' + fTex() + '$ ' +
+    'en el punto $(' + fmt(PA) + ',\\, ' + fmt(y0) + ')$.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN DINÁMICA
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const d0 = fp(PA);
+  const y0 = f(PA);
+
+  let html = '';
+  html += '<p><strong>a)</strong> La razón de cambio promedio entre $a = ' + fmt(PA) + '$ y un segundo punto $x$ ' +
+    'es el cociente $\\dfrac{f(x)-f(a)}{x-a}$. Al reducir la distancia entre ambos puntos, ' +
+    'los valores obtenidos en la tabla se aproximan progresivamente a un mismo número.</p>';
+
+  html += '<p><strong>b)</strong> Ese número es la <strong>derivada</strong> de $f$ en $a$:</p>';
+  html += '<p style="text-align:center;">$$\\lim_{h\\to 0}\\frac{f(' + fmt(PA) + '+h)-f(' + fmt(PA) + ')}{h}' +
+          ' \\;=\\; f\'(' + fmt(PA) + ') \\;=\\; ' + fmt(d0) + '$$</p>';
+  html += '<p>La razón de cambio deja de ser <em>promedio</em> y pasa a ser <strong>instantánea</strong>. ' +
+          'El cociente no está definido en $h = 0$; lo que existe es su <em>límite</em>.</p>';
+
+  html += '<p><strong>c)</strong> Geométricamente: cada razón de cambio promedio es la ' +
+    '<strong>pendiente de una recta secante</strong>. Al hacer $h \\to 0$, esas secantes ' +
+    '<strong>giran</strong> alrededor de $(' + fmt(PA) + ',\\, ' + fmt(y0) + ')$ hasta convertirse en la ' +
+    '<strong>recta tangente</strong>, de ecuación</p>';
+  html += '<p style="text-align:center;">$$y \\;=\\; ' + fmt(d0) + 'x ' + signTerm(y0 - d0*PA) + '$$</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  document.getElementById('p-fam').addEventListener('change', refreshAll);
+  ['p-p','p-q','p-r','p-a'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') refreshAll();
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-fam').value = 'quad';
+    document.getElementById('p-p').value = 1;
+    document.getElementById('p-q').value = 0;
+    document.getElementById('p-r').value = 0;
+    document.getElementById('p-a').value = 1;
+    document.getElementById('opt-zoom').value = 4;
+    document.getElementById('zoom-val').textContent = '4';
+    SIDE = 1;
+    document.getElementById('btn-side').innerHTML = 'Lado: derecho (h &gt; 0)';
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-fam').value = p[0];
+      document.getElementById('p-p').value   = p[1];
+      document.getElementById('p-q').value   = p[2];
+      document.getElementById('p-r').value   = p[3];
+      document.getElementById('p-a').value   = p[4];
+      refreshAll();
+    });
+  });
+
+  /* Tabla */
+  document.getElementById('btn-verify').addEventListener('click', verifyTable);
+  document.getElementById('btn-fill').addEventListener('click', fillTable);
+  document.getElementById('btn-clear').addEventListener('click', clearTable);
+  document.getElementById('btn-hint').addEventListener('click', toggleHint);
+
+  /* Opciones del gráfico */
+  ['opt-grid','opt-sec','opt-tan','opt-ghost','opt-delta','opt-pts'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { drawChart(); });
+  });
+
+  document.getElementById('opt-zoom').addEventListener('input', ev => {
+    ZOOM = parseFloat(ev.target.value);
+    document.getElementById('zoom-val').textContent = ZOOM;
+    const hs = document.getElementById('h-slider');
+    const lim = Math.max(0.2, ZOOM * 0.6);
+    hs.min = -lim; hs.max = lim; hs.step = lim / 2000;
+    PH = Math.max(-lim, Math.min(lim, PH));
+    hs.value = PH;
+    document.getElementById('h-val').textContent = fmt(PH, 4);
+    updateLive(); drawChart(); drawQuotient();
+  });
+
+  /* Slider de h */
+  document.getElementById('h-slider').addEventListener('input', ev => {
+    stopAnim();
+    PH = parseFloat(ev.target.value);
+    document.getElementById('h-val').textContent = fmt(PH, 4);
+    updateLive(); drawChart(); drawQuotient();
+  });
+
+  /* Animación */
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', () => {
+    stopAnim(); GHOSTS = []; drawChart(); drawQuotient();
+  });
+
+  /* Lado de aproximación */
+  document.getElementById('btn-side').addEventListener('click', ev => {
+    SIDE = -SIDE;
+    ev.currentTarget.innerHTML = SIDE > 0
+      ? 'Lado: derecho (h &gt; 0)'
+      : 'Lado: izquierdo (h &lt; 0)';
+    GHOSTS = [];
+    buildTable();
+    setH(SIDE * Math.abs(PH || 1));
+    setTimeout(() => renderMath(document.body), 0);
+  });
+
+  /* Desplegable */
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  /* Resize */
+  let rt = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { drawChart(); drawQuotient(); }, 140);
+  });
+
+  refreshAll();
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ARRANQUE ROBUSTO
+   ═══════════════════════════════════════════════ */
+(function boot(){
+  function ready(){
+    return document.readyState !== 'loading'
+        && window.d3
+        && window.renderMathInElement;
+  }
+  function attempt(tries){
+    if (ready())    { initPage(); return; }
+    if (tries <= 0) { initPage(); return; }   // respaldo: degrada sin romper
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else
+    attempt(40);
+})();
+</script>
+
+</body>
+</html>

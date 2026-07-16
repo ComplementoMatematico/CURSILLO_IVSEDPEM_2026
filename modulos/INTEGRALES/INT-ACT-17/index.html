@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 17 — Interpretando área bajo la curva · Cursillo de Actualización Docente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<style>
+:root{
+  --navy:#003B75; --crimson:#9b1845; --gold:#c8a951;
+  --light:#f5f3ee; --white:#ffffff; --border:#d6d0c4;
+  --text:#2c2c2c; --muted:#6b6560; --accent-bg:#eef1f8; --success:#2e7d52;
+  --area:#5b8fc9; --rect:#c8a951; --rect-over:#9b1845;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Source Serif 4',Georgia,serif;
+  background:var(--light); color:var(--text);
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+header{
+  background:var(--navy); border-bottom:4px solid var(--crimson);
+  box-shadow:0 3px 22px rgba(200,169,81,.28); padding:16px 26px;
+}
+.header-grid{
+  max-width:1160px; margin:0 auto;
+  display:grid; grid-template-columns:auto 1fr auto;
+  align-items:center; gap:26px;
+}
+.header-logos{display:flex; align-items:center; gap:16px;}
+.header-logos img{height:52px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,.28));}
+.header-center{text-align:center;}
+.header-seminar{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.19em; text-transform:uppercase; color:var(--gold); margin-bottom:5px;
+}
+.header-title{font-family:'Playfair Display',serif; font-weight:700; font-size:1.5rem; color:#fff; line-height:1.25;}
+.header-sub{font-size:.86rem; color:rgba(255,255,255,.72); font-style:italic; margin-top:3px;}
+.header-author{text-align:right;}
+.header-author .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem;
+  letter-spacing:.17em; color:rgba(200,169,81,.82); text-transform:uppercase;
+}
+.header-author .nm{font-family:'Playfair Display',serif; font-size:1.02rem; color:#fff; margin-top:2px; white-space:nowrap;}
+
+main{max-width:880px; margin:0 auto; padding:50px 22px 80px;}
+
+.activity-card{
+  background:var(--white); border:1px solid var(--border); border-radius:3px;
+  box-shadow:0 4px 28px rgba(0,59,117,.09); margin-bottom:34px; overflow:hidden;
+  animation:fadeUp .55s cubic-bezier(.22,.8,.3,1) both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.card-head{background:var(--navy); color:#fff; padding:15px 24px; display:flex; align-items:center; gap:15px;}
+.card-num{
+  flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+  background:var(--crimson); color:#fff;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 3px rgba(255,255,255,.13);
+}
+.card-head h2{font-family:'Playfair Display',serif; font-weight:600; font-size:1.16rem;}
+.card-body{padding:26px 28px 30px;}
+
+.objetivo-box{
+  border-left:4px solid var(--crimson); background:var(--accent-bg);
+  padding:15px 20px; margin-bottom:24px; border-radius:0 3px 3px 0;
+}
+.objetivo-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.63rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:6px;
+}
+.objetivo-box p{font-size:.96rem;}
+
+.func-display{
+  background:#fafaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px 20px; text-align:center; margin:22px 0;
+}
+.func-display .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+
+.a-selector-wrap{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:18px 20px; margin:22px 0;
+}
+.a-selector-wrap .sel-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1rem;
+  margin-bottom:4px; color:var(--navy);
+}
+.a-selector-wrap .sel-desc{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+.param-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:14px; align-items:end;}
+.param-field{display:flex; flex-direction:column; gap:5px;}
+.param-field label{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+}
+input[type=number], input[type=text]{
+  font-family:'JetBrains Mono',monospace; font-size:.92rem;
+  padding:8px 10px; border:1px solid var(--border); border-radius:3px;
+  background:#fff; color:var(--text); width:100%;
+}
+input:focus{outline:2px solid var(--navy); outline-offset:1px; border-color:var(--navy);}
+.btn-row{display:flex; flex-wrap:wrap; gap:9px; margin-top:15px;}
+button{
+  font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.06em;
+  padding:9px 15px; border-radius:3px; border:1px solid transparent; cursor:pointer;
+  transition:transform .13s ease, background .16s ease, box-shadow .16s ease;
+}
+button:hover{transform:translateY(-1px);}
+button:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+.btn-primary{background:var(--navy); color:#fff;}
+.btn-primary:hover{background:#00508f; box-shadow:0 3px 10px rgba(0,59,117,.28);}
+.btn-verify{background:var(--crimson); color:#fff;}
+.btn-verify:hover{background:#b31d51; box-shadow:0 3px 10px rgba(155,24,69,.28);}
+.btn-ghost{background:transparent; color:var(--navy); border:1px solid var(--border);}
+.btn-ghost:hover{background:#f0eee9; border-color:var(--navy);}
+.btn-ghost.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.preset-row{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  padding-top:13px; border-top:1px dashed var(--border);
+}
+.preset-row .plbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted); align-self:center; margin-right:4px;
+}
+.preview-line{
+  margin-top:14px; padding:11px 14px; background:var(--accent-bg);
+  border-left:3px solid var(--navy); border-radius:0 3px 3px 0; font-size:.9rem;
+}
+
+.solve-box{background:#fff; border:1px solid var(--border); border-radius:3px; padding:18px 20px; margin-top:6px;}
+.solve-step{display:flex; align-items:baseline; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border);}
+.solve-step:last-child{border-bottom:none;}
+.solve-step .n{
+  flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--crimson);
+  font-weight:700; min-width:56px;
+}
+.solve-step .b{flex:1; font-size:.95rem;}
+.answer-check{
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  margin-top:14px; padding-top:14px; border-top:1px solid var(--border);
+}
+.answer-check label{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+.answer-check input{max-width:160px;}
+.score-badge{
+  display:none; margin-left:10px; padding:6px 13px; border-radius:20px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem; font-weight:700;
+  background:var(--accent-bg); color:var(--navy); border:1px solid var(--border);
+  animation:fadeUp .35s both;
+}
+.score-badge.show{display:inline-block;}
+.score-badge.perfect{background:#e5f3ec; color:#1d5c3b; border-color:var(--success);}
+.hint-box{
+  display:none; margin-top:12px; padding:12px 15px;
+  background:#fdfaf0; border-left:3px solid var(--gold);
+  border-radius:0 3px 3px 0; font-size:.88rem;
+}
+.hint-box.show{display:block; animation:fadeUp .3s both;}
+
+/* ── GRÁFICOS ── */
+.chart-box{
+  position:relative; width:100%; height:440px;
+  background:#fff; border:1px solid var(--border); border-radius:3px;
+  cursor:crosshair; overflow:hidden;
+}
+.chart-opts{
+  display:flex; flex-wrap:wrap; gap:16px; align-items:center;
+  margin:14px 0 4px; padding:11px 14px;
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+}
+.chart-opts label{
+  display:flex; align-items:center; gap:6px;
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; cursor:pointer; color:var(--muted);
+}
+.chart-opts input[type=checkbox]{accent-color:var(--navy); width:15px; height:15px; cursor:pointer;}
+
+.riemann-ctrl{
+  background:#fbfaf7; border:1px solid var(--border); border-radius:3px;
+  padding:16px 18px; margin-top:14px;
+}
+.riemann-ctrl .rlbl{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:10px;
+}
+.riemann-ctrl .rval{color:var(--crimson); font-weight:700;}
+.rule-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+input[type=range]{width:100%; accent-color:var(--navy); cursor:pointer;}
+
+.axis path, .axis line{stroke:#c9c3b8;}
+.axis text{font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--muted);}
+.grid line{stroke:#e4e0d7; stroke-dasharray:2,3;}
+.grid path{stroke:none;}
+.curve{fill:none; stroke:var(--navy); stroke-width:2.8;}
+.area-fill{fill:var(--area); opacity:.22;}
+.area-edge{stroke:var(--area); stroke-width:1.5; opacity:.5;}
+.rrect{stroke:#fff; stroke-width:.7;}
+.rrect-under{fill:var(--rect); opacity:.42;}
+.rrect-over{fill:var(--rect-over); opacity:.30;}
+.tri-line{stroke:var(--crimson); stroke-width:1.5; stroke-dasharray:5,3;}
+.dim-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; fill:var(--navy);}
+.dim-line{stroke:var(--navy); stroke-width:1;}
+.axis-label{font-family:'JetBrains Mono',monospace; font-size:11px; fill:var(--muted); font-weight:500;}
+.curve-lbl{font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;}
+.tooltip{
+  position:absolute; pointer-events:none; opacity:0;
+  background:var(--navy); color:#fff; padding:7px 11px; border-radius:3px;
+  font-family:'JetBrains Mono',monospace; font-size:.73rem;
+  white-space:nowrap; transition:opacity .12s ease; z-index:5;
+  transform:translate(-50%,-100%); margin-top:-9px;
+}
+.tooltip::after{
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  border-left:5px solid transparent; border-right:5px solid transparent;
+  border-top:5px solid var(--navy);
+}
+.tooltip.show{opacity:1;}
+
+.live-panel{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-top:16px;}
+.live-cell{
+  background:#fbfaf7; border:1px solid var(--border); border-top:3px solid var(--navy);
+  border-radius:3px; padding:12px 14px; text-align:center;
+}
+.live-cell.gold{border-top-color:var(--gold);}
+.live-cell.crim{border-top-color:var(--crimson);}
+.live-cell.succ{border-top-color:var(--success);}
+.live-cell .k{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.live-cell .v{
+  font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:700;
+  color:var(--navy); word-break:break-all;
+}
+.live-cell.gold .v{color:#8a6f1e;}
+.live-cell.succ .v{color:var(--success);}
+.err-track{
+  margin-top:6px; height:6px; border-radius:3px; background:#e4e0d7; overflow:hidden;
+}
+.err-fill{height:100%; background:var(--crimson); transition:width .2s ease;}
+
+.verdict{
+  border-radius:3px; padding:20px 22px; margin-top:16px;
+  border:1px solid var(--border); border-left:5px solid var(--success); background:#f2f8f4;
+}
+.verdict .vk{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:8px;
+}
+.verdict .vt{font-family:'Playfair Display',serif; font-weight:700; font-size:1.35rem; color:var(--success); margin-bottom:8px;}
+.verdict .vb{font-size:.94rem;}
+
+.accum-box{
+  background:linear-gradient(180deg,#fbfaf7,#f4f1ea);
+  border:1px solid var(--border); border-left:4px solid var(--navy);
+  border-radius:0 3px 3px 0; padding:18px 20px; margin-top:6px;
+}
+.accum-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-top:14px;}
+.accum-card{background:#fff; border:1px solid var(--border); border-radius:3px; padding:14px; text-align:center;}
+.accum-card .k{
+  font-family:'JetBrains Mono',monospace; font-size:.58rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); display:block; margin-bottom:6px;
+}
+.accum-card .v{font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:700; color:var(--navy);}
+.accum-card .sub{font-size:.78rem; color:var(--muted); margin-top:3px;}
+
+.ed-section{border:1px solid var(--border); border-radius:3px; margin-top:26px; overflow:hidden; background:#fff;}
+.ed-toggle{
+  width:100%; text-align:left; background:var(--navy); color:#fff;
+  border:none; border-radius:0; padding:14px 20px;
+  font-family:'Playfair Display',serif; font-size:1.02rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.ed-toggle:hover{transform:none; background:#00508f;}
+.ed-toggle .chev{font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--gold); transition:transform .25s ease;}
+.ed-toggle.open .chev{transform:rotate(180deg);}
+.ed-body{display:none; padding:22px 22px 26px;}
+.ed-body.open{display:block; animation:fadeUp .3s both;}
+.def-box{
+  background:var(--navy); color:#fff; border-radius:3px;
+  padding:18px 20px; border-left:4px solid var(--gold); margin-bottom:20px;
+}
+.def-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.6rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--gold); display:block; margin-bottom:9px;
+}
+.def-box .katex{color:#fff;}
+.proof-step{
+  border-left:3px solid var(--gold); background:#fbfaf7;
+  padding:11px 16px; margin-bottom:10px; border-radius:0 3px 3px 0; font-size:.93rem;
+}
+.proof-step .sn{
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--crimson); font-weight:700; display:block; margin-bottom:4px;
+}
+.qed-box{
+  background:var(--accent-bg); border:1px solid var(--navy); border-radius:3px;
+  padding:14px 18px; margin-top:14px; font-size:.93rem;
+  display:flex; justify-content:space-between; align-items:center; gap:14px;
+}
+.qed-box .qed{font-family:'JetBrains Mono',monospace; font-size:1.25rem; color:var(--navy); font-weight:700;}
+
+.reflect-q{border:1px solid var(--border); border-radius:3px; padding:15px 18px; margin-bottom:12px; background:#fff;}
+.reflect-q .qt{font-family:'Playfair Display',serif; font-weight:600; font-size:1rem; margin-bottom:10px; color:var(--navy);}
+.opt-row{display:flex; flex-direction:column; gap:7px;}
+.opt{
+  display:flex; align-items:flex-start; gap:9px; padding:9px 12px;
+  border:1px solid var(--border); border-radius:3px; cursor:pointer;
+  font-size:.9rem; transition:background .14s, border-color .14s; background:#fdfdfb;
+}
+.opt:hover{background:#f0eee9;}
+.opt input{accent-color:var(--navy); margin-top:3px; cursor:pointer;}
+.opt.ok{background:#e5f3ec; border-color:var(--success);}
+.opt.no{background:#fbe9ee; border-color:var(--crimson);}
+.fb{
+  display:none; margin-top:10px; padding:10px 13px; border-radius:3px;
+  font-size:.87rem; border-left:3px solid var(--navy); background:var(--accent-bg);
+}
+.fb.show{display:block; animation:fadeUp .3s both;}
+
+.concl-box{
+  background:linear-gradient(180deg,#fbfaf7 0%,#f7f5f0 100%);
+  border:1px solid var(--border); border-left:4px solid var(--gold);
+  border-radius:0 3px 3px 0; padding:20px 22px;
+}
+.concl-box .lbl{
+  font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:.19em;
+  text-transform:uppercase; color:var(--gold); font-weight:700; display:block; margin-bottom:10px;
+}
+.concl-box p{font-size:.96rem; margin-bottom:10px;}
+.concl-box p:last-child{margin-bottom:0;}
+
+.sec-title{
+  font-family:'Playfair Display',serif; font-weight:600; font-size:1.06rem;
+  color:var(--navy); margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border);
+}
+.note{font-size:.84rem; color:var(--muted); font-style:italic; margin-top:8px;}
+
+footer{border-top:1px solid var(--border); background:#efece5; padding:24px 22px; text-align:center;}
+footer p{
+  font-family:'JetBrains Mono',monospace; font-size:.68rem;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+}
+
+@media (max-width:640px){
+  .header-grid{grid-template-columns:1fr; gap:14px; text-align:center;}
+  .header-logos{justify-content:center;}
+  .header-author{text-align:center;}
+  .header-author .nm{white-space:normal;}
+  .header-title{font-size:1.2rem;}
+  main{padding:32px 14px 60px;}
+  .card-body{padding:20px 16px 24px;}
+  .chart-box{height:340px;}
+  .btn-row button{flex:1 1 auto;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-grid">
+    <div class="header-logos">
+      <img src="logo_ubb.png" alt="Universidad del Bío-Bío">
+      <img src="logo_seminario.png" alt="SEDPEM">
+      <img src="logo_cmm.png" alt="CMM">
+    </div>
+    <div class="header-center">
+      <div class="header-seminar">Cursillo de Actualización Docente · IV SEDPEM · UBB</div>
+      <div class="header-title">Actividad 17 — Interpretando área bajo la curva</div>
+      <div class="header-sub">De la geometría a la integral: área como acumulación</div>
+    </div>
+    <div class="header-author">
+      <div class="lbl">Material de</div>
+      <div class="nm">Dr. Eligio Colmenares</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="activity-card">
+    <div class="card-head">
+      <div class="card-num">17</div>
+      <h2>Interpretando área bajo la curva</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="objetivo-box">
+        <span class="lbl">Objetivo</span>
+        <p>Reconocer el <strong>área bajo una curva</strong> como una cantidad con significado: calcularla
+        con geometría elemental, verla como límite de <strong>sumas de rectángulos</strong> (Riemann), e
+        interpretarla como <strong>acumulación</strong>. Si $f$ es una tasa, el área es el total acumulado.
+        Es el puente entre geometría e integral.</p>
+      </div>
+
+      <div class="func-display">
+        <span class="lbl">Función e intervalo</span>
+        <div id="func-katex">$$f(x)=2x \qquad \text{en } [0,\,4]$$</div>
+      </div>
+
+      <div class="a-selector-wrap">
+        <div class="sel-title">Panel de parámetros</div>
+        <div class="sel-desc">
+          Recta $f(x) = mx + b$ sobre $[a,b]$. El área bajo una recta es siempre un trapecio (un
+          triángulo si $b=0$). El motor calcula el área exacta y la aproximación por rectángulos.
+        </div>
+
+        <div class="param-grid">
+          <div class="param-field"><label for="p-m">pendiente m</label><input type="number" id="p-m" value="2" step="any"></div>
+          <div class="param-field"><label for="p-b">ordenada b</label><input type="number" id="p-b" value="0" step="any"></div>
+          <div class="param-field"><label for="p-a">desde a</label><input type="number" id="p-a" value="0" step="any"></div>
+          <div class="param-field"><label for="p-B">hasta b</label><input type="number" id="p-B" value="4" step="any"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="btn-apply">Aplicar parámetros</button>
+          <button class="btn-ghost" id="btn-reset">Restablecer original</button>
+        </div>
+
+        <div class="preset-row">
+          <span class="plbl">Presets</span>
+          <button class="btn-ghost" data-preset="2,0,0,4">Original · 2x en [0,4]</button>
+          <button class="btn-ghost" data-preset="1,0,0,5">x en [0,5]</button>
+          <button class="btn-ghost" data-preset="3,2,0,4">3x+2 · trapecio</button>
+          <button class="btn-ghost" data-preset="0,5,0,6">constante · 5</button>
+          <button class="btn-ghost" data-preset="-1,6,0,4">−x+6 · decreciente</button>
+        </div>
+
+        <div class="preview-line" id="preview"></div>
+      </div>
+
+      <!-- ── a) GRÁFICA Y ÁREA ── -->
+      <div class="sec-title">a) La gráfica y el área bajo la curva</div>
+      <p style="font-size:.93rem;margin-bottom:8px;">
+        El área sombreada es la región entre la recta y el eje $x$, desde $a$ hasta $b$. Activa los
+        rectángulos de Riemann para ver cómo se aproxima esa área con sumas.
+      </p>
+
+      <div class="chart-opts">
+        <label><input type="checkbox" id="opt-grid" checked> grilla</label>
+        <label><input type="checkbox" id="opt-area" checked> área sombreada</label>
+        <label><input type="checkbox" id="opt-shape" checked> figura geométrica</label>
+        <label><input type="checkbox" id="opt-riemann"> rectángulos de Riemann</label>
+      </div>
+
+      <div class="chart-box" id="chart-main"><div class="tooltip" id="tip-main"></div></div>
+
+      <div class="riemann-ctrl">
+        <span class="rlbl">Regla del punto muestral</span>
+        <div class="rule-row">
+          <button class="btn-ghost active" data-rule="left">extremo izquierdo</button>
+          <button class="btn-ghost" data-rule="mid">punto medio</button>
+          <button class="btn-ghost" data-rule="right">extremo derecho</button>
+        </div>
+        <span class="rlbl">número de rectángulos n = <span class="rval" id="n-val">8</span></span>
+        <input type="range" id="n-slider" min="1" max="500" step="1" value="8">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" id="btn-anim">▶ Aumentar n y converger al área exacta</button>
+        <button class="btn-ghost" id="btn-stop">■ Detener</button>
+      </div>
+
+      <div class="live-panel">
+        <div class="live-cell succ"><span class="k">área exacta ∫</span><span class="v" id="lv-exact">—</span></div>
+        <div class="live-cell gold"><span class="k">suma de Riemann Sₙ</span><span class="v" id="lv-riemann">—</span></div>
+        <div class="live-cell crim"><span class="k">error |∫ − Sₙ|</span><span class="v" id="lv-err">—</span>
+          <div class="err-track"><div class="err-fill" id="err-fill" style="width:0%"></div></div>
+        </div>
+        <div class="live-cell"><span class="k">ancho Δx = (b−a)/n</span><span class="v" id="lv-dx">—</span></div>
+      </div>
+
+      <!-- ── b) ÁREA POR GEOMETRÍA ── -->
+      <div class="sec-title">b) El área por geometría elemental</div>
+      <div class="solve-box" id="solve-b"></div>
+      <div class="btn-row">
+        <button class="btn-verify" id="btn-verify-b">Verificar mi área</button>
+        <button class="btn-primary" id="btn-fill-b">Mostrar solución</button>
+        <button class="btn-ghost" id="btn-hint-b">Pista</button>
+        <span class="score-badge" id="score-b"></span>
+      </div>
+      <div class="hint-box" id="hint-b"></div>
+
+      <div id="verify-panel"></div>
+
+      <!-- ── c) ACUMULACIÓN ── -->
+      <div class="sec-title">c) Interpretación como acumulación</div>
+      <div class="accum-box" id="accum-box"></div>
+
+      <!-- ── REFLEXIÓN ── -->
+      <div class="sec-title">Reflexiona</div>
+      <div id="reflect"></div>
+
+      <!-- ── MÓDULO FORMAL ── -->
+      <div class="ed-section">
+        <button class="ed-toggle" id="ed-toggle" aria-expanded="false">
+          <span>De la suma de Riemann a la integral definida</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="ed-body" id="ed-body">
+          <div class="def-box"><span class="lbl">La integral definida</span><div id="def-katex"></div></div>
+          <div id="proof"></div>
+        </div>
+      </div>
+
+      <!-- ── CONCLUSIÓN ── -->
+      <div class="sec-title">Conclusión</div>
+      <div class="concl-box"><span class="lbl">Conclusión esperada</span><div id="conclusion"></div></div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Cursillo de Actualización Docente · IV SEDPEM · UBB · Actividad 17 · Dr. Eligio Colmenares</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
+<script>
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ESTADO GLOBAL
+   ═══════════════════════════════════════════════
+   f(x) = M x + Bb  sobre  [Ai, Bi].
+   Área exacta (con signo) = ∫ (Mx+Bb) dx = [M x²/2 + Bb x] de Ai a Bi.
+   Suma de Riemann con n rectángulos, regla RULE ∈ {left, mid, right}.
+   ═══════════════════════════════════════════════ */
+let M = 2, Bb = 0, Ai = 0, Bi = 4;
+let NN = 8;
+let RULE = 'left';
+let ANIM = null;
+
+const TOL = 1e-9;
+
+/* ── Funciones puras ── */
+function f(x){ return M*x + Bb; }
+function Fanti(x){ return M*x*x/2 + Bb*x; }        // antiderivada
+function exactArea(){ return Fanti(Bi) - Fanti(Ai); }
+
+/* Suma de Riemann */
+function riemann(n, rule){
+  const dx = (Bi - Ai)/n;
+  let s = 0;
+  for (let i = 0; i < n; i++){
+    let xi;
+    if (rule === 'left')      xi = Ai + i*dx;
+    else if (rule === 'right') xi = Ai + (i+1)*dx;
+    else                       xi = Ai + (i+0.5)*dx;   // mid
+    s += f(xi) * dx;
+  }
+  return s;
+}
+
+function r6(v){ return Math.round(v*1e6)/1e6; }
+function fmt(v, d){
+  if (!isFinite(v)) return '—';
+  const dec = (d === undefined) ? 2 : d;
+  const r = r6(v);
+  if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+  return r.toFixed(dec).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signTerm(v){ return (v < 0 ? '- ' : '+ ') + fmt(Math.abs(v)); }
+
+/* ── ¿La recta cambia de signo dentro de [Ai,Bi]? (área con signo vs geométrica) ── */
+function crossesZero(){
+  if (Math.abs(M) < TOL) return false;
+  const xr = -Bb/M;
+  return xr > Ai + 1e-9 && xr < Bi - 1e-9;
+}
+
+/* ── LaTeX ── */
+function fTex(){
+  if (Math.abs(M) < TOL) return fmt(Bb);
+  let s = (Math.abs(M-1)<TOL ? '' : (Math.abs(M+1)<TOL ? '-' : fmt(M))) + 'x';
+  if (Math.abs(Bb) > TOL) s += ' ' + signTerm(Bb);
+  return s;
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — KaTeX
+   ═══════════════════════════════════════════════ */
+function renderMath(root){
+  if (!window.renderMathInElement) return;
+  try{
+    renderMathInElement(root || document.body, {
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }catch(e){}
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFRESCO
+   ═══════════════════════════════════════════════ */
+function readParams(){
+  const m = parseFloat(document.getElementById('p-m').value);
+  const b = parseFloat(document.getElementById('p-b').value);
+  const a = parseFloat(document.getElementById('p-a').value);
+  const bb = parseFloat(document.getElementById('p-B').value);
+  M  = isFinite(m) ? m : 2;
+  Bb = isFinite(b) ? b : 0;
+  Ai = isFinite(a) ? a : 0;
+  Bi = isFinite(bb) ? bb : 4;
+  if (Bi <= Ai) Bi = Ai + 1;   // intervalo válido
+}
+
+function refreshAll(){
+  stopAnim();
+  readParams();
+  NN = parseInt(document.getElementById('n-slider').value, 10) || 8;
+
+  renderFuncDisplay();
+  renderPreview();
+  renderSolveB();
+  renderVerify();
+  renderAccum();
+  drawMain();
+  renderReflect();
+  renderProof();
+  renderConclusion();
+  updateLive();
+  setTimeout(() => renderMath(document.body), 0);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — DISPLAY
+   ═══════════════════════════════════════════════ */
+function renderFuncDisplay(){
+  const el = document.getElementById('func-katex');
+  el.innerHTML = '$$f(x)=' + fTex() + ' \\qquad \\text{en } [' + fmt(Ai) + ',\\,' + fmt(Bi) + ']$$';
+  renderMath(el);
+}
+
+function renderPreview(){
+  const el = document.getElementById('preview');
+  const ex = exactArea();
+  let html = 'Caso actual: $\\displaystyle\\int_{' + fmt(Ai) + '}^{' + fmt(Bi) + '} \\left(' + fTex() + '\\right)\\,dx = ' + fmt(ex, 3) + '$. ';
+  if (crossesZero()){
+    html += 'Atención: la recta <strong>cruza el eje</strong> dentro del intervalo, así que parte del ' +
+      'área queda <em>bajo</em> el eje. El valor de arriba es el área <strong>con signo</strong> ' +
+      '(lo positivo menos lo negativo).';
+  } else if (Math.abs(Bb) < TOL && Math.abs(M) > TOL){
+    html += 'Como $b=0$, la región es un <strong>triángulo</strong> con vértice en el origen.';
+  } else {
+    html += 'La región es un <strong>trapecio</strong> (dos alturas distintas en los bordes).';
+  }
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — b) GEOMETRÍA
+   ═══════════════════════════════════════════════ */
+function renderSolveB(){
+  const box = document.getElementById('solve-b');
+  const fa = f(Ai), fb = f(Bi);
+  const width = Bi - Ai;
+  const ex = exactArea();
+  let html = '';
+
+  if (crossesZero()){
+    /* Caso con cruce: el triángulo/trapecio se parte */
+    html += '<div class="solve-step"><span class="n">Ojo</span><span class="b">' +
+      'La recta cruza el eje en $x = ' + fmt(-Bb/M, 3) + '$ dentro de $[' + fmt(Ai) + ',' + fmt(Bi) + ']$. ' +
+      'La región tiene una parte <strong>sobre</strong> el eje y otra <strong>debajo</strong>. ' +
+      'El «área con signo» resta la de abajo:</span></div>';
+    html += '<div class="solve-step"><span class="n">Con signo</span><span class="b">' +
+      'Usando la fórmula del trapecio con signo: ' +
+      '$$A = \\dfrac{f(' + fmt(Ai) + ') + f(' + fmt(Bi) + ')}{2}\\cdot(' + fmt(Bi) + '-' + fmt(Ai) + ') = ' +
+      '\\dfrac{' + fmt(fa) + ' + ' + fmt(fb) + '}{2}\\cdot ' + fmt(width) + ' = ' + fmt(ex, 3) + '$$</span></div>';
+  } else if (Math.abs(Bb) < TOL && Math.abs(M) > TOL){
+    /* Triángulo puro */
+    html += '<div class="solve-step"><span class="n">Forma</span><span class="b">' +
+      'Como $f(' + fmt(Ai) + ') = ' + fmt(fa) + '$, la región es un <strong>triángulo</strong> ' +
+      'de base $' + fmt(width) + '$ (el intervalo) y altura $f(' + fmt(Bi) + ') = ' + fmt(fb) + '$.</span></div>';
+    html += '<div class="solve-step"><span class="n">Área</span><span class="b">' +
+      '$$A = \\dfrac{\\text{base} \\times \\text{altura}}{2} = \\dfrac{' + fmt(width) + ' \\times ' + fmt(fb) + '}{2} = ' + fmt(ex, 3) + '$$</span></div>';
+  } else {
+    /* Trapecio */
+    html += '<div class="solve-step"><span class="n">Forma</span><span class="b">' +
+      'La región es un <strong>trapecio</strong>: los dos lados verticales miden ' +
+      '$f(' + fmt(Ai) + ') = ' + fmt(fa) + '$ y $f(' + fmt(Bi) + ') = ' + fmt(fb) + '$, ' +
+      'separados por el ancho $' + fmt(width) + '$.</span></div>';
+    html += '<div class="solve-step"><span class="n">Área</span><span class="b">' +
+      '$$A = \\dfrac{\\text{lado}_1 + \\text{lado}_2}{2}\\times\\text{ancho} = ' +
+      '\\dfrac{' + fmt(fa) + ' + ' + fmt(fb) + '}{2}\\times ' + fmt(width) + ' = ' + fmt(ex, 3) + '$$</span></div>';
+  }
+
+  html += '<div class="answer-check"><label for="ans-b">tu área · A =</label>' +
+    '<input type="text" id="ans-b" inputmode="decimal" placeholder="?"></div>';
+
+  box.innerHTML = html;
+  document.getElementById('score-b').className = 'score-badge';
+  renderMath(box);
+}
+
+function verifyB(){
+  const inp = document.getElementById('ans-b');
+  const badge = document.getElementById('score-b');
+  const raw = inp.value.trim().replace(',', '.');
+  inp.style.borderColor = '';
+  if (raw === ''){ badge.textContent = 'Escribe un valor'; badge.className = 'score-badge show'; return; }
+  const val = parseFloat(raw);
+  const truth = exactArea();
+  if (isFinite(val) && Math.abs(val - truth) <= Math.max(Math.abs(truth)*3e-3, 3e-3)){
+    inp.style.borderColor = 'var(--success)';
+    badge.textContent = '✓ Correcto'; badge.className = 'score-badge show perfect';
+  } else {
+    inp.style.borderColor = 'var(--crimson)';
+    badge.textContent = '✗ Revisa la fórmula'; badge.className = 'score-badge show';
+  }
+}
+function fillB(){
+  const inp = document.getElementById('ans-b');
+  inp.value = fmt(exactArea(), 3);
+  inp.style.borderColor = 'var(--success)';
+  const badge = document.getElementById('score-b');
+  badge.textContent = 'Área exacta mostrada'; badge.className = 'score-badge show perfect';
+}
+function toggleHintB(){
+  const box = document.getElementById('hint-b');
+  if (box.classList.contains('show')){ box.classList.remove('show'); return; }
+  let html = '<strong>Pista.</strong> El área bajo una recta es siempre un ' +
+    'triángulo o un trapecio. ';
+  if (Math.abs(Bb) < TOL){
+    html += 'Aquí $f(' + fmt(Ai) + ')=0$, así que es un <strong>triángulo</strong>: usa $\\tfrac{1}{2}\\,\\text{base}\\times\\text{altura}$, ' +
+      'con base $= b-a = ' + fmt(Bi-Ai) + '$ y altura $= f(b) = ' + fmt(f(Bi)) + '$.';
+  } else {
+    html += 'Aquí es un <strong>trapecio</strong>: promedia las dos alturas $f(a)$ y $f(b)$, ' +
+      'y multiplica por el ancho $b-a$.';
+  }
+  box.innerHTML = html;
+  box.classList.add('show');
+  renderMath(box);
+}
+
+/* ── Verificación: geometría = integral ── */
+function renderVerify(){
+  const el = document.getElementById('verify-panel');
+  const ex = exactArea();
+  el.innerHTML =
+    '<div class="verdict"><span class="vk">Geometría = Integral</span>' +
+    '<div class="vt">Ambos caminos dan ' + fmt(ex, 3) + '</div>' +
+    '<div class="vb">El área que calculaste con una fórmula de geometría elemental es ' +
+    '<strong>exactamente</strong> el valor de la integral definida:' +
+    '<p style="text-align:center;margin-top:10px;">$$\\int_{' + fmt(Ai) + '}^{' + fmt(Bi) + '}\\left(' + fTex() + '\\right)dx ' +
+    '= \\left[' + (Math.abs(M)>TOL ? fmt(M/2) + 'x^{2}' : '') + (Math.abs(Bb)>TOL ? ' ' + signTerm(Bb) + 'x' : '') + '\\right]_{' + fmt(Ai) + '}^{' + fmt(Bi) + '} = ' + fmt(ex, 3) + '$$</p>' +
+    'Para una recta no necesitamos la integral —basta la geometría—, pero la integral hace ' +
+    '<em>lo mismo</em> para curvas donde la geometría ya no alcanza. Ese es el poder del método.</div></div>';
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — c) ACUMULACIÓN
+   ═══════════════════════════════════════════════ */
+function renderAccum(){
+  const el = document.getElementById('accum-box');
+  const ex = exactArea();
+  const mid = (Ai + Bi)/2;
+
+  let html = '<p style="font-size:.95rem;">' +
+    'Si $f(x)$ no fuera una altura sino una <strong>tasa</strong> —cuánto se produce por unidad de ' +
+    'tiempo—, entonces el área bajo la curva sería la <strong>cantidad total acumulada</strong> en el ' +
+    'intervalo. La unidad del área lo dice todo: (unidades/hora) × (horas) = unidades.</p>';
+
+  html += '<p style="font-size:.95rem;margin-top:10px;">' +
+    'Ejemplo: si $f(x) = ' + fTex() + '$ es la <strong>tasa de producción</strong> (piezas por hora) ' +
+    'en la hora $x$, entonces entre $x=' + fmt(Ai) + '$ y $x=' + fmt(Bi) + '$ se producen en total:</p>';
+
+  html += '<div class="accum-grid">' +
+    '<div class="accum-card"><span class="k">tasa al inicio</span><div class="v">' + fmt(f(Ai)) + '</div><div class="sub">piezas/hora en x=' + fmt(Ai) + '</div></div>' +
+    '<div class="accum-card"><span class="k">tasa al final</span><div class="v">' + fmt(f(Bi)) + '</div><div class="sub">piezas/hora en x=' + fmt(Bi) + '</div></div>' +
+    '<div class="accum-card" style="border-top:3px solid var(--gold);"><span class="k">total acumulado</span><div class="v" style="color:#8a6f1e;">' + fmt(ex) + '</div><div class="sub">piezas (el área)</div></div>' +
+    '</div>';
+
+  html += '<p style="font-size:.93rem;margin-top:14px;">' +
+    'La tasa <em>cambia</em> a lo largo del intervalo (en $x=' + fmt(mid) + '$ ya va en $' + fmt(f(mid)) + '$ piezas/hora). ' +
+    'No podemos multiplicar «tasa × tiempo» con un solo número, porque la tasa no es constante. ' +
+    'La integral hace justo eso: <strong>suma infinitas rebanadas</strong>, cada una con su tasa ' +
+    'instantánea, para dar el total correcto. Acumular una tasa que varía <em>es</em> integrar.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — GRÁFICO PRINCIPAL
+   ═══════════════════════════════════════════════ */
+function drawMain(){
+  const box = document.getElementById('chart-main');
+  d3.select('#chart-main').selectAll('svg').remove();
+  if (!window.d3) return;
+
+  const W = box.clientWidth || 800, H = box.clientHeight || 440;
+  const m = {top:24, right:26, bottom:42, left:60};
+  const iw = Math.max(60, W - m.left - m.right);
+  const ih = Math.max(60, H - m.top - m.bottom);
+
+  const pad = (Bi - Ai) * 0.12;
+  const xMin = Ai - pad, xMax = Bi + pad;
+
+  /* Rango y: incluye 0 y los valores en el intervalo */
+  const ys0 = [f(Ai), f(Bi), 0];
+  let yMin = Math.min(...ys0), yMax = Math.max(...ys0);
+  if (Math.abs(yMax - yMin) < 1e-9){ yMin -= 1; yMax += 1; }
+  const yp = (yMax - yMin) * 0.14; yMin -= yp; yMax += yp;
+
+  const xs = d3.scaleLinear().domain([xMin, xMax]).range([0, iw]);
+  const ys = d3.scaleLinear().domain([yMin, yMax]).range([ih, 0]);
+
+  const svg = d3.select('#chart-main').append('svg')
+    .attr('width', W).attr('height', H).attr('viewBox','0 0 ' + W + ' ' + H);
+  const cid = 'clip-main-' + Date.now();
+  svg.append('defs').append('clipPath').attr('id', cid).append('rect').attr('width', iw).attr('height', ih);
+  const g = svg.append('g').attr('transform','translate(' + m.left + ',' + m.top + ')');
+  const plot = g.append('g').attr('clip-path','url(#' + cid + ')');
+
+  const gridOn    = document.getElementById('opt-grid').checked;
+  const areaOn    = document.getElementById('opt-area').checked;
+  const shapeOn   = document.getElementById('opt-shape').checked;
+  const riemannOn = document.getElementById('opt-riemann').checked;
+
+  if (gridOn){
+    g.append('g').attr('class','grid').attr('transform','translate(0,' + ih + ')')
+      .call(d3.axisBottom(xs).ticks(8).tickSize(-ih).tickFormat(''));
+    g.append('g').attr('class','grid').call(d3.axisLeft(ys).ticks(6).tickSize(-iw).tickFormat(''));
+  }
+  g.append('g').attr('class','axis').attr('transform','translate(0,' + ih + ')').call(d3.axisBottom(xs).ticks(8));
+  g.append('g').attr('class','axis').call(d3.axisLeft(ys).ticks(6));
+
+  g.append('text').attr('class','axis-label').attr('x', iw).attr('y', ih + 34).attr('text-anchor','end').text('x');
+  g.append('text').attr('class','axis-label').attr('x', -8).attr('y', -8).attr('text-anchor','end').text('f(x)');
+
+  /* Ejes */
+  if (0 >= yMin && 0 <= yMax)
+    plot.append('line').attr('x1',0).attr('x2',iw).attr('y1',ys(0)).attr('y2',ys(0)).attr('stroke','#b9b3a8').attr('stroke-width',1);
+  if (0 >= xMin && 0 <= xMax)
+    plot.append('line').attr('x1',xs(0)).attr('x2',xs(0)).attr('y1',0).attr('y2',ih).attr('stroke','#b9b3a8').attr('stroke-width',1);
+
+  /* ── ÁREA SOMBREADA (entre recta y eje, de Ai a Bi) ── */
+  if (areaOn){
+    const area = d3.area()
+      .x(d => xs(d)).y0(ys(0)).y1(d => ys(f(d)));
+    const steps = 60, dd = (Bi - Ai)/steps;
+    const pts = [];
+    for (let i = 0; i <= steps; i++) pts.push(Ai + i*dd);
+    plot.append('path').datum(pts).attr('class','area-fill').attr('d', area);
+  }
+
+  /* ── FIGURA GEOMÉTRICA (triángulo/trapecio acotado) ── */
+  if (shapeOn){
+    const corners = [
+      [xs(Ai), ys(0)], [xs(Ai), ys(f(Ai))],
+      [xs(Bi), ys(f(Bi))], [xs(Bi), ys(0)]
+    ];
+    plot.append('polygon')
+      .attr('points', corners.map(p => p.join(',')).join(' '))
+      .attr('fill','none').attr('class','tri-line');
+    /* Cotas: base y alturas */
+    plot.append('text').attr('class','dim-lbl')
+      .attr('x', (xs(Ai)+xs(Bi))/2).attr('y', ys(0) + (yMin<0? -6 : 16)).attr('text-anchor','middle')
+      .text('base = ' + fmt(Bi-Ai));
+    if (Math.abs(f(Bi)) > 1e-9)
+      plot.append('text').attr('class','dim-lbl').attr('fill','var(--crimson)')
+        .attr('x', xs(Bi) + 6).attr('y', (ys(f(Bi))+ys(0))/2).attr('text-anchor','start')
+        .text('h = ' + fmt(f(Bi)));
+  }
+
+  /* ── RECTÁNGULOS DE RIEMANN ── */
+  if (riemannOn){
+    const dx = (Bi - Ai)/NN;
+    for (let i = 0; i < NN; i++){
+      let xi;
+      if (RULE === 'left')       xi = Ai + i*dx;
+      else if (RULE === 'right') xi = Ai + (i+1)*dx;
+      else                       xi = Ai + (i+0.5)*dx;
+      const h = f(xi);
+      const xL = Ai + i*dx;
+      /* Rectángulo desde 0 hasta h */
+      const y0 = ys(0), yh = ys(h);
+      const top = Math.min(y0, yh), height = Math.abs(yh - y0);
+      /* ¿el rectángulo sobreestima o subestima? según pendiente y regla */
+      const over = (h > f((xL + xL+dx)/2) + 1e-9) || (RULE==='right' && M>0) || (RULE==='left' && M<0);
+      plot.append('rect').attr('class', 'rrect ' + (over ? 'rrect-over' : 'rrect-under'))
+        .attr('x', xs(xL)).attr('y', top)
+        .attr('width', Math.max(0, xs(xL+dx) - xs(xL))).attr('height', height)
+        .attr('stroke-width', NN > 120 ? 0 : (NN > 40 ? 0.3 : 0.7));
+    }
+  }
+
+  /* ── LA RECTA ── */
+  const line = d3.line().x(d => xs(d)).y(d => ys(f(d)));
+  const lpts = [xMin, xMax];
+  plot.append('path').datum(lpts).attr('class','curve').attr('d', line);
+
+  /* Etiquetas de a y b */
+  plot.append('line').attr('class','dim-line').attr('stroke-dasharray','2,2')
+    .attr('x1', xs(Ai)).attr('x2', xs(Ai)).attr('y1', ys(0)).attr('y2', ys(f(Ai))).attr('opacity',.5);
+  plot.append('line').attr('class','dim-line').attr('stroke-dasharray','2,2')
+    .attr('x1', xs(Bi)).attr('x2', xs(Bi)).attr('y1', ys(0)).attr('y2', ys(f(Bi))).attr('opacity',.5);
+  plot.append('text').attr('class','curve-lbl').attr('fill','var(--navy)')
+    .attr('x', xs(Ai)).attr('y', ih - 4).attr('text-anchor','middle').text('a=' + fmt(Ai));
+  plot.append('text').attr('class','curve-lbl').attr('fill','var(--navy)')
+    .attr('x', xs(Bi)).attr('y', ih - 4).attr('text-anchor','middle').text('b=' + fmt(Bi));
+
+  const tip = document.getElementById('tip-main');
+  svg.append('rect').attr('x', m.left).attr('y', m.top).attr('width', iw).attr('height', ih).attr('fill','transparent')
+    .on('mousemove', function(ev){
+      const [mx] = d3.pointer(ev, svg.node());
+      const x = xs.invert(mx - m.left);
+      const y = f(x);
+      if (!isFinite(y) || y < yMin || y > yMax){ tip.classList.remove('show'); return; }
+      const inside = x >= Ai && x <= Bi;
+      tip.innerHTML = 'x = ' + fmt(x,2) + '<br>f(x) = ' + fmt(y,2) + (inside ? '<br>(dentro de [a,b])' : '');
+      tip.style.left = (m.left + xs(x)) + 'px';
+      tip.style.top = (m.top + ys(y)) + 'px';
+      tip.classList.add('show');
+    })
+    .on('mouseleave', () => tip.classList.remove('show'));
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — PANEL EN VIVO
+   ═══════════════════════════════════════════════ */
+function updateLive(){
+  const ex = exactArea();
+  const sn = riemann(NN, RULE);
+  const err = Math.abs(ex - sn);
+  const dx = (Bi - Ai)/NN;
+
+  document.getElementById('lv-exact').textContent = fmt(ex, 3);
+  document.getElementById('lv-riemann').textContent = fmt(sn, 3);
+  document.getElementById('lv-err').textContent = fmt(err, 4);
+  document.getElementById('lv-dx').textContent = fmt(dx, 3);
+
+  /* Barra de error: relativa al error con n=1 */
+  const err1 = Math.abs(ex - riemann(1, RULE));
+  const pct = err1 > 1e-9 ? Math.min(100, (err/err1)*100) : 0;
+  document.getElementById('err-fill').style.width = pct + '%';
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — ANIMACIÓN (n crece)
+   ═══════════════════════════════════════════════ */
+function stopAnim(){
+  if (ANIM){ clearInterval(ANIM); ANIM = null; }
+  const b = document.getElementById('btn-anim');
+  if (b) b.textContent = '▶ Aumentar n y converger al área exacta';
+}
+function startAnim(){
+  stopAnim();
+  document.getElementById('opt-riemann').checked = true;
+  const seq = [1,2,3,4,6,8,10,14,20,28,40,55,80,120,180,260,360,500];
+  let i = 0;
+  document.getElementById('btn-anim').textContent = '● Convergiendo…';
+  ANIM = setInterval(() => {
+    NN = seq[i];
+    document.getElementById('n-slider').value = NN;
+    document.getElementById('n-val').textContent = NN;
+    drawMain(); updateLive();
+    i++;
+    if (i >= seq.length) stopAnim();
+  }, 420);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — REFLEXIÓN
+   ═══════════════════════════════════════════════ */
+function renderReflect(){
+  const ex = exactArea();
+  const qs = [
+    {
+      q: 'a-b) ¿Por qué el área bajo $f(x)=' + fTex() + '$ se puede calcular con geometría elemental?',
+      opts: [
+        'Porque toda área se calcula con triángulos.',
+        'Porque la gráfica es una <strong>recta</strong>: la región es un triángulo o trapecio, figuras con fórmula conocida.',
+        'Porque el intervalo empieza en un número entero.'
+      ],
+      ok: 1,
+      fb: 'La recta hace que la frontera superior de la región sea un segmento, así que la región es un ' +
+          'polígono simple (triángulo o trapecio). Para una <em>curva</em> —una parábola, una exponencial— ' +
+          'la frontera se dobla y la geometría elemental ya no basta: ahí entra la integral.'
+    },
+    {
+      q: 'Al aumentar $n$ (más rectángulos), la suma de Riemann $S_n$…',
+      opts: [
+        'se aleja del área exacta.',
+        'se <strong>acerca</strong> al área exacta: el error tiende a cero.',
+        'se mantiene igual sin importar $n$.'
+      ],
+      ok: 1,
+      fb: 'Cada rectángulo aproxima una rebanada de la región. Cuanto más finos (mayor $n$, menor $\\Delta x$), ' +
+          'mejor se ajustan al perfil de la curva. En el límite $n\\to\\infty$, la suma converge <strong>exactamente</strong> ' +
+          'a la integral: $\\int_a^b f\\,dx = \\lim_{n\\to\\infty} S_n = ' + fmt(ex,2) + '$. Súbelo a $n=80$ y mira el error.'
+    },
+    {
+      q: 'c) Si $f(x)$ es una tasa de producción (piezas/hora), el área representa…',
+      opts: [
+        'la tasa máxima alcanzada.',
+        'el <strong>total de piezas producidas</strong> en el intervalo (la acumulación).',
+        'el tiempo total transcurrido.'
+      ],
+      ok: 1,
+      fb: 'Las unidades lo confirman: (piezas/hora) × (horas) = piezas. El área <strong>acumula</strong> la ' +
+          'tasa a lo largo del tiempo. Como la tasa cambia, no basta multiplicar; hay que integrar. ' +
+          'Este es el sentido físico de la integral: velocidad→distancia, caudal→volumen, potencia→energía.'
+    }
+  ];
+
+  let html = '';
+  qs.forEach((item, qi) => {
+    html += '<div class="reflect-q" data-ok="' + item.ok + '"><div class="qt">' + item.q + '</div><div class="opt-row">';
+    item.opts.forEach((o, oi) => {
+      html += '<label class="opt" data-o="' + oi + '"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + o + '</span></label>';
+    });
+    html += '</div><div class="fb">' + item.fb + '</div></div>';
+  });
+  const box = document.getElementById('reflect');
+  box.innerHTML = html;
+  box.querySelectorAll('.reflect-q').forEach(card => {
+    const ok = parseInt(card.dataset.ok, 10);
+    card.querySelectorAll('.opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const oi = parseInt(opt.dataset.o, 10);
+        card.querySelectorAll('.opt').forEach(o => o.classList.remove('ok','no'));
+        opt.classList.add(oi === ok ? 'ok' : 'no');
+        if (oi !== ok) card.querySelector('.opt[data-o="' + ok + '"]').classList.add('ok');
+        card.querySelector('.fb').classList.add('show');
+      });
+    });
+  });
+  renderMath(box);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — MÓDULO FORMAL
+   ═══════════════════════════════════════════════ */
+function renderProof(){
+  const def = document.getElementById('def-katex');
+  def.innerHTML =
+    '$$\\int_{a}^{b} f(x)\\,dx \\;=\\; \\lim_{n\\to\\infty} \\sum_{i=1}^{n} f(x_i^{*})\\,\\Delta x, \\qquad \\Delta x = \\dfrac{b-a}{n}$$';
+  renderMath(def);
+
+  const proof = document.getElementById('proof');
+  const ex = exactArea();
+  let steps = '';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 1 · Rebanar</span>' +
+    'Dividimos $[' + fmt(Ai) + ',' + fmt(Bi) + ']$ en $n$ trozos de ancho $\\Delta x = \\tfrac{' + fmt(Bi-Ai) + '}{n}$. ' +
+    'En cada trozo levantamos un rectángulo cuya altura es $f$ evaluada en algún punto $x_i^{*}$ del trozo.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 2 · Sumar</span>' +
+    'El área aproximada es la <strong>suma de Riemann</strong> $S_n = \\sum_{i=1}^{n} f(x_i^{*})\\,\\Delta x$. ' +
+    'Cada término es «altura × ancho»: el área de un rectángulo. La elección de $x_i^{*}$ (izquierda, medio, ' +
+    'derecha) da sumas ligeramente distintas, pero todas convergen al mismo límite.</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 3 · El límite</span>' +
+    'Al hacer $n \\to \\infty$ (rectángulos infinitamente finos), la suma converge al área exacta. ' +
+    'Ese límite <strong>es</strong> la integral definida:' +
+    '$$\\int_{' + fmt(Ai) + '}^{' + fmt(Bi) + '} f(x)\\,dx = \\lim_{n\\to\\infty} S_n = ' + fmt(ex, 3) + '.$$</div>';
+
+  steps += '<div class="proof-step"><span class="sn">Paso 4 · El atajo (Teorema Fundamental)</span>' +
+    'No hace falta calcular el límite cada vez. El <strong>Teorema Fundamental del Cálculo</strong> dice ' +
+    'que si $F$ es una antiderivada de $f$ (es decir $F\' = f$), entonces' +
+    '$$\\int_{a}^{b} f(x)\\,dx = F(b) - F(a).$$' +
+    'Aquí $F(x) = ' + (Math.abs(M)>TOL ? fmt(M/2)+'x^{2}' : '') + (Math.abs(Bb)>TOL ? ' '+signTerm(Bb)+'x' : '') + '$, ' +
+    'y $F(' + fmt(Bi) + ') - F(' + fmt(Ai) + ') = ' + fmt(ex, 3) + '$: el mismo número que dio la geometría.</div>';
+
+  steps += '<div class="qed-box"><div>' +
+    'Área, suma de Riemann e integral son <em>tres nombres</em> de la misma cantidad. ' +
+    'La geometría la ve como figura; Riemann como límite de sumas; el TFC la calcula con antiderivadas.' +
+    '</div><span class="qed">□</span></div>';
+
+  proof.innerHTML = steps;
+  renderMath(proof);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — CONCLUSIÓN
+   ═══════════════════════════════════════════════ */
+function renderConclusion(){
+  const el = document.getElementById('conclusion');
+  const ex = exactArea();
+  const fa = f(Ai), fb = f(Bi);
+  const esTri = Math.abs(Bb) < TOL && !crossesZero();
+  let html = '';
+
+  html += '<p><strong>a)</strong> La gráfica de $f(x)=' + fTex() + '$ es una recta; el área bajo ella entre ' +
+    '$x=' + fmt(Ai) + '$ y $x=' + fmt(Bi) + '$ es la región sombreada' +
+    (esTri ? ', un <strong>triángulo</strong> apoyado en el eje.' : ', un <strong>trapecio</strong>.') + '</p>';
+
+  html += '<p><strong>b)</strong> Por geometría elemental:</p>';
+  if (esTri){
+    html += '<p style="text-align:center;">$$A = \\tfrac{1}{2}\\,\\text{base}\\times\\text{altura} = \\tfrac{1}{2}\\cdot' + fmt(Bi-Ai) + '\\cdot' + fmt(fb) + ' = ' + fmt(ex,3) + '$$</p>';
+  } else {
+    html += '<p style="text-align:center;">$$A = \\tfrac{f(a)+f(b)}{2}\\cdot(b-a) = \\tfrac{' + fmt(fa) + '+' + fmt(fb) + '}{2}\\cdot' + fmt(Bi-Ai) + ' = ' + fmt(ex,3) + '$$</p>';
+  }
+  html += '<p>Y coincide con la integral $\\int_{' + fmt(Ai) + '}^{' + fmt(Bi) + '}\\left(' + fTex() + '\\right)dx = ' + fmt(ex,3) + '$, ' +
+    'que las sumas de Riemann aproximan cada vez mejor al crecer $n$.</p>';
+
+  html += '<p><strong>c)</strong> Si $f(x)$ fuera una <strong>tasa de producción</strong>, el área ' +
+    '($' + fmt(ex) + '$) sería el <strong>total acumulado</strong> en el intervalo: la cantidad de piezas ' +
+    'producidas entre $x=' + fmt(Ai) + '$ y $x=' + fmt(Bi) + '$. Integrar una tasa da la cantidad total; ' +
+    'es la idea que convierte velocidad en distancia, caudal en volumen, y potencia en energía.</p>';
+
+  el.innerHTML = html;
+  renderMath(el);
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIÓN — INICIALIZACIÓN
+   ═══════════════════════════════════════════════ */
+function initPage(){
+  document.getElementById('btn-apply').addEventListener('click', refreshAll);
+  ['p-m','p-b','p-a','p-B'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', ev => { if (ev.key === 'Enter') refreshAll(); });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('p-m').value = 2;
+    document.getElementById('p-b').value = 0;
+    document.getElementById('p-a').value = 0;
+    document.getElementById('p-B').value = 4;
+    document.getElementById('n-slider').value = 8;
+    document.getElementById('n-val').textContent = 8;
+    document.getElementById('opt-riemann').checked = false;
+    refreshAll();
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = btn.dataset.preset.split(',');
+      document.getElementById('p-m').value = p[0].trim();
+      document.getElementById('p-b').value = p[1].trim();
+      document.getElementById('p-a').value = p[2].trim();
+      document.getElementById('p-B').value = p[3].trim();
+      refreshAll();
+    });
+  });
+
+  document.getElementById('btn-verify-b').addEventListener('click', verifyB);
+  document.getElementById('btn-fill-b').addEventListener('click', fillB);
+  document.getElementById('btn-hint-b').addEventListener('click', toggleHintB);
+
+  ['opt-grid','opt-area','opt-shape','opt-riemann'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => { drawMain(); });
+  });
+
+  /* Reglas de Riemann */
+  document.querySelectorAll('[data-rule]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-rule]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      RULE = btn.dataset.rule;
+      document.getElementById('opt-riemann').checked = true;
+      drawMain(); updateLive();
+    });
+  });
+
+  document.getElementById('n-slider').addEventListener('input', ev => {
+    stopAnim();
+    NN = parseInt(ev.target.value, 10);
+    document.getElementById('n-val').textContent = NN;
+    document.getElementById('opt-riemann').checked = true;
+    drawMain(); updateLive();
+  });
+
+  document.getElementById('btn-anim').addEventListener('click', startAnim);
+  document.getElementById('btn-stop').addEventListener('click', stopAnim);
+
+  const edT = document.getElementById('ed-toggle');
+  edT.addEventListener('click', () => {
+    const body = document.getElementById('ed-body');
+    const open = body.classList.toggle('open');
+    edT.classList.toggle('open', open);
+    edT.setAttribute('aria-expanded', String(open));
+    if (open) setTimeout(() => renderMath(body), 0);
+  });
+
+  let rt = null;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawMain, 140); });
+
+  refreshAll();
+}
+
+(function boot(){
+  function ready(){ return document.readyState !== 'loading' && window.d3 && window.renderMathInElement; }
+  function attempt(tries){
+    if (ready()){ initPage(); return; }
+    if (tries <= 0){ initPage(); return; }
+    setTimeout(() => attempt(tries - 1), 60);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => attempt(40));
+  else attempt(40);
+})();
+</script>
+
+</body>
+</html>
